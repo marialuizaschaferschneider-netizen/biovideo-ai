@@ -1,1 +1,338 @@
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>BIOVIDEO AI</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #071b17, #0b332b, #123f35);
+      color: white;
+      padding: 25px;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .logo {
+      font-size: 55px;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-size: 38px;
+      letter-spacing: 2px;
+    }
+
+    .subtitle {
+      color: #b8d9d0;
+      margin-top: 8px;
+      font-size: 16px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 22px;
+      padding: 25px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      resize: vertical;
+      border: none;
+      outline: none;
+      border-radius: 14px;
+      padding: 16px;
+      font-size: 16px;
+      background: #f5faf8;
+      color: #16332c;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .option {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.18);
+      padding: 14px;
+      border-radius: 12px;
+    }
+
+    .option input {
+      margin-right: 8px;
+    }
+
+    .button {
+      width: 100%;
+      border: none;
+      border-radius: 15px;
+      padding: 17px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      background: #7de2c1;
+      color: #08251e;
+      margin-top: 20px;
+    }
+
+    .button:hover {
+      transform: scale(1.01);
+    }
+
+    #resultado {
+      display: none;
+      text-align: center;
+    }
+
+    .status {
+      font-size: 20px;
+      margin: 15px 0;
+    }
+
+    .check {
+      font-size: 35px;
+      margin-bottom: 10px;
+    }
+
+    .footer {
+      text-align: center;
+      color: #9dbdb5;
+      font-size: 13px;
+      margin-top: 25px;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 15px;
+      }
+
+      h1 {
+        font-size: 30px;
+      }
+
+      .options {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <header>
+      <div class="logo">🧬</div>
+
+      <h1>BIOVIDEO AI</h1>
+
+      <p class="subtitle">
+        Pesquise. Crie. Aprenda. Apresente.
+      </p>
+    </header>
+
+    <div class="card">
+
+      <label for="tema">
+        🔬 Sobre o que será o vídeo?
+      </label>
+
+      <textarea
+        id="tema"
+        placeholder="Ex.: Explique como funciona a tecnologia CRISPR-Cas9, suas aplicações, vantagens, limitações e questões éticas."
+      ></textarea>
+
+    </div>
+
+    <div class="card">
+
+      <label>⏱️ Duração máxima</label>
+
+      <div class="options">
+
+        <div class="option">
+          <input type="radio" name="duracao" value="1">
+          1 minuto
+        </div>
+
+        <div class="option">
+          <input type="radio" name="duracao" value="2">
+          2 minutos
+        </div>
+
+        <div class="option">
+          <input type="radio" name="duracao" value="3">
+          3 minutos
+        </div>
+
+        <div class="option">
+          <input type="radio" name="duracao" value="4" checked>
+          4 minutos
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <label>🎓 Tipo de vídeo</label>
+
+      <div class="options">
+
+        <div class="option">
+          <input type="radio" name="tipo" value="cientifico" checked>
+          Trabalho científico
+        </div>
+
+        <div class="option">
+          <input type="radio" name="tipo" value="pesquisa">
+          Pesquisa
+        </div>
+
+        <div class="option">
+          <input type="radio" name="tipo" value="reels">
+          Reels / Instagram
+        </div>
+
+        <div class="option">
+          <input type="radio" name="tipo" value="apresentacao">
+          Apresentação
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <label>🔎 Pesquisa</label>
+
+      <div class="option">
+        <input type="radio" name="pesquisa" value="normal">
+        Pesquisa normal
+      </div>
+
+      <br>
+
+      <div class="option">
+        <input type="radio" name="pesquisa" value="profunda" checked>
+        🔬 Pesquisa profunda
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <label>🎬 Recursos do vídeo</label>
+
+      <div class="options">
+
+        <div class="option">
+          <input type="checkbox" id="narracao" checked>
+          🎙️ Narração
+        </div>
+
+        <div class="option">
+          <input type="checkbox" id="musica" checked>
+          🎵 Música
+        </div>
+
+        <div class="option">
+          <input type="checkbox" id="legendas" checked>
+          📝 Legendas
+        </div>
+
+        <div class="option">
+          <input type="checkbox" id="referencias" checked>
+          📚 Referências
+        </div>
+
+      </div>
+
+    </div>
+
+    <button class="button" onclick="criarVideo()">
+      🚀 CRIAR VÍDEO
+    </button>
+
+    <div class="card" id="resultado">
+
+      <div class="check">✅</div>
+
+      <h2>Projeto recebido!</h2>
+
+      <p class="status">
+        A BIOVIDEO AI está preparando seu vídeo.
+      </p>
+
+      <p>
+        Na próxima etapa vamos conectar a pesquisa,
+        roteiro, áudio, imagens e edição.
+      </p>
+
+    </div>
+
+    <div class="footer">
+      BIOVIDEO AI — V1 • Projeto gratuito
+    </div>
+
+  </div>
+
+  <script>
+
+    function criarVideo() {
+
+      const tema = document.getElementById("tema").value.trim();
+
+      if (tema === "") {
+
+        alert("Digite o tema do seu vídeo primeiro! 🧬");
+
+        return;
+      }
+
+      document.getElementById("resultado").style.display = "block";
+
+      document.getElementById("resultado").scrollIntoView({
+        behavior: "smooth"
+      });
+
+    }
+
+  </script>
+
+</body>
+        </html>
