@@ -479,14 +479,8 @@ async function iniciarProducao() {
 
 async function criarRascunho(tema) {
 
-    const resultado =
-        document.getElementById("resultado");
-
-    const roteiro =
-        document.getElementById("roteiro");
-
-    roteiro.textContent =
-        "🔎 Buscando artigos científicos no PubMed...\n\n";
+    const resultado = document.getElementById("resultado");
+    const roteiro = document.getElementById("roteiro");
 
     resultado.style.display = "block";
 
@@ -494,84 +488,140 @@ async function criarRascunho(tema) {
         behavior: "smooth"
     });
 
+    roteiro.textContent =
+        "🔎 Preparando pesquisa científica...\n\n" +
+        "Analisando o tema e procurando artigos relevantes...";
+
     try {
 
-        const url =
-            "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi" +
-            "?db=pubmed" +
-            "&term=" + encodeURIComponent(tema) +
-            "&retmax=8" +
-            "&retmode=json" +
-            "&sort=relevance";
+        // Termos de pesquisa mais adequados para o PubMed
+        const termos = [
+            tema,
+            "DNA biotechnology",
+            "genetic engineering",
+            "DNA technology medicine",
+            "biotechnology society"
+        ];
 
-        const resposta = await fetch(url);
+        let artigos = [];
+        let idsUsados = new Set();
 
-        if (!resposta.ok) {
-            throw new Error("Erro ao acessar o PubMed.");
+        for (const termo of termos) {
+
+            const url =
+                "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi" +
+                "?db=pubmed" +
+                "&term=" + encodeURIComponent(termo) +
+                "&retmax=5" +
+                "&retmode=json" +
+                "&sort=relevance";
+
+            const resposta = await fetch(url);
+
+            if (!resposta.ok) {
+                throw new Error("Não foi possível acessar o PubMed.");
+            }
+
+            const dados = await resposta.json();
+
+            const ids = dados.esearchresult.idlist || [];
+
+            ids.forEach(id => {
+
+                if (!idsUsados.has(id)) {
+
+                    idsUsados.add(id);
+                    artigos.push(id);
+
+                }
+
+            });
+
+            if (artigos.length >= 15) {
+                break;
+            }
         }
 
-        const dados = await resposta.json();
 
-        const ids = dados.esearchresult.idlist;
-
-        if (!ids || ids.length === 0) {
+        if (artigos.length === 0) {
 
             roteiro.textContent =
-                "⚠️ Nenhum artigo encontrado para esse tema.";
+                "⚠️ Nenhum artigo foi encontrado.\n\n" +
+                "Tente utilizar um tema mais específico.";
 
             return;
         }
 
+
+        roteiro.textContent =
+            "📚 Encontramos " +
+            artigos.length +
+            " artigos científicos.\n\n" +
+            "🔎 Agora buscando informações dos artigos...";
+
+
         const resumoUrl =
             "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi" +
             "?db=pubmed" +
-            "&id=" + ids.join(",") +
+            "&id=" + artigos.join(",") +
             "&retmode=json";
+
 
         const respostaResumo =
             await fetch(resumoUrl);
 
+
         if (!respostaResumo.ok) {
-            throw new Error("Erro ao buscar os artigos.");
+
+            throw new Error(
+                "Não foi possível obter os dados dos artigos."
+            );
+
         }
+
 
         const dadosResumo =
             await respostaResumo.json();
 
+
         let texto =
-            "🔎 PESQUISA CIENTÍFICA\n\n";
+            "🔬 PESQUISA CIENTÍFICA\n\n";
 
         texto +=
-            "Tema pesquisado:\n" +
+            "Tema:\n" +
             tema +
             "\n\n";
 
         texto +=
-            "📚 Artigos encontrados: " +
-            ids.length +
+            "📚 Artigos científicos encontrados: " +
+            artigos.length +
             "\n\n";
 
         texto +=
             "━━━━━━━━━━━━━━━━━━━━\n\n";
 
 
-        ids.forEach((id, indice) => {
+        artigos.forEach((id, indice) => {
 
             const artigo =
                 dadosResumo.result[id];
 
             if (!artigo) return;
 
+
             texto +=
                 "📄 ARTIGO " +
                 (indice + 1) +
                 "\n\n";
 
+
             texto +=
                 artigo.title ||
                 "Título não disponível";
 
+
             texto += "\n\n";
+
 
             if (artigo.fulljournalname) {
 
@@ -582,6 +632,7 @@ async function criarRascunho(tema) {
 
             }
 
+
             if (artigo.pubdate) {
 
                 texto +=
@@ -591,15 +642,18 @@ async function criarRascunho(tema) {
 
             }
 
+
             texto +=
                 "PMID: " +
                 id +
                 "\n";
 
+
             texto +=
                 "https://pubmed.ncbi.nlm.nih.gov/" +
                 id +
                 "/\n\n";
+
 
             texto +=
                 "━━━━━━━━━━━━━━━━━━━━\n\n";
@@ -609,17 +663,19 @@ async function criarRascunho(tema) {
 
         texto +=
             "🧠 PRÓXIMA ETAPA\n\n" +
-            "Esses artigos serão utilizados como base " +
-            "para a análise científica e posteriormente " +
-            "para a criação do roteiro.\n\n";
+            "A BIOVIDEO AI encontrou artigos científicos " +
+            "relacionados ao tema. Agora precisamos " +
+            "adicionar a etapa de leitura e análise dos " +
+            "resumos para construir o roteiro.\n\n";
+
 
         texto +=
-            "⚠️ IMPORTANTE\n\n" +
-            "A BIOVIDEO AI ainda não está resumindo " +
-            "automaticamente o conteúdo dos artigos. " +
-            "Nesta versão estamos testando a busca " +
-            "científica real.";
+            "⚠️ VERSÃO V1.2\n\n" +
+            "Nesta versão a pesquisa científica é real, " +
+            "mas a análise automática dos artigos ainda " +
+            "será adicionada.";
 
+        
         roteiro.textContent = texto;
 
     }
@@ -629,14 +685,11 @@ async function criarRascunho(tema) {
         console.error(erro);
 
         roteiro.textContent =
-            "❌ Não foi possível realizar a pesquisa.\n\n" +
-            "Erro: " +
-            erro.message +
-            "\n\n" +
-            "Verifique sua conexão com a internet e tente novamente.";
+            "❌ Erro durante a pesquisa.\n\n" +
+            erro.message;
 
     }
-
+    
 }
 
 </script>
