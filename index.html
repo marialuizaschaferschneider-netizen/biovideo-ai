@@ -477,7 +477,7 @@ async function iniciarProducao() {
 }
 
 
-function criarRascunho(tema) {
+async function criarRascunho(tema) {
 
     const resultado =
         document.getElementById("resultado");
@@ -485,70 +485,157 @@ function criarRascunho(tema) {
     const roteiro =
         document.getElementById("roteiro");
 
-
     roteiro.textContent =
-
-`TEMA DO VÍDEO
-
-${tema}
-
-
-ESTRUTURA SUGERIDA
-
-1. INTRODUÇÃO
-Apresentação do tema e sua importância.
-
-
-2. CONCEITO PRINCIPAL
-Explicação científica clara e acessível.
-
-
-3. COMO FUNCIONA
-Descrição dos principais mecanismos envolvidos.
-
-
-4. APLICAÇÕES
-Exemplos de utilização na sociedade.
-
-
-5. BENEFÍCIOS
-Principais contribuições e vantagens.
-
-
-6. RISCOS E LIMITAÇÕES
-Possíveis problemas, limitações e cuidados.
-
-
-7. QUESTÕES ÉTICAS
-Impactos sociais e questões que precisam ser discutidas.
-
-
-8. FUTURO
-Possíveis aplicações e perspectivas.
-
-
-9. CONCLUSÃO
-Resumo das principais ideias.
-
-
-REFERÊNCIAS
-
-Nesta etapa serão adicionadas as fontes científicas utilizadas.
-
---------------------------------
-
-OBSERVAÇÃO:
-
-Esta é a V1.1 da BIOVIDEO AI.
-
-A pesquisa automática ainda será conectada na próxima etapa.`;
-
+        "🔎 Buscando artigos científicos no PubMed...\n\n";
 
     resultado.style.display = "block";
 
     resultado.scrollIntoView({
         behavior: "smooth"
     });
+
+    try {
+
+        const url =
+            "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi" +
+            "?db=pubmed" +
+            "&term=" + encodeURIComponent(tema) +
+            "&retmax=8" +
+            "&retmode=json" +
+            "&sort=relevance";
+
+        const resposta = await fetch(url);
+
+        if (!resposta.ok) {
+            throw new Error("Erro ao acessar o PubMed.");
+        }
+
+        const dados = await resposta.json();
+
+        const ids = dados.esearchresult.idlist;
+
+        if (!ids || ids.length === 0) {
+
+            roteiro.textContent =
+                "⚠️ Nenhum artigo encontrado para esse tema.";
+
+            return;
+        }
+
+        const resumoUrl =
+            "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi" +
+            "?db=pubmed" +
+            "&id=" + ids.join(",") +
+            "&retmode=json";
+
+        const respostaResumo =
+            await fetch(resumoUrl);
+
+        if (!respostaResumo.ok) {
+            throw new Error("Erro ao buscar os artigos.");
+        }
+
+        const dadosResumo =
+            await respostaResumo.json();
+
+        let texto =
+            "🔎 PESQUISA CIENTÍFICA\n\n";
+
+        texto +=
+            "Tema pesquisado:\n" +
+            tema +
+            "\n\n";
+
+        texto +=
+            "📚 Artigos encontrados: " +
+            ids.length +
+            "\n\n";
+
+        texto +=
+            "━━━━━━━━━━━━━━━━━━━━\n\n";
+
+
+        ids.forEach((id, indice) => {
+
+            const artigo =
+                dadosResumo.result[id];
+
+            if (!artigo) return;
+
+            texto +=
+                "📄 ARTIGO " +
+                (indice + 1) +
+                "\n\n";
+
+            texto +=
+                artigo.title ||
+                "Título não disponível";
+
+            texto += "\n\n";
+
+            if (artigo.fulljournalname) {
+
+                texto +=
+                    "Revista: " +
+                    artigo.fulljournalname +
+                    "\n";
+
+            }
+
+            if (artigo.pubdate) {
+
+                texto +=
+                    "Data: " +
+                    artigo.pubdate +
+                    "\n";
+
+            }
+
+            texto +=
+                "PMID: " +
+                id +
+                "\n";
+
+            texto +=
+                "https://pubmed.ncbi.nlm.nih.gov/" +
+                id +
+                "/\n\n";
+
+            texto +=
+                "━━━━━━━━━━━━━━━━━━━━\n\n";
+
+        });
+
+
+        texto +=
+            "🧠 PRÓXIMA ETAPA\n\n" +
+            "Esses artigos serão utilizados como base " +
+            "para a análise científica e posteriormente " +
+            "para a criação do roteiro.\n\n";
+
+        texto +=
+            "⚠️ IMPORTANTE\n\n" +
+            "A BIOVIDEO AI ainda não está resumindo " +
+            "automaticamente o conteúdo dos artigos. " +
+            "Nesta versão estamos testando a busca " +
+            "científica real.";
+
+        roteiro.textContent = texto;
+
+    }
+
+    catch (erro) {
+
+        console.error(erro);
+
+        roteiro.textContent =
+            "❌ Não foi possível realizar a pesquisa.\n\n" +
+            "Erro: " +
+            erro.message +
+            "\n\n" +
+            "Verifique sua conexão com a internet e tente novamente.";
+
+    }
 
 }
 
