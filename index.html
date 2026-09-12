@@ -479,8 +479,11 @@ async function iniciarProducao() {
 
 async function criarRascunho(tema) {
 
-    const resultado = document.getElementById("resultado");
-    const roteiro = document.getElementById("roteiro");
+    const resultado =
+        document.getElementById("resultado");
+
+    const roteiro =
+        document.getElementById("roteiro");
 
     resultado.style.display = "block";
 
@@ -489,12 +492,11 @@ async function criarRascunho(tema) {
     });
 
     roteiro.textContent =
-        "🔎 Preparando pesquisa científica...\n\n" +
-        "Analisando o tema e procurando artigos relevantes...";
+        "🔎 Pesquisando artigos científicos...\n\n" +
+        "📚 Encontrando estudos relevantes...";
 
     try {
 
-        // Termos de pesquisa mais adequados para o PubMed
         const termos = [
             tema,
             "DNA biotechnology",
@@ -506,25 +508,30 @@ async function criarRascunho(tema) {
         let artigos = [];
         let idsUsados = new Set();
 
+
+        // BUSCA DOS ARTIGOS
         for (const termo of termos) {
 
             const url =
                 "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi" +
                 "?db=pubmed" +
                 "&term=" + encodeURIComponent(termo) +
-                "&retmax=5" +
+                "&retmax=4" +
                 "&retmode=json" +
                 "&sort=relevance";
 
             const resposta = await fetch(url);
 
             if (!resposta.ok) {
-                throw new Error("Não foi possível acessar o PubMed.");
+                throw new Error(
+                    "Não foi possível acessar o PubMed."
+                );
             }
 
             const dados = await resposta.json();
 
-            const ids = dados.esearchresult.idlist || [];
+            const ids =
+                dados.esearchresult.idlist || [];
 
             ids.forEach(id => {
 
@@ -537,7 +544,7 @@ async function criarRascunho(tema) {
 
             });
 
-            if (artigos.length >= 15) {
+            if (artigos.length >= 12) {
                 break;
             }
         }
@@ -546,7 +553,7 @@ async function criarRascunho(tema) {
         if (artigos.length === 0) {
 
             roteiro.textContent =
-                "⚠️ Nenhum artigo foi encontrado.\n\n" +
+                "⚠️ Nenhum artigo encontrado.\n\n" +
                 "Tente utilizar um tema mais específico.";
 
             return;
@@ -556,15 +563,16 @@ async function criarRascunho(tema) {
         roteiro.textContent =
             "📚 Encontramos " +
             artigos.length +
-            " artigos científicos.\n\n" +
-            "🔎 Agora buscando informações dos artigos...";
+            " artigos.\n\n" +
+            "📖 Lendo os resumos científicos...";
 
 
+        // BUSCA DOS RESUMOS
         const resumoUrl =
-            "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi" +
+            "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi" +
             "?db=pubmed" +
             "&id=" + artigos.join(",") +
-            "&retmode=json";
+            "&retmode=xml";
 
 
         const respostaResumo =
@@ -574,39 +582,62 @@ async function criarRascunho(tema) {
         if (!respostaResumo.ok) {
 
             throw new Error(
-                "Não foi possível obter os dados dos artigos."
+                "Não foi possível obter os resumos."
             );
 
         }
 
 
-        const dadosResumo =
-            await respostaResumo.json();
+        const xml =
+            await respostaResumo.text();
+
+
+        const documento =
+            new DOMParser().parseFromString(
+                xml,
+                "text/xml"
+            );
+
+
+        const registros =
+            documento.querySelectorAll(
+                "PubmedArticle"
+            );
 
 
         let texto =
-            "🔬 PESQUISA CIENTÍFICA\n\n";
+            "🧬 PESQUISA CIENTÍFICA\n\n";
 
         texto +=
-            "Tema:\n" +
+            "TEMA:\n" +
             tema +
             "\n\n";
 
         texto +=
-            "📚 Artigos científicos encontrados: " +
-            artigos.length +
+            "📚 ARTIGOS ANALISADOS: " +
+            registros.length +
             "\n\n";
 
         texto +=
             "━━━━━━━━━━━━━━━━━━━━\n\n";
 
 
-        artigos.forEach((id, indice) => {
+        registros.forEach((artigo, indice) => {
 
-            const artigo =
-                dadosResumo.result[id];
+            const titulo =
+                artigo.querySelector(
+                    "ArticleTitle"
+                );
 
-            if (!artigo) return;
+            const resumo =
+                artigo.querySelectorAll(
+                    "AbstractText"
+                );
+
+            const pmid =
+                artigo.querySelector(
+                    "PMID"
+                );
 
 
             texto +=
@@ -616,43 +647,52 @@ async function criarRascunho(tema) {
 
 
             texto +=
-                artigo.title ||
-                "Título não disponível";
+                "TÍTULO:\n" +
+                (
+                    titulo
+                    ? titulo.textContent
+                    : "Título não disponível"
+                ) +
+                "\n\n";
 
 
-            texto += "\n\n";
+            texto +=
+                "RESUMO:\n";
 
 
-            if (artigo.fulljournalname) {
+            if (resumo.length > 0) {
+
+                resumo.forEach(parte => {
+
+                    texto +=
+                        parte.textContent +
+                        " ";
+
+                });
+
+                texto += "\n\n";
+
+            } else {
 
                 texto +=
-                    "Revista: " +
-                    artigo.fulljournalname +
-                    "\n";
+                    "Resumo não disponível.\n\n";
 
             }
 
 
-            if (artigo.pubdate) {
+            if (pmid) {
 
                 texto +=
-                    "Data: " +
-                    artigo.pubdate +
+                    "PMID: " +
+                    pmid.textContent +
                     "\n";
 
+                texto +=
+                    "https://pubmed.ncbi.nlm.nih.gov/" +
+                    pmid.textContent +
+                    "/\n\n";
+
             }
-
-
-            texto +=
-                "PMID: " +
-                id +
-                "\n";
-
-
-            texto +=
-                "https://pubmed.ncbi.nlm.nih.gov/" +
-                id +
-                "/\n\n";
 
 
             texto +=
@@ -663,17 +703,17 @@ async function criarRascunho(tema) {
 
         texto +=
             "🧠 PRÓXIMA ETAPA\n\n" +
-            "A BIOVIDEO AI encontrou artigos científicos " +
-            "relacionados ao tema. Agora precisamos " +
-            "adicionar a etapa de leitura e análise dos " +
-            "resumos para construir o roteiro.\n\n";
-
+            "A BIOVIDEO AI agora consegue encontrar " +
+            "artigos e recuperar seus resumos científicos.\n\n";
 
         texto +=
-            "⚠️ VERSÃO V1.2\n\n" +
-            "Nesta versão a pesquisa científica é real, " +
-            "mas a análise automática dos artigos ainda " +
-            "será adicionada.";
+            "Na próxima versão vamos transformar " +
+            "esses resumos em uma análise organizada " +
+            "e depois em um roteiro científico.\n\n";
+
+        texto +=
+            "⚠️ V1.3\n" +
+            "Pesquisa e leitura de resumos funcionando.";
 
         
         roteiro.textContent = texto;
@@ -689,7 +729,7 @@ async function criarRascunho(tema) {
             erro.message;
 
     }
-    
+
 }
 
 </script>
