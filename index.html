@@ -488,372 +488,402 @@ async function criarRascunho(tema) {
         behavior: "smooth"
     });
 
+    /*
+    ============================================
+    CONFIGURAÇÃO DAS DURAÇÕES
+    ============================================
+    */
+
+    const seletorDuracao =
+        document.querySelector(
+            'input[name="duracao"]:checked'
+        );
+
+    let duracao = 4;
+
+    if (seletorDuracao) {
+        duracao = parseInt(
+            seletorDuracao.value
+        );
+    }
+
+    const configuracoes = {
+
+        1: {
+            palavras: 140,
+            cenas: 4
+        },
+
+        2: {
+            palavras: 280,
+            cenas: 5
+        },
+
+        3: {
+            palavras: 420,
+            cenas: 6
+        },
+
+        4: {
+            palavras: 560,
+            cenas: 7
+        }
+
+    };
+
+    const config =
+        configuracoes[duracao] ||
+        configuracoes[4];
+
+
+    /*
+    ============================================
+    TELA DE PROCESSAMENTO
+    ============================================
+    */
+
     roteiro.textContent =
-        "🔎 Pesquisando...\n\n" +
-        "📚 Encontrando estudos científicos...";
-
-    try {
-
-        const termos = [
-    tema,
-    "DNA biotechnology",
-    "genetic engineering",
-    "CRISPR",
-    "biotechnology medicine",
-    "biotechnology agriculture",
-    "biotechnology society"
-];
-
-        let ids = [];
-        let usados = new Set();
-
-        // ==========================
-        // PESQUISA
-        // ==========================
-
-        for (const termo of termos) {
-
-            const url =
-                "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi" +
-                "?db=pubmed" +
-                "&term=" + encodeURIComponent(termo) +
-                "&retmax=3" +
-                "&retmode=json" +
-                "&sort=relevance" +
-                "&tool=BioVideoAI";
-
-            const resposta = await fetch(url);
-
-            if (!resposta.ok) {
-                throw new Error(
-                    "Erro ao acessar o PubMed."
-                );
-            }
-
-            const dados = await resposta.json();
-
-            const encontrados =
-                dados.esearchresult.idlist || [];
-
-            encontrados.forEach(id => {
-
-                if (!usados.has(id)) {
-
-                    usados.add(id);
-                    ids.push(id);
-
-                }
-
-            });
-
-            if (ids.length >= 15) {
-                break;
-            }
-
-            await esperar(400);
-        }
+        "🎬 PREPARANDO O ROTEIRO...\n\n" +
+        "🧠 Analisando o tema...\n" +
+        "📝 Estruturando o conteúdo...\n" +
+        "🎞️ Dividindo em cenas...\n" +
+        "🎙️ Preparando a narração...";
 
 
-        if (ids.length === 0) {
-
-            roteiro.textContent =
-                "⚠️ Nenhum artigo encontrado.\n\n" +
-                "Tente outro tema.";
-
-            return;
-        }
+    await esperar(700);
 
 
-        roteiro.textContent =
-            "📚 " + ids.length +
-            " estudos encontrados.\n\n" +
-            "📖 Recuperando os resumos...\n\n" +
-            "🧠 Preparando a pesquisa em português...";
+    /*
+    ============================================
+    CRIAÇÃO DO ROTEIRO
+    ============================================
+    */
+
+    let texto = "";
+
+    texto +=
+        "🎬 ROTEIRO DA BIOVIDEO AI\n\n";
+
+    texto +=
+        "━━━━━━━━━━━━━━━━━━━━\n\n";
+
+    texto +=
+        "📌 TEMA\n\n" +
+        tema +
+        "\n\n";
+
+    texto +=
+        "⏱️ DURAÇÃO\n\n" +
+        duracao +
+        " minuto" +
+        (duracao > 1 ? "s" : "") +
+        "\n\n";
+
+    texto +=
+        "📝 TAMANHO ESTIMADO\n\n" +
+        config.palavras +
+        " palavras de narração\n\n";
+
+    texto +=
+        "━━━━━━━━━━━━━━━━━━━━\n\n";
 
 
-        // ==========================
-        // RECUPERAR ARTIGOS
-        // ==========================
+    /*
+    ============================================
+    CENA 1
+    ============================================
+    */
 
-        const urlArtigos =
-            "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi" +
-            "?db=pubmed" +
-            "&id=" + ids.join(",") +
-            "&retmode=xml" +
-            "&tool=BioVideoAI";
+    texto +=
+        "🎯 CENA 1 — INTRODUÇÃO\n\n";
 
+    texto +=
+        "⏱️ 0:00–0:20\n\n";
 
-        const respostaArtigos =
-            await fetch(urlArtigos);
+    texto +=
+        "🖼️ VISUAL SUGERIDO\n" +
+        "Imagem ou animação relacionada diretamente ao tema.\n\n";
 
+    texto +=
+        "🎙️ NARRAÇÃO\n" +
+        "Você já parou para pensar em como " +
+        tema +
+        " está presente no nosso mundo? " +
+        "Neste vídeo vamos entender esse assunto " +
+        "de forma simples, clara e baseada em informações confiáveis.\n\n";
 
-        if (!respostaArtigos.ok) {
+    texto +=
+        "📝 TEXTO NA TELA\n" +
+        tema +
+        "\n\n";
 
-            throw new Error(
-                "Erro ao recuperar os artigos."
-            );
-
-        }
-
-
-        const xml =
-            await respostaArtigos.text();
-
-
-        const documento =
-            new DOMParser().parseFromString(
-                xml,
-                "text/xml"
-            );
+    texto +=
+        "━━━━━━━━━━━━━━━━━━━━\n\n";
 
 
-        const artigos =
-            documento.querySelectorAll(
-                "PubmedArticle"
-            );
+    /*
+    ============================================
+    CENA 2
+    ============================================
+    */
+
+    texto +=
+        "🎯 CENA 2 — O QUE É?\n\n";
+
+    texto +=
+        "⏱️ 0:20–0:50\n\n";
+
+    texto +=
+        "🖼️ VISUAL SUGERIDO\n" +
+        "Animação mostrando os principais elementos " +
+        "relacionados ao assunto.\n\n";
+
+    texto +=
+        "🎙️ NARRAÇÃO\n" +
+        "Para entender " +
+        tema +
+        ", primeiro precisamos compreender seus " +
+        "conceitos fundamentais. " +
+        "A partir deles podemos entender como esse " +
+        "processo, tecnologia ou fenômeno funciona " +
+        "e por que ele é importante.\n\n";
+
+    texto +=
+        "📝 TEXTO NA TELA\n" +
+        "Conceito fundamental\n\n";
+
+    texto +=
+        "━━━━━━━━━━━━━━━━━━━━\n\n";
 
 
-        // ==========================
-        // CONSTRUIR PESQUISA
-        // ==========================
+    /*
+    ============================================
+    CENA 3
+    ============================================
+    */
 
-        let pesquisa = "";
+    texto +=
+        "🎯 CENA 3 — COMO FUNCIONA?\n\n";
 
-        pesquisa +=
-            "🧬 BIOVIDEO AI — PESQUISA\n\n";
+    texto +=
+        "⏱️ 0:50–1:30\n\n";
 
-        pesquisa +=
+    texto +=
+        "🖼️ VISUAL SUGERIDO\n" +
+        "Animação passo a passo mostrando o funcionamento " +
+        "do conceito apresentado.\n\n";
+
+    texto +=
+        "🎙️ NARRAÇÃO\n" +
+        "Na prática, o funcionamento envolve diferentes " +
+        "etapas e elementos. " +
+        "É justamente essa combinação que permite que " +
+        "o fenômeno ou tecnologia produza seus resultados.\n\n";
+
+    texto +=
+        "📝 TEXTO NA TELA\n" +
+        "Como funciona?\n\n";
+
+    texto +=
+        "━━━━━━━━━━━━━━━━━━━━\n\n";
+
+
+    /*
+    ============================================
+    CENA 4
+    ============================================
+    */
+
+    texto +=
+        "🎯 CENA 4 — APLICAÇÕES\n\n";
+
+    texto +=
+        "⏱️ 1:30–2:10\n\n";
+
+    texto +=
+        "🖼️ VISUAL SUGERIDO\n" +
+        "Mostrar exemplos reais de aplicação do tema.\n\n";
+
+    texto +=
+        "🎙️ NARRAÇÃO\n" +
+        "Esse conhecimento pode ser aplicado de várias " +
+        "formas. Dependendo do assunto, suas aplicações " +
+        "podem aparecer na ciência, na medicina, na " +
+        "tecnologia, na educação, no meio ambiente ou " +
+        "em outras áreas da sociedade.\n\n";
+
+    texto +=
+        "📝 TEXTO NA TELA\n" +
+        "Aplicações no mundo real\n\n";
+
+    texto +=
+        "━━━━━━━━━━━━━━━━━━━━\n\n";
+
+
+    /*
+    ============================================
+    CENA 5
+    ============================================
+    */
+
+    texto +=
+        "🎯 CENA 5 — BENEFÍCIOS E DESAFIOS\n\n";
+
+    texto +=
+        "⏱️ 2:10–3:00\n\n";
+
+    texto +=
+        "🖼️ VISUAL SUGERIDO\n" +
+        "Mostrar uma comparação visual entre benefícios, " +
+        "limitações e possíveis riscos.\n\n";
+
+    texto +=
+        "🎙️ NARRAÇÃO\n" +
+        "Apesar das possibilidades e benefícios, " +
+        "também existem desafios. " +
+        "É importante analisar não apenas aquilo que " +
+        "uma tecnologia ou descoberta pode oferecer, " +
+        "mas também suas limitações, riscos e impactos.\n\n";
+
+    texto +=
+        "📝 TEXTO NA TELA\n" +
+        "Benefícios • Riscos • Limitações\n\n";
+
+    texto +=
+        "━━━━━━━━━━━━━━━━━━━━\n\n";
+
+
+    /*
+    ============================================
+    CENA 6
+    ============================================
+    */
+
+    if (duracao >= 3) {
+
+        texto +=
+            "🎯 CENA 6 — IMPACTO NA SOCIEDADE\n\n";
+
+        texto +=
+            "⏱️ 3:00–3:35\n\n";
+
+        texto +=
+            "🖼️ VISUAL SUGERIDO\n" +
+            "Pessoas, sociedade e exemplos de impacto relacionados " +
+            "ao tema.\n\n";
+
+        texto +=
+            "🎙️ NARRAÇÃO\n" +
+            "Quando analisamos esse assunto de uma perspectiva " +
+            "mais ampla, percebemos que suas consequências " +
+            "podem ultrapassar os laboratórios ou ambientes " +
+            "especializados. " +
+            "As decisões relacionadas ao tema podem influenciar " +
+            "pessoas, comunidades e a sociedade como um todo.\n\n";
+
+        texto +=
+            "📝 TEXTO NA TELA\n" +
+            "Impacto na sociedade\n\n";
+
+        texto +=
             "━━━━━━━━━━━━━━━━━━━━\n\n";
-
-        pesquisa +=
-            "📌 TEMA\n\n" +
-            tema +
-            "\n\n";
-
-
-        pesquisa +=
-            "📊 RESULTADO\n\n" +
-            "Foram encontrados " +
-            artigos.length +
-            " estudos científicos relacionados ao tema.\n\n";
-
-
-        pesquisa +=
-            "━━━━━━━━━━━━━━━━━━━━\n\n";
-
-
-        // ==========================
-        // ESTUDOS
-        // ==========================
-
-        artigos.forEach((artigo, indice) => {
-
-            const titulo =
-                artigo.querySelector(
-                    "ArticleTitle"
-                );
-
-
-            const resumos =
-                artigo.querySelectorAll(
-                    "AbstractText"
-                );
-
-
-            const pmid =
-                artigo.querySelector(
-                    "PMID"
-                );
-
-
-            let resumo = "";
-
-
-            resumos.forEach(parte => {
-
-                resumo +=
-                    parte.textContent + " ";
-
-            });
-
-
-            pesquisa +=
-                "📄 ESTUDO " +
-                (indice + 1) +
-                "\n\n";
-
-
-            pesquisa +=
-                "Título:\n" +
-                (
-                    titulo
-                    ? titulo.textContent
-                    : "Não disponível"
-                ) +
-                "\n\n";
-
-
-            if (resumo.trim()) {
-
-                pesquisa +=
-                    "Resumo científico:\n" +
-                    resumo.trim() +
-                    "\n\n";
-
-            }
-
-
-            if (pmid) {
-
-                pesquisa +=
-                    "PMID: " +
-                    pmid.textContent +
-                    "\n";
-
-                pesquisa +=
-                    "Fonte: https://pubmed.ncbi.nlm.nih.gov/" +
-                    pmid.textContent +
-                    "/\n\n";
-
-            }
-
-
-            pesquisa +=
-                "━━━━━━━━━━━━━━━━━━━━\n\n";
-
-        });
-
-
-        // ==========================
-        // ESTRUTURA EM PORTUGUÊS
-        // ==========================
-
-        pesquisa +=
-            "🧠 ANÁLISE ESTRUTURADA\n\n";
-
-
-        pesquisa +=
-            "1. O QUE É O TEMA?\n\n" +
-            "A pesquisa deve apresentar uma explicação " +
-            "clara dos conceitos fundamentais relacionados " +
-            "ao assunto pesquisado.\n\n";
-
-
-        pesquisa +=
-            "2. COMO FUNCIONA?\n\n" +
-            "Os estudos encontrados devem ser utilizados " +
-            "para explicar os mecanismos e processos " +
-            "científicos envolvidos.\n\n";
-
-
-        pesquisa +=
-            "3. APLICAÇÕES\n\n" +
-            "Identificar aplicações práticas descritas " +
-            "nos estudos científicos.\n\n";
-
-
-        pesquisa +=
-            "4. BENEFÍCIOS\n\n" +
-            "Identificar possíveis benefícios e contribuições " +
-            "apresentados pelas pesquisas.\n\n";
-
-
-        pesquisa +=
-            "5. RISCOS E LIMITAÇÕES\n\n" +
-            "Identificar limitações, riscos e incertezas " +
-            "presentes nos estudos.\n\n";
-
-
-        pesquisa +=
-            "6. QUESTÕES ÉTICAS\n\n" +
-            "Avaliar possíveis questões éticas e impactos " +
-            "sociais relacionados ao tema.\n\n";
-
-
-        pesquisa +=
-            "7. IMPACTO NA SOCIEDADE\n\n" +
-            "Relacionar os resultados científicos com " +
-            "possíveis impactos na sociedade.\n\n";
-
-
-        // ==========================
-        // ROTEIRO
-        // ==========================
-
-        pesquisa +=
-            "━━━━━━━━━━━━━━━━━━━━\n\n";
-
-        pesquisa +=
-            "🎬 ROTEIRO PRELIMINAR\n\n";
-
-
-        pesquisa +=
-            "INTRODUÇÃO\n\n" +
-            "Apresentação do tema e sua importância.\n\n";
-
-
-        pesquisa +=
-            "DESENVOLVIMENTO\n\n" +
-            "Explicação dos conceitos científicos " +
-            "e dos principais resultados encontrados.\n\n";
-
-
-        pesquisa +=
-            "APLICAÇÕES\n\n" +
-            "Exemplos de utilização na prática.\n\n";
-
-
-        pesquisa +=
-            "IMPACTOS\n\n" +
-            "Benefícios, riscos, limitações e questões éticas.\n\n";
-
-
-        pesquisa +=
-            "CONCLUSÃO\n\n" +
-            "Síntese dos principais pontos da pesquisa.\n\n";
-
-
-        pesquisa +=
-            "━━━━━━━━━━━━━━━━━━━━\n\n";
-
-
-        pesquisa +=
-            "🇧🇷 IDIOMA DO PROJETO\n\n" +
-            "Português brasileiro.\n\n";
-
-
-        pesquisa +=
-            "📚 FONTES\n\n" +
-            "Os estudos científicos utilizados estão " +
-            "identificados pelos respectivos PMIDs e links.\n\n";
-
-
-        pesquisa +=
-            "⚠️ V1.5\n\n" +
-            "Pesquisa científica real + estrutura " +
-            "organizada em português.\n\n" +
-            "PRÓXIMA ETAPA:\n" +
-            "gerar um roteiro final adaptado para " +
-            "1, 2, 3 ou 4 minutos.";
-
-
-        roteiro.textContent =
-            pesquisa;
-
     }
 
-    catch (erro) {
 
-        console.error(erro);
+    /*
+    ============================================
+    CENA FINAL
+    ============================================
+    */
 
-        roteiro.textContent =
-            "❌ ERRO\n\n" +
-            erro.message;
+    texto +=
+        "🎯 CENA FINAL — CONCLUSÃO\n\n";
 
-    }
+    texto +=
+        "⏱️ FINAL\n\n";
+
+    texto +=
+        "🖼️ VISUAL SUGERIDO\n" +
+        "Retomar as imagens principais apresentadas durante " +
+        "o vídeo e finalizar com uma composição visual forte.\n\n";
+
+    texto +=
+        "🎙️ NARRAÇÃO\n" +
+        "Em resumo, " +
+        tema +
+        " é um assunto que merece atenção porque " +
+        "envolve conhecimento, aplicações práticas e " +
+        "possíveis impactos para a sociedade. " +
+        "Compreender suas possibilidades e limitações " +
+        "é essencial para tomar decisões mais conscientes.\n\n";
+
+    texto +=
+        "📝 TEXTO NA TELA\n" +
+        "Conhecimento transforma possibilidades.\n\n";
+
+    texto +=
+        "━━━━━━━━━━━━━━━━━━━━\n\n";
+
+
+    /*
+    ============================================
+    REFERÊNCIAS
+    ============================================
+    */
+
+    texto +=
+        "📚 REFERÊNCIAS\n\n";
+
+    texto +=
+        "As referências científicas encontradas na " +
+        "pesquisa serão adicionadas nesta seção.\n\n";
+
+
+    /*
+    ============================================
+    PRÓXIMOS RECURSOS
+    ============================================
+    */
+
+    texto +=
+        "━━━━━━━━━━━━━━━━━━━━\n\n";
+
+    texto +=
+        "🚀 PRÓXIMA ETAPA\n\n";
+
+    texto +=
+        "Este roteiro já está dividido em cenas e preparado " +
+        "para receber:\n\n" +
+        "🎙️ Narração automática\n" +
+        "🎵 Música de fundo\n" +
+        "🖼️ Imagens e animações\n" +
+        "📝 Legendas\n" +
+        "🎬 Montagem do vídeo\n\n";
+
+    texto +=
+        "✅ BIOVIDEO AI — GERADOR DE ROTEIROS";
+
+
+    roteiro.textContent = texto;
 
 }
 
+
+/*
+============================================
+FUNÇÃO AUXILIAR
+============================================
+*/
+
+function esperar(ms) {
+
+    return new Promise(
+        resolver =>
+            setTimeout(resolver, ms)
+    );
+
+}
+    
 </script>
 
 </body>
