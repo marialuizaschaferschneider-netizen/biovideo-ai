@@ -479,11 +479,8 @@ async function iniciarProducao() {
 
 async function criarRascunho(tema) {
 
-    const resultado =
-        document.getElementById("resultado");
-
-    const roteiro =
-        document.getElementById("roteiro");
+    const resultado = document.getElementById("resultado");
+    const roteiro = document.getElementById("roteiro");
 
     resultado.style.display = "block";
 
@@ -492,33 +489,43 @@ async function criarRascunho(tema) {
     });
 
     roteiro.textContent =
-        "🔎 Pesquisando artigos científicos...\n\n" +
-        "📚 Encontrando estudos relevantes...";
+        "🔎 PESQUISA INICIADA\n\n" +
+        "Analisando o tema e buscando estudos científicos...";
 
     try {
+
+        // ==========================================
+        // 1. TERMOS DE PESQUISA
+        // ==========================================
 
         const termos = [
             tema,
             "DNA biotechnology",
             "genetic engineering",
+            "CRISPR biotechnology",
             "DNA technology medicine",
+            "biotechnology agriculture",
             "biotechnology society"
         ];
 
-        let artigos = [];
-        let idsUsados = new Set();
+        let ids = [];
+        let idsUnicos = new Set();
 
 
-        // BUSCA DOS ARTIGOS
+        // ==========================================
+        // 2. BUSCAR ARTIGOS NO PUBMED
+        // ==========================================
+
         for (const termo of termos) {
 
             const url =
                 "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi" +
                 "?db=pubmed" +
                 "&term=" + encodeURIComponent(termo) +
-                "&retmax=4" +
+                "&retmax=3" +
                 "&retmode=json" +
-                "&sort=relevance";
+                "&sort=relevance" +
+                "&tool=BioVideoAI";
 
             const resposta = await fetch(url);
 
@@ -530,66 +537,72 @@ async function criarRascunho(tema) {
 
             const dados = await resposta.json();
 
-            const ids =
+            const encontrados =
                 dados.esearchresult.idlist || [];
 
-            ids.forEach(id => {
+            encontrados.forEach(id => {
 
-                if (!idsUsados.has(id)) {
+                if (!idsUnicos.has(id)) {
 
-                    idsUsados.add(id);
-                    artigos.push(id);
+                    idsUnicos.add(id);
+                    ids.push(id);
 
                 }
 
             });
 
-            if (artigos.length >= 12) {
+            if (ids.length >= 15) {
                 break;
             }
+
+            // Evita fazer requisições muito rápidas
+            await esperar(400);
         }
 
 
-        if (artigos.length === 0) {
+        if (ids.length === 0) {
 
             roteiro.textContent =
-                "⚠️ Nenhum artigo encontrado.\n\n" +
+                "⚠️ Nenhum artigo científico foi encontrado.\n\n" +
                 "Tente utilizar um tema mais específico.";
 
             return;
         }
 
 
+        // ==========================================
+        // 3. RECUPERAR OS ARTIGOS
+        // ==========================================
+
         roteiro.textContent =
-            "📚 Encontramos " +
-            artigos.length +
-            " artigos.\n\n" +
-            "📖 Lendo os resumos científicos...";
+            "📚 " + ids.length +
+            " estudos encontrados.\n\n" +
+            "📖 Recuperando informações dos artigos...";
 
 
-        // BUSCA DOS RESUMOS
-        const resumoUrl =
+        const fetchUrl =
             "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi" +
             "?db=pubmed" +
-            "&id=" + artigos.join(",") +
-            "&retmode=xml";
+            "&id=" + ids.join(",") +
+            "&retmode=xml" +
+            "&tool=BioVideoAI";
 
 
-        const respostaResumo =
-            await fetch(resumoUrl);
+        const respostaArtigos =
+            await fetch(fetchUrl);
 
 
-        if (!respostaResumo.ok) {
+        if (!respostaArtigos.ok) {
 
             throw new Error(
-                "Não foi possível obter os resumos."
+                "Não foi possível recuperar os artigos."
             );
 
         }
 
 
         const xml =
-            await respostaResumo.text();
+            await respostaArtigos.text();
 
 
         const documento =
@@ -599,40 +612,62 @@ async function criarRascunho(tema) {
             );
 
 
-        const registros =
+        const artigos =
             documento.querySelectorAll(
                 "PubmedArticle"
             );
 
 
-        let texto =
-            "🧬 PESQUISA CIENTÍFICA\n\n";
+        // ==========================================
+        // 4. CRIAR RELATÓRIO
+        // ==========================================
 
-        texto +=
-            "TEMA:\n" +
+        let relatorio = "";
+
+        relatorio +=
+            "🔬 RELATÓRIO DE PESQUISA\n\n";
+
+        relatorio +=
+            "━━━━━━━━━━━━━━━━━━━━\n\n";
+
+        relatorio +=
+            "📌 TEMA\n\n" +
             tema +
             "\n\n";
 
-        texto +=
-            "📚 ARTIGOS ANALISADOS: " +
-            registros.length +
-            "\n\n";
 
-        texto +=
+        relatorio +=
+            "📊 RESULTADO DA PESQUISA\n\n";
+
+        relatorio +=
+            "Foram encontrados " +
+            artigos.length +
+            " registros científicos relacionados ao tema.\n\n";
+
+
+        relatorio +=
             "━━━━━━━━━━━━━━━━━━━━\n\n";
 
 
-        registros.forEach((artigo, indice) => {
+        // ==========================================
+        // 5. EXTRAIR INFORMAÇÕES
+        // ==========================================
+
+        let resumos = [];
+
+        artigos.forEach((artigo, indice) => {
 
             const titulo =
                 artigo.querySelector(
                     "ArticleTitle"
                 );
 
-            const resumo =
+
+            const partesResumo =
                 artigo.querySelectorAll(
                     "AbstractText"
                 );
+
 
             const pmid =
                 artigo.querySelector(
@@ -640,83 +675,190 @@ async function criarRascunho(tema) {
                 );
 
 
-            texto +=
-                "📄 ARTIGO " +
+            let resumo = "";
+
+
+            partesResumo.forEach(parte => {
+
+                resumo +=
+                    parte.textContent + " ";
+
+            });
+
+
+            if (resumo.trim() !== "") {
+
+                resumos.push(resumo.trim());
+
+            }
+
+
+            relatorio +=
+                "📄 ESTUDO " +
                 (indice + 1) +
                 "\n\n";
 
 
-            texto +=
-                "TÍTULO:\n" +
+            relatorio +=
+                "Título:\n" +
                 (
                     titulo
                     ? titulo.textContent
-                    : "Título não disponível"
+                    : "Não disponível"
                 ) +
                 "\n\n";
 
 
-            texto +=
-                "RESUMO:\n";
+            if (resumo.trim() !== "") {
 
-
-            if (resumo.length > 0) {
-
-                resumo.forEach(parte => {
-
-                    texto +=
-                        parte.textContent +
-                        " ";
-
-                });
-
-                texto += "\n\n";
+                relatorio +=
+                    "Resumo:\n" +
+                    resumo.trim() +
+                    "\n\n";
 
             } else {
 
-                texto +=
-                    "Resumo não disponível.\n\n";
+                relatorio +=
+                    "Resumo:\n" +
+                    "Não disponível neste registro.\n\n";
 
             }
 
 
             if (pmid) {
 
-                texto +=
+                relatorio +=
                     "PMID: " +
                     pmid.textContent +
                     "\n";
 
-                texto +=
-                    "https://pubmed.ncbi.nlm.nih.gov/" +
+
+                relatorio +=
+                    "Fonte: https://pubmed.ncbi.nlm.nih.gov/" +
                     pmid.textContent +
                     "/\n\n";
 
             }
 
 
-            texto +=
+            relatorio +=
                 "━━━━━━━━━━━━━━━━━━━━\n\n";
 
         });
 
 
-        texto +=
-            "🧠 PRÓXIMA ETAPA\n\n" +
-            "A BIOVIDEO AI agora consegue encontrar " +
-            "artigos e recuperar seus resumos científicos.\n\n";
+        // ==========================================
+        // 6. SÍNTESE ESTRUTURAL
+        // ==========================================
 
-        texto +=
-            "Na próxima versão vamos transformar " +
-            "esses resumos em uma análise organizada " +
-            "e depois em um roteiro científico.\n\n";
+        relatorio +=
+            "🧠 SÍNTESE DA PESQUISA\n\n";
 
-        texto +=
-            "⚠️ V1.3\n" +
-            "Pesquisa e leitura de resumos funcionando.";
 
-        
-        roteiro.textContent = texto;
+        relatorio +=
+            "A pesquisa reuniu estudos científicos " +
+            "relacionados ao tema informado. " +
+            "Os resumos recuperados serão utilizados " +
+            "como base documental para a próxima etapa.\n\n";
+
+
+        relatorio +=
+            "📌 PRINCIPAIS ÁREAS A INVESTIGAR\n\n";
+
+
+        relatorio +=
+            "• Conceitos fundamentais relacionados ao tema\n" +
+            "• Aplicações práticas\n" +
+            "• Benefícios e possíveis vantagens\n" +
+            "• Riscos e limitações\n" +
+            "• Impactos sociais\n" +
+            "• Questões éticas\n" +
+            "• Perspectivas futuras\n\n";
+
+
+        // ==========================================
+        // 7. ROTEIRO INICIAL
+        // ==========================================
+
+        relatorio +=
+            "━━━━━━━━━━━━━━━━━━━━\n\n";
+
+        relatorio +=
+            "🎬 ROTEIRO INICIAL\n\n";
+
+
+        relatorio +=
+            "INTRODUÇÃO\n\n" +
+            "Apresentar o tema, explicar sua importância " +
+            "e contextualizar sua relação com a sociedade.\n\n";
+
+
+        relatorio +=
+            "DESENVOLVIMENTO\n\n" +
+            "Explicar os principais conceitos científicos " +
+            "identificados na pesquisa e apresentar suas " +
+            "principais aplicações.\n\n";
+
+
+        relatorio +=
+            "APLICAÇÕES\n\n" +
+            "Apresentar exemplos de utilização da tecnologia " +
+            "ou conhecimento estudado.\n\n";
+
+
+        relatorio +=
+            "BENEFÍCIOS\n\n" +
+            "Apresentar os principais benefícios encontrados " +
+            "nos estudos.\n\n";
+
+
+        relatorio +=
+            "RISCOS E LIMITAÇÕES\n\n" +
+            "Apresentar limitações, riscos e pontos que ainda " +
+            "precisam de investigação.\n\n";
+
+
+        relatorio +=
+            "QUESTÕES ÉTICAS\n\n" +
+            "Discutir possíveis impactos éticos e sociais.\n\n";
+
+
+        relatorio +=
+            "CONCLUSÃO\n\n" +
+            "Retomar os principais pontos e explicar a " +
+            "importância do tema para a sociedade.\n\n";
+
+
+        // ==========================================
+        // 8. STATUS DA VERSÃO
+        // ==========================================
+
+        relatorio +=
+            "━━━━━━━━━━━━━━━━━━━━\n\n";
+
+
+        relatorio +=
+            "📚 REFERÊNCIAS\n\n" +
+            "Os artigos utilizados aparecem acima com " +
+            "seus respectivos PMIDs e links para o PubMed.\n\n";
+
+
+        relatorio +=
+            "⚠️ V1.4\n\n" +
+            "A BIOVIDEO AI agora pesquisa artigos reais, " +
+            "recupera os registros científicos e organiza " +
+            "o material em uma estrutura de pesquisa " +
+            "e roteiro.\n\n";
+
+
+        relatorio +=
+            "PRÓXIMA ETAPA:\n" +
+            "transformar essa pesquisa em um roteiro " +
+            "com duração controlada de 1 a 4 minutos.";
+
+
+        roteiro.textContent =
+            relatorio;
 
     }
 
@@ -725,8 +867,10 @@ async function criarRascunho(tema) {
         console.error(erro);
 
         roteiro.textContent =
-            "❌ Erro durante a pesquisa.\n\n" +
-            erro.message;
+            "❌ ERRO NA PESQUISA\n\n" +
+            erro.message +
+            "\n\n" +
+            "Tente novamente.";
 
     }
 
