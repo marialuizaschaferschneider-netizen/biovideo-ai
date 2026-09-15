@@ -489,32 +489,27 @@ async function criarRascunho(tema) {
     });
 
     roteiro.textContent =
-        "🔎 PESQUISA INICIADA\n\n" +
-        "Analisando o tema e buscando estudos científicos...";
+        "🔎 Pesquisando...\n\n" +
+        "📚 Encontrando estudos científicos...";
 
     try {
-
-        // ==========================================
-        // 1. TERMOS DE PESQUISA
-        // ==========================================
 
         const termos = [
             tema,
             "DNA biotechnology",
             "genetic engineering",
-            "CRISPR biotechnology",
-            "DNA technology medicine",
+            "CRISPR",
+            "biotechnology medicine",
             "biotechnology agriculture",
             "biotechnology society"
         ];
 
         let ids = [];
-        let idsUnicos = new Set();
+        let usados = new Set();
 
-
-        // ==========================================
-        // 2. BUSCAR ARTIGOS NO PUBMED
-        // ==========================================
+        // ==========================
+        // PESQUISA
+        // ==========================
 
         for (const termo of termos) {
 
@@ -531,7 +526,7 @@ async function criarRascunho(tema) {
 
             if (!resposta.ok) {
                 throw new Error(
-                    "Não foi possível acessar o PubMed."
+                    "Erro ao acessar o PubMed."
                 );
             }
 
@@ -542,9 +537,9 @@ async function criarRascunho(tema) {
 
             encontrados.forEach(id => {
 
-                if (!idsUnicos.has(id)) {
+                if (!usados.has(id)) {
 
-                    idsUnicos.add(id);
+                    usados.add(id);
                     ids.push(id);
 
                 }
@@ -555,7 +550,6 @@ async function criarRascunho(tema) {
                 break;
             }
 
-            // Evita fazer requisições muito rápidas
             await esperar(400);
         }
 
@@ -563,24 +557,25 @@ async function criarRascunho(tema) {
         if (ids.length === 0) {
 
             roteiro.textContent =
-                "⚠️ Nenhum artigo científico foi encontrado.\n\n" +
-                "Tente utilizar um tema mais específico.";
+                "⚠️ Nenhum artigo encontrado.\n\n" +
+                "Tente outro tema.";
 
             return;
         }
 
 
-        // ==========================================
-        // 3. RECUPERAR OS ARTIGOS
-        // ==========================================
-
         roteiro.textContent =
             "📚 " + ids.length +
             " estudos encontrados.\n\n" +
-            "📖 Recuperando informações dos artigos...";
+            "📖 Recuperando os resumos...\n\n" +
+            "🧠 Preparando a pesquisa em português...";
 
 
-        const fetchUrl =
+        // ==========================
+        // RECUPERAR ARTIGOS
+        // ==========================
+
+        const urlArtigos =
             "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi" +
             "?db=pubmed" +
             "&id=" + ids.join(",") +
@@ -589,13 +584,13 @@ async function criarRascunho(tema) {
 
 
         const respostaArtigos =
-            await fetch(fetchUrl);
+            await fetch(urlArtigos);
 
 
         if (!respostaArtigos.ok) {
 
             throw new Error(
-                "Não foi possível recuperar os artigos."
+                "Erro ao recuperar os artigos."
             );
 
         }
@@ -618,42 +613,38 @@ async function criarRascunho(tema) {
             );
 
 
-        // ==========================================
-        // 4. CRIAR RELATÓRIO
-        // ==========================================
+        // ==========================
+        // CONSTRUIR PESQUISA
+        // ==========================
 
-        let relatorio = "";
+        let pesquisa = "";
 
-        relatorio +=
-            "🔬 RELATÓRIO DE PESQUISA\n\n";
+        pesquisa +=
+            "🧬 BIOVIDEO AI — PESQUISA\n\n";
 
-        relatorio +=
+        pesquisa +=
             "━━━━━━━━━━━━━━━━━━━━\n\n";
 
-        relatorio +=
+        pesquisa +=
             "📌 TEMA\n\n" +
             tema +
             "\n\n";
 
 
-        relatorio +=
-            "📊 RESULTADO DA PESQUISA\n\n";
-
-        relatorio +=
+        pesquisa +=
+            "📊 RESULTADO\n\n" +
             "Foram encontrados " +
             artigos.length +
-            " registros científicos relacionados ao tema.\n\n";
+            " estudos científicos relacionados ao tema.\n\n";
 
 
-        relatorio +=
+        pesquisa +=
             "━━━━━━━━━━━━━━━━━━━━\n\n";
 
 
-        // ==========================================
-        // 5. EXTRAIR INFORMAÇÕES
-        // ==========================================
-
-        let resumos = [];
+        // ==========================
+        // ESTUDOS
+        // ==========================
 
         artigos.forEach((artigo, indice) => {
 
@@ -663,7 +654,7 @@ async function criarRascunho(tema) {
                 );
 
 
-            const partesResumo =
+            const resumos =
                 artigo.querySelectorAll(
                     "AbstractText"
                 );
@@ -678,7 +669,7 @@ async function criarRascunho(tema) {
             let resumo = "";
 
 
-            partesResumo.forEach(parte => {
+            resumos.forEach(parte => {
 
                 resumo +=
                     parte.textContent + " ";
@@ -686,20 +677,13 @@ async function criarRascunho(tema) {
             });
 
 
-            if (resumo.trim() !== "") {
-
-                resumos.push(resumo.trim());
-
-            }
-
-
-            relatorio +=
+            pesquisa +=
                 "📄 ESTUDO " +
                 (indice + 1) +
                 "\n\n";
 
 
-            relatorio +=
+            pesquisa +=
                 "Título:\n" +
                 (
                     titulo
@@ -709,31 +693,24 @@ async function criarRascunho(tema) {
                 "\n\n";
 
 
-            if (resumo.trim() !== "") {
+            if (resumo.trim()) {
 
-                relatorio +=
-                    "Resumo:\n" +
+                pesquisa +=
+                    "Resumo científico:\n" +
                     resumo.trim() +
                     "\n\n";
-
-            } else {
-
-                relatorio +=
-                    "Resumo:\n" +
-                    "Não disponível neste registro.\n\n";
 
             }
 
 
             if (pmid) {
 
-                relatorio +=
+                pesquisa +=
                     "PMID: " +
                     pmid.textContent +
                     "\n";
 
-
-                relatorio +=
+                pesquisa +=
                     "Fonte: https://pubmed.ncbi.nlm.nih.gov/" +
                     pmid.textContent +
                     "/\n\n";
@@ -741,124 +718,127 @@ async function criarRascunho(tema) {
             }
 
 
-            relatorio +=
+            pesquisa +=
                 "━━━━━━━━━━━━━━━━━━━━\n\n";
 
         });
 
 
-        // ==========================================
-        // 6. SÍNTESE ESTRUTURAL
-        // ==========================================
+        // ==========================
+        // ESTRUTURA EM PORTUGUÊS
+        // ==========================
 
-        relatorio +=
-            "🧠 SÍNTESE DA PESQUISA\n\n";
-
-
-        relatorio +=
-            "A pesquisa reuniu estudos científicos " +
-            "relacionados ao tema informado. " +
-            "Os resumos recuperados serão utilizados " +
-            "como base documental para a próxima etapa.\n\n";
+        pesquisa +=
+            "🧠 ANÁLISE ESTRUTURADA\n\n";
 
 
-        relatorio +=
-            "📌 PRINCIPAIS ÁREAS A INVESTIGAR\n\n";
+        pesquisa +=
+            "1. O QUE É O TEMA?\n\n" +
+            "A pesquisa deve apresentar uma explicação " +
+            "clara dos conceitos fundamentais relacionados " +
+            "ao assunto pesquisado.\n\n";
 
 
-        relatorio +=
-            "• Conceitos fundamentais relacionados ao tema\n" +
-            "• Aplicações práticas\n" +
-            "• Benefícios e possíveis vantagens\n" +
-            "• Riscos e limitações\n" +
-            "• Impactos sociais\n" +
-            "• Questões éticas\n" +
-            "• Perspectivas futuras\n\n";
+        pesquisa +=
+            "2. COMO FUNCIONA?\n\n" +
+            "Os estudos encontrados devem ser utilizados " +
+            "para explicar os mecanismos e processos " +
+            "científicos envolvidos.\n\n";
 
 
-        // ==========================================
-        // 7. ROTEIRO INICIAL
-        // ==========================================
+        pesquisa +=
+            "3. APLICAÇÕES\n\n" +
+            "Identificar aplicações práticas descritas " +
+            "nos estudos científicos.\n\n";
 
-        relatorio +=
+
+        pesquisa +=
+            "4. BENEFÍCIOS\n\n" +
+            "Identificar possíveis benefícios e contribuições " +
+            "apresentados pelas pesquisas.\n\n";
+
+
+        pesquisa +=
+            "5. RISCOS E LIMITAÇÕES\n\n" +
+            "Identificar limitações, riscos e incertezas " +
+            "presentes nos estudos.\n\n";
+
+
+        pesquisa +=
+            "6. QUESTÕES ÉTICAS\n\n" +
+            "Avaliar possíveis questões éticas e impactos " +
+            "sociais relacionados ao tema.\n\n";
+
+
+        pesquisa +=
+            "7. IMPACTO NA SOCIEDADE\n\n" +
+            "Relacionar os resultados científicos com " +
+            "possíveis impactos na sociedade.\n\n";
+
+
+        // ==========================
+        // ROTEIRO
+        // ==========================
+
+        pesquisa +=
             "━━━━━━━━━━━━━━━━━━━━\n\n";
 
-        relatorio +=
-            "🎬 ROTEIRO INICIAL\n\n";
+        pesquisa +=
+            "🎬 ROTEIRO PRELIMINAR\n\n";
 
 
-        relatorio +=
+        pesquisa +=
             "INTRODUÇÃO\n\n" +
-            "Apresentar o tema, explicar sua importância " +
-            "e contextualizar sua relação com a sociedade.\n\n";
+            "Apresentação do tema e sua importância.\n\n";
 
 
-        relatorio +=
+        pesquisa +=
             "DESENVOLVIMENTO\n\n" +
-            "Explicar os principais conceitos científicos " +
-            "identificados na pesquisa e apresentar suas " +
-            "principais aplicações.\n\n";
+            "Explicação dos conceitos científicos " +
+            "e dos principais resultados encontrados.\n\n";
 
 
-        relatorio +=
+        pesquisa +=
             "APLICAÇÕES\n\n" +
-            "Apresentar exemplos de utilização da tecnologia " +
-            "ou conhecimento estudado.\n\n";
+            "Exemplos de utilização na prática.\n\n";
 
 
-        relatorio +=
-            "BENEFÍCIOS\n\n" +
-            "Apresentar os principais benefícios encontrados " +
-            "nos estudos.\n\n";
+        pesquisa +=
+            "IMPACTOS\n\n" +
+            "Benefícios, riscos, limitações e questões éticas.\n\n";
 
 
-        relatorio +=
-            "RISCOS E LIMITAÇÕES\n\n" +
-            "Apresentar limitações, riscos e pontos que ainda " +
-            "precisam de investigação.\n\n";
-
-
-        relatorio +=
-            "QUESTÕES ÉTICAS\n\n" +
-            "Discutir possíveis impactos éticos e sociais.\n\n";
-
-
-        relatorio +=
+        pesquisa +=
             "CONCLUSÃO\n\n" +
-            "Retomar os principais pontos e explicar a " +
-            "importância do tema para a sociedade.\n\n";
+            "Síntese dos principais pontos da pesquisa.\n\n";
 
 
-        // ==========================================
-        // 8. STATUS DA VERSÃO
-        // ==========================================
-
-        relatorio +=
+        pesquisa +=
             "━━━━━━━━━━━━━━━━━━━━\n\n";
 
 
-        relatorio +=
-            "📚 REFERÊNCIAS\n\n" +
-            "Os artigos utilizados aparecem acima com " +
-            "seus respectivos PMIDs e links para o PubMed.\n\n";
+        pesquisa +=
+            "🇧🇷 IDIOMA DO PROJETO\n\n" +
+            "Português brasileiro.\n\n";
 
 
-        relatorio +=
-            "⚠️ V1.4\n\n" +
-            "A BIOVIDEO AI agora pesquisa artigos reais, " +
-            "recupera os registros científicos e organiza " +
-            "o material em uma estrutura de pesquisa " +
-            "e roteiro.\n\n";
+        pesquisa +=
+            "📚 FONTES\n\n" +
+            "Os estudos científicos utilizados estão " +
+            "identificados pelos respectivos PMIDs e links.\n\n";
 
 
-        relatorio +=
+        pesquisa +=
+            "⚠️ V1.5\n\n" +
+            "Pesquisa científica real + estrutura " +
+            "organizada em português.\n\n" +
             "PRÓXIMA ETAPA:\n" +
-            "transformar essa pesquisa em um roteiro " +
-            "com duração controlada de 1 a 4 minutos.";
+            "gerar um roteiro final adaptado para " +
+            "1, 2, 3 ou 4 minutos.";
 
 
         roteiro.textContent =
-            relatorio;
+            pesquisa;
 
     }
 
@@ -867,10 +847,8 @@ async function criarRascunho(tema) {
         console.error(erro);
 
         roteiro.textContent =
-            "❌ ERRO NA PESQUISA\n\n" +
-            erro.message +
-            "\n\n" +
-            "Tente novamente.";
+            "❌ ERRO\n\n" +
+            erro.message;
 
     }
 
