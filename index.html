@@ -495,7 +495,13 @@ async function criarRascunho(tema) {
     try {
 
         const termos = [
-    tema
+    tema,
+    "DNA biotechnology",
+    "genetic engineering",
+    "CRISPR",
+    "biotechnology medicine",
+    "biotechnology agriculture",
+    "biotechnology society"
 ];
 
         let ids = [];
@@ -511,7 +517,7 @@ async function criarRascunho(tema) {
                 "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi" +
                 "?db=pubmed" +
                 "&term=" + encodeURIComponent(termo) +
-                "&retmax=15" +
+                "&retmax=3" +
                 "&retmode=json" +
                 "&sort=relevance" +
                 "&tool=BioVideoAI";
