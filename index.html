@@ -1446,6 +1446,179 @@ synth.cancel();
 }
 
 </script>
+<script>
+async function gerarVideoBio() {
 
+    const status = document.getElementById("videoStatus");
+
+    if (!status) {
+        alert("Área do gerador não encontrada.");
+        return;
+    }
+
+    status.innerText = "🎬 Preparando o vídeo...";
+
+    const tema =
+        document.getElementById("tema")?.value ||
+        "Biotecnologia e o cérebro";
+
+    const duracao =
+        parseInt(
+            document.getElementById("duracao")?.value || "1"
+        );
+
+    const canvas = document.createElement("canvas");
+
+    canvas.width = 1080;
+    canvas.height = 1920;
+
+    const ctx = canvas.getContext("2d");
+
+    if (!canvas.captureStream || !window.MediaRecorder) {
+        status.innerText =
+            "⚠️ Seu navegador não suporta a geração de vídeo.";
+        return;
+    }
+
+    const stream = canvas.captureStream(30);
+
+    const chunks = [];
+
+    const recorder = new MediaRecorder(stream);
+
+    recorder.ondataavailable = function(event) {
+
+        if (event.data.size > 0) {
+            chunks.push(event.data);
+        }
+
+    };
+
+    recorder.onstop = function() {
+
+        const blob = new Blob(
+            chunks,
+            { type: "video/webm" }
+        );
+
+        const url =
+            URL.createObjectURL(blob);
+
+        const video =
+            document.getElementById("videoPreview");
+
+        const download =
+            document.getElementById("downloadVideo");
+
+        if (video) {
+            video.src = url;
+            video.style.display = "block";
+        }
+
+        if (download) {
+            download.href = url;
+            download.style.display = "block";
+            download.innerText =
+                "⬇️ Salvar vídeo";
+        }
+
+        status.innerText =
+            "✅ Vídeo criado!";
+    };
+
+    recorder.start();
+
+    const inicio = Date.now();
+
+    const duracaoMs =
+        duracao * 1000;
+
+    function desenhar() {
+
+        const tempo =
+            Date.now() - inicio;
+
+        const progresso =
+            Math.min(
+                tempo / duracaoMs,
+                1
+            );
+
+        ctx.fillStyle = "#123f30";
+
+        ctx.fillRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+        ctx.fillStyle = "white";
+
+        ctx.textAlign = "center";
+
+        ctx.font = "bold 70px Arial";
+
+        ctx.fillText(
+            "🧬 BioVideo AI",
+            540,
+            300
+        );
+
+        ctx.font = "bold 60px Arial";
+
+        ctx.fillText(
+            tema,
+            540,
+            800
+        );
+
+        ctx.font = "40px Arial";
+
+        ctx.fillText(
+            "Vídeo educativo",
+            540,
+            950
+        );
+
+        ctx.fillStyle =
+            "rgba(255,255,255,.3)";
+
+        ctx.fillRect(
+            100,
+            1650,
+            880,
+            15
+        );
+
+        ctx.fillStyle = "white";
+
+        ctx.fillRect(
+            100,
+            1650,
+            880 * progresso,
+            15
+        );
+
+        if (progresso < 1) {
+
+            requestAnimationFrame(
+                desenhar
+            );
+
+        } else {
+
+            recorder.stop();
+
+        }
+
+    }
+
+    status.innerText =
+        "🎥 Gravando o vídeo...";
+
+    desenhar();
+}
+</script>
 </body>
 </html>
