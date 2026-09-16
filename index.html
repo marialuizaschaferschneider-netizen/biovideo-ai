@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,14 +7,13 @@
 <title>BioVideo AI</title>
 
 <style>
-
 * {
     box-sizing: border-box;
 }
 
 body {
     margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: Arial, sans-serif;
     background: #f4f8f5;
     color: #17352a;
 }
@@ -47,7 +45,7 @@ body {
     border-radius: 18px;
     padding: 22px;
     margin-top: 18px;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.07);
+    box-shadow: 0 4px 18px rgba(0,0,0,.07);
 }
 
 label {
@@ -73,7 +71,7 @@ textarea {
 
 .options {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2,1fr);
     gap: 12px;
     margin-top: 15px;
 }
@@ -82,11 +80,6 @@ textarea {
     border: 1px solid #d3e0da;
     border-radius: 12px;
     padding: 13px;
-}
-
-.option label {
-    margin: 0;
-    font-weight: normal;
 }
 
 button {
@@ -120,27 +113,43 @@ button:hover {
 pre {
     white-space: pre-wrap;
     word-wrap: break-word;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: Arial, sans-serif;
     line-height: 1.6;
     font-size: 15px;
 }
 
 .article {
     border-left: 4px solid #237a57;
-    padding: 12px 15px;
+    padding: 14px;
     margin: 12px 0;
     background: #f7faf8;
     border-radius: 8px;
 }
 
-.small {
-    color: #63766d;
+.article-title {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.article-meta {
     font-size: 13px;
+    color: #63766d;
+    margin-bottom: 10px;
+}
+
+.article-summary {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.article a {
+    color: #237a57;
+    font-weight: bold;
 }
 
 .checkbox-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2,1fr);
     gap: 10px;
 }
 
@@ -150,8 +159,7 @@ pre {
     border-radius: 10px;
 }
 
-@media (max-width: 600px) {
-
+@media(max-width:600px) {
     .options,
     .checkbox-grid {
         grid-template-columns: 1fr;
@@ -160,204 +168,154 @@ pre {
     .logo {
         font-size: 30px;
     }
-
 }
-
 </style>
-
 </head>
 
 <body>
 
 <div class="container">
 
-    <div class="header">
+<div class="header">
 
-        <div class="logo">
-            🧬 BioVideo AI
-        </div>
+<div class="logo">
+🧬 BioVideo AI
+</div>
 
-        <div class="subtitle">
-            Pesquisa, roteiro e planejamento de vídeos educativos
-        </div>
+<div class="subtitle">
+Pesquisa científica e criação de roteiros educativos
+</div>
 
-    </div>
-
-
-    <div class="card">
-
-        <label for="tema">
-            Sobre o que será o vídeo?
-        </label>
-
-        <textarea
-            id="tema"
-            placeholder="Exemplo: Biotecnologia e o cérebro"
-        ></textarea>
+</div>
 
 
-        <div class="options">
+<div class="card">
 
-            <div class="option">
+<label for="tema">
+Sobre o que será o vídeo?
+</label>
 
-                <label for="duracao">
-                    ⏱️ Duração máxima
-                </label>
-
-                <select id="duracao">
-
-                    <option value="1">
-                        1 minuto
-                    </option>
-
-                    <option value="2">
-                        2 minutos
-                    </option>
-
-                    <option value="3">
-                        3 minutos
-                    </option>
-
-                    <option value="4" selected>
-                        4 minutos
-                    </option>
-
-                </select>
-
-            </div>
+<textarea
+id="tema"
+placeholder="Exemplo: Biotecnologia e o cérebro"
+></textarea>
 
 
-            <div class="option">
+<div class="options">
 
-                <label for="tipo">
-                    🎥 Tipo de vídeo
-                </label>
+<div class="option">
 
-                <select id="tipo">
+<label>Duração</label>
 
-                    <option>
-                        Pesquisa
-                    </option>
+<select id="duracao">
 
-                    <option>
-                        Educativo
-                    </option>
+<option value="1">1 minuto</option>
+<option value="2">2 minutos</option>
+<option value="3">3 minutos</option>
+<option value="4" selected>4 minutos</option>
 
-                    <option>
-                        Explicativo
-                    </option>
+</select>
 
-                    <option>
-                        Curiosidades
-                    </option>
-
-                    <option>
-                        Trabalho escolar
-                    </option>
-
-                </select>
-
-            </div>
+</div>
 
 
-            <div class="option">
+<div class="option">
 
-                <label for="profundidade">
-                    🔎 Profundidade da pesquisa
-                </label>
+<label>Tipo de vídeo</label>
 
-                <select id="profundidade">
+<select id="tipo">
 
-                    <option value="rapida">
-                        Pesquisa rápida
-                    </option>
+<option>Pesquisa</option>
+<option>Educativo</option>
+<option>Explicativo</option>
+<option>Curiosidades</option>
+<option>Trabalho escolar</option>
 
-                    <option value="completa">
-                        Pesquisa completa
-                    </option>
+</select>
 
-                    <option value="profunda" selected>
-                        Pesquisa profunda
-                    </option>
-
-                </select>
-
-            </div>
-
-        </div>
+</div>
 
 
-        <br>
+<div class="option">
 
-        <label>
-            🎬 Recursos do vídeo
-        </label>
+<label>Profundidade da pesquisa</label>
 
-        <div class="checkbox-grid">
+<select id="profundidade">
 
-            <div class="checkbox">
-                <label>
-                    <input
-                        type="checkbox"
-                        id="usarNarracao"
-                        checked
-                    >
-                    🎙️ Narração
-                </label>
-            </div>
+<option value="rapida">
+Pesquisa rápida
+</option>
 
-            <div class="checkbox">
-                <label>
-                    <input
-                        type="checkbox"
-                        id="usarLegenda"
-                        checked
-                    >
-                    📝 Legendas
-                </label>
-            </div>
+<option value="completa">
+Pesquisa completa
+</option>
 
-            <div class="checkbox">
-                <label>
-                    <input
-                        type="checkbox"
-                        id="usarMusica"
-                        checked
-                    >
-                    🎵 Música
-                </label>
-            </div>
+<option value="profunda" selected>
+Pesquisa profunda
+</option>
 
-            <div class="checkbox">
-                <label>
-                    <input
-                        type="checkbox"
-                        id="usarReferencias"
-                        checked
-                    >
-                    📚 Referências
-                </label>
-            </div>
+</select>
 
-        </div>
+</div>
+
+</div>
 
 
-        <button onclick="criarRascunho()">
-            🚀 Criar vídeo
-        </button>
+<br>
 
-    </div>
+<label>
+Recursos
+</label>
+
+<div class="checkbox-grid">
+
+<div class="checkbox">
+<label>
+<input id="usarNarracao" type="checkbox" checked>
+🎙️ Narração
+</label>
+</div>
+
+<div class="checkbox">
+<label>
+<input id="usarLegenda" type="checkbox" checked>
+📝 Legendas
+</label>
+</div>
+
+<div class="checkbox">
+<label>
+<input id="usarMusica" type="checkbox" checked>
+🎵 Música
+</label>
+</div>
+
+<div class="checkbox">
+<label>
+<input id="usarReferencias" type="checkbox" checked>
+📚 Referências
+</label>
+</div>
+
+</div>
 
 
-    <div class="card" id="resultado">
+<button onclick="criarRascunho()">
+🚀 Criar vídeo
+</button>
 
-        <div class="status" id="status">
-            Preparando...
-        </div>
+</div>
 
-        <pre id="roteiro"></pre>
 
-    </div>
+<div class="card" id="resultado">
+
+<div class="status" id="status">
+Preparando...
+</div>
+
+<pre id="roteiro"></pre>
+
+</div>
 
 </div>
 
@@ -365,1062 +323,1174 @@ pre {
 <script>
 
 /* ==================================================
-   BIOVIDEO AI V1.6
+   BIOVIDEO AI V1.7
    ================================================== */
+
+
+/* ---------- DICIONÁRIO ---------- */
+
+const dicionario = {
+
+"cerebro":"brain",
+"cérebro":"brain",
+"mente":"mind",
+
+"neuronio":"neuron",
+"neurônio":"neuron",
+"neuronios":"neurons",
+"neurônios":"neurons",
+
+"doenca":"disease",
+"doença":"disease",
+"doencas":"diseases",
+"doenças":"diseases",
+
+"cancer":"cancer",
+"câncer":"cancer",
+
+"agricultura":"agriculture",
+
+"plantas":"plants",
+"planta":"plant",
+
+"fotossintese":"photosynthesis",
+"fotossíntese":"photosynthesis",
+
+"clima":"climate",
+
+"ambiente":"environment",
+"ambiental":"environment",
+
+"agua":"water",
+"água":"water",
+
+"bacteria":"bacteria",
+"bactérias":"bacteria",
+"bacterias":"bacteria",
+
+"virus":"virus",
+"vírus":"virus",
+
+"vacina":"vaccine",
+"vacinas":"vaccines",
+
+"genetica":"genetics",
+"genética":"genetics",
+
+"genetico":"genetic",
+"genético":"genetic",
+
+"dna":"DNA",
+"rna":"RNA",
+
+"biotecnologia":"biotechnology",
+
+"medicina":"medicine",
+
+"saude":"health",
+"saúde":"health",
+
+"tecnologia":"technology",
+
+"inteligencia":"intelligence",
+"inteligência":"intelligence",
+
+"artificial":"artificial",
+
+"educacao":"education",
+"educação":"education",
+
+"psicologia":"psychology",
+
+"comportamento":"behavior",
+
+"memoria":"memory",
+"memória":"memory",
+
+"sono":"sleep",
+
+"alimentacao":"nutrition",
+"alimentação":"nutrition",
+
+"nutricao":"nutrition",
+"nutrição":"nutrition"
+
+};
 
 
 /* ---------- ESPERA ---------- */
 
 function esperar(ms) {
 
-    return new Promise(
-        resolve => setTimeout(resolve, ms)
-    );
+return new Promise(
+resolve => setTimeout(resolve,ms)
+);
 
 }
 
 
-/* ---------- TERMOS IMPORTANTES ---------- */
-
-const dicionario = {
-
-    "cerebro": "brain",
-    "cérebro": "brain",
-
-    "mente": "mind",
-
-    "neuronio": "neuron",
-    "neurônio": "neuron",
-
-    "neuronios": "neurons",
-    "neurônios": "neurons",
-
-    "doenca": "disease",
-    "doença": "disease",
-
-    "doencas": "diseases",
-    "doenças": "diseases",
-
-    "cancer": "cancer",
-    "câncer": "cancer",
-
-    "agricultura": "agriculture",
-
-    "plantas": "plants",
-    "planta": "plant",
-
-    "fotossintese": "photosynthesis",
-    "fotossíntese": "photosynthesis",
-
-    "clima": "climate",
-
-    "meio": "environment",
-    "ambiente": "environment",
-
-    "agua": "water",
-    "água": "water",
-
-    "bacteria": "bacteria",
-    "bactérias": "bacteria",
-    "bacterias": "bacteria",
-
-    "virus": "virus",
-    "vírus": "virus",
-
-    "vacina": "vaccine",
-    "vacinas": "vaccines",
-
-    "genetica": "genetics",
-    "genética": "genetics",
-
-    "genetico": "genetic",
-    "genético": "genetic",
-
-    "dna": "DNA",
-
-    "rna": "RNA",
-
-    "biotecnologia": "biotechnology",
-
-    "medicina": "medicine",
-
-    "saude": "health",
-    "saúde": "health",
-
-    "tecnologia": "technology",
-
-    "inteligencia": "intelligence",
-    "inteligência": "intelligence",
-
-    "artificial": "artificial",
-
-    "educacao": "education",
-    "educação": "education",
-
-    "psicologia": "psychology",
-
-    "comportamento": "behavior",
-
-    "memoria": "memory",
-    "memória": "memory",
-
-    "sono": "sleep",
-
-    "alimentacao": "nutrition",
-    "alimentação": "nutrition",
-
-    "nutricao": "nutrition",
-    "nutrição": "nutrition"
-
-};
-
-
-/* ---------- TRANSFORMA TEMA EM TERMOS ---------- */
+/* ---------- TERMOS ---------- */
 
 function gerarTermosDePesquisa(tema) {
 
-    const texto =
-        tema
-        .toLowerCase()
-        .trim();
+const texto =
+tema
+.toLowerCase()
+.trim();
 
-    const palavras =
-        texto
-        .replace(/[?!.,;:()]/g, "")
-        .split(/\s+/);
+const palavras =
+texto
+.replace(/[?!.,;:()]/g,"")
+.split(/\s+/);
 
-    const traduzidas = [];
+const traduzidas = [];
 
-    palavras.forEach(palavra => {
+palavras.forEach(palavra => {
 
-        if (dicionario[palavra]) {
+if(dicionario[palavra]) {
 
-            traduzidas.push(
-                dicionario[palavra]
-            );
+traduzidas.push(
+dicionario[palavra]
+);
 
-        }
+}
 
-    });
-
-
-    const termos = [];
+});
 
 
-    /* Tema original */
-
-    termos.push(
-        texto
-    );
+const termos = [];
 
 
-    /* Palavras traduzidas */
+/* Busca original */
 
-    if (traduzidas.length > 0) {
-
-        termos.push(
-            traduzidas.join(" AND ")
-        );
-
-    }
+termos.push(
+texto
+);
 
 
-    /* Combinações */
+/* Busca em inglês */
 
-    if (traduzidas.length >= 2) {
+if(traduzidas.length > 0) {
 
-        termos.push(
-            "(" +
-            traduzidas.join(" AND ") +
-            ")[Title/Abstract]"
-        );
-
-    }
-
-
-    return termos;
+termos.push(
+traduzidas.join(" AND ")
+);
 
 }
 
 
-/* ---------- PESQUISA PUBMED ---------- */
+/* Busca restrita */
 
-async function pesquisarPubMed(tema, profundidade) {
+if(traduzidas.length >= 2) {
 
-    const termos =
-        gerarTermosDePesquisa(tema);
-
-
-    let limite = 5;
-
-    if (profundidade === "completa") {
-        limite = 10;
-    }
-
-    if (profundidade === "profunda") {
-        limite = 15;
-    }
-
-
-    const ids = [];
-    const usados = new Set();
-
-
-    for (const termo of termos) {
-
-        try {
-
-            const url =
-                "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi" +
-                "?db=pubmed" +
-                "&term=" +
-                encodeURIComponent(termo) +
-                "&retmax=" +
-                limite +
-                "&retmode=json" +
-                "&sort=relevance" +
-                "&tool=BioVideoAI";
-
-
-            const resposta =
-                await fetch(url);
-
-
-            if (!resposta.ok) {
-                continue;
-            }
-
-
-            const dados =
-                await resposta.json();
-
-
-            const encontrados =
-                dados
-                .esearchresult
-                .idlist || [];
-
-
-            encontrados.forEach(id => {
-
-                if (!usados.has(id)) {
-
-                    usados.add(id);
-                    ids.push(id);
-
-                }
-
-            });
-
-
-            await esperar(400);
-
-        }
-
-        catch (erro) {
-
-            console.log(
-                "Erro em uma busca:",
-                erro
-            );
-
-        }
-
-    }
-
-
-    return ids.slice(0, limite);
+termos.push(
+traduzidas.join(" AND ") +
+"[Title/Abstract]"
+);
 
 }
 
 
-/* ---------- RECUPERAR ARTIGOS ---------- */
+return termos;
+
+}
+
+
+/* ---------- PESQUISA ---------- */
+
+async function pesquisarPubMed(
+tema,
+profundidade
+) {
+
+let limite = 5;
+
+if(profundidade === "completa") {
+limite = 10;
+}
+
+if(profundidade === "profunda") {
+limite = 15;
+}
+
+
+const termos =
+gerarTermosDePesquisa(tema);
+
+
+const ids = [];
+const usados = new Set();
+
+
+for(const termo of termos) {
+
+try {
+
+const url =
+"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi" +
+"?db=pubmed" +
+"&term=" +
+encodeURIComponent(termo) +
+"&retmax=" +
+limite +
+"&retmode=json" +
+"&sort=relevance" +
+"&tool=BioVideoAI";
+
+
+const resposta =
+await fetch(url);
+
+
+if(!resposta.ok) {
+continue;
+}
+
+
+const dados =
+await resposta.json();
+
+
+const encontrados =
+dados.esearchresult.idlist || [];
+
+
+encontrados.forEach(id => {
+
+if(!usados.has(id)) {
+
+usados.add(id);
+ids.push(id);
+
+}
+
+});
+
+
+await esperar(300);
+
+}
+
+catch(erro) {
+
+console.log(
+"Erro na busca:",
+erro
+);
+
+}
+
+}
+
+
+return ids.slice(0,limite);
+
+}
+
+
+/* ---------- BUSCAR ARTIGOS ---------- */
 
 async function buscarArtigos(ids) {
 
-    if (ids.length === 0) {
-        return [];
-    }
+if(ids.length === 0) {
+return [];
+}
 
 
-    const url =
-        "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi" +
-        "?db=pubmed" +
-        "&id=" +
-        ids.join(",") +
-        "&retmode=xml" +
-        "&tool=BioVideoAI";
+const url =
+"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi" +
+"?db=pubmed" +
+"&id=" +
+ids.join(",") +
+"&retmode=xml" +
+"&tool=BioVideoAI";
 
 
-    const resposta =
-        await fetch(url);
+const resposta =
+await fetch(url);
 
 
-    if (!resposta.ok) {
-
-        throw new Error(
-            "Não foi possível recuperar os artigos."
-        );
-
-    }
+if(!resposta.ok) {
+throw new Error(
+"Falha ao recuperar artigos."
+);
+}
 
 
-    const xml =
-        await resposta.text();
+const xml =
+await resposta.text();
 
 
-    const documento =
-        new DOMParser()
-        .parseFromString(
-            xml,
-            "text/xml"
-        );
+const documento =
+new DOMParser()
+.parseFromString(
+xml,
+"text/xml"
+);
 
 
-    const artigosXML =
-        documento.querySelectorAll(
-            "PubmedArticle"
-        );
+const artigosXML =
+documento.querySelectorAll(
+"PubmedArticle"
+);
 
 
-    const artigos = [];
+const artigos = [];
 
 
-    artigosXML.forEach(artigo => {
+artigosXML.forEach(
+artigo => {
 
-        const titulo =
-            artigo.querySelector(
-                "ArticleTitle"
-            );
-
-
-        const pmid =
-            artigo.querySelector(
-                "PMID"
-            );
+const titulo =
+artigo.querySelector(
+"ArticleTitle"
+);
 
 
-        const partes =
-            artigo.querySelectorAll(
-                "AbstractText"
-            );
+const pmid =
+artigo.querySelector(
+"PMID"
+);
 
 
-        let resumo = "";
+const abstracts =
+artigo.querySelectorAll(
+"AbstractText"
+);
 
 
-        partes.forEach(parte => {
-
-            resumo +=
-                parte.textContent +
-                " ";
-
-        });
+let resumo = "";
 
 
-        artigos.push({
+abstracts.forEach(
+parte => {
 
-            titulo:
-                titulo
-                ? titulo.textContent
-                : "Título não disponível",
+resumo +=
+parte.textContent +
+" ";
 
-            resumo:
-                resumo.trim(),
-
-            pmid:
-                pmid
-                ? pmid.textContent
-                : "",
-
-            link:
-                pmid
-                ? "https://pubmed.ncbi.nlm.nih.gov/" +
-                  pmid.textContent +
-                  "/"
-                : ""
-
-        });
-
-    });
+});
 
 
-    return artigos;
+artigos.push({
+
+titulo:
+titulo
+? titulo.textContent.trim()
+: "Título não disponível",
+
+resumo:
+resumo.trim(),
+
+pmid:
+pmid
+? pmid.textContent
+: "",
+
+link:
+pmid
+? "https://pubmed.ncbi.nlm.nih.gov/" +
+pmid.textContent +
+"/"
+: ""
+
+});
+
+});
+
+
+return artigos;
 
 }
 
 
-/* ---------- ESCOLHER PALAVRAS DO TEMA ---------- */
+/* ---------- PALAVRAS PRINCIPAIS ---------- */
 
 function palavrasPrincipais(tema) {
 
-    const ignoradas = [
+const ignoradas = [
 
-        "como",
-        "para",
-        "sobre",
-        "uma",
-        "umas",
-        "uns",
-        "dos",
-        "das",
-        "que",
-        "qual",
-        "quais",
-        "isso",
-        "isso",
-        "ela",
-        "ele",
-        "eles",
-        "elas",
-        "com",
-        "sem",
-        "por",
-        "uma",
-        "um",
-        "e",
-        "ou",
-        "de",
-        "da",
-        "do",
-        "em",
-        "na",
-        "no"
+"como",
+"para",
+"sobre",
+"uma",
+"umas",
+"uns",
+"dos",
+"das",
+"que",
+"qual",
+"quais",
+"isso",
+"esta",
+"este",
+"com",
+"sem",
+"por",
+"uma",
+"um",
+"e",
+"ou",
+"de",
+"da",
+"do",
+"em",
+"na",
+"no"
 
-    ];
+];
 
 
-    return tema
-        .toLowerCase()
-        .replace(/[?!.,;:()]/g, "")
-        .split(/\s+/)
-        .filter(
-            palavra =>
-                palavra.length > 3 &&
-                !ignoradas.includes(palavra)
-        );
+return tema
+.toLowerCase()
+.replace(/[?!.,;:()]/g,"")
+.split(/\s+/)
+.filter(
+p =>
+p.length > 3 &&
+!ignoradas.includes(p)
+);
 
 }
 
 
-/* ---------- GERAR ROTEIRO ---------- */
+/* ---------- PONTUAÇÃO DE RELEVÂNCIA ---------- */
+
+function calcularRelevancia(
+artigo,
+tema
+) {
+
+const palavras =
+palavrasPrincipais(tema);
+
+
+const texto =
+(
+artigo.titulo +
+" " +
+artigo.resumo
+)
+.toLowerCase();
+
+
+let pontos = 0;
+
+
+palavras.forEach(
+palavra => {
+
+if(
+texto.includes(
+palavra
+)
+) {
+
+pontos += 2;
+
+}
+
+});
+
+
+/*
+Termos científicos em inglês
+também recebem peso.
+*/
+
+const traduzidas =
+gerarTermosDePesquisa(
+tema
+);
+
+
+traduzidas.forEach(
+termo => {
+
+const partes =
+termo
+.replace(
+"[Title/Abstract]",
+""
+)
+.split("AND");
+
+partes.forEach(
+parte => {
+
+const palavra =
+parte
+.trim()
+.toLowerCase();
+
+if(
+palavra.length > 3 &&
+texto.includes(palavra)
+) {
+
+pontos += 3;
+
+}
+
+});
+
+});
+
+
+return pontos;
+
+}
+
+
+/* ---------- ORDENAR ARTIGOS ---------- */
+
+function ordenarPorRelevancia(
+artigos,
+tema
+) {
+
+return artigos
+.map(
+artigo => ({
+
+...artigo,
+
+relevancia:
+calcularRelevancia(
+artigo,
+tema
+)
+
+})
+)
+.sort(
+(a,b) =>
+b.relevancia -
+a.relevancia
+);
+
+}
+
+
+/* ---------- EVIDÊNCIAS ---------- */
+
+function gerarEvidencias(
+artigos
+) {
+
+let texto = "";
+
+
+texto +=
+"📚 EVIDÊNCIAS CIENTÍFICAS UTILIZADAS\n\n";
+
+
+if(artigos.length === 0) {
+
+texto +=
+"Nenhum artigo científico foi encontrado.\n";
+
+return texto;
+
+}
+
+
+artigos.forEach(
+(artigo,index) => {
+
+texto +=
+"━━━━━━━━━━━━━━━━━━━━\n\n";
+
+
+texto +=
+"📄 ARTIGO " +
+(index + 1) +
+"\n\n";
+
+
+texto +=
+"📌 TÍTULO\n" +
+artigo.titulo +
+"\n\n";
+
+
+texto +=
+"🧪 RELEVÂNCIA\n" +
+"Pontuação de relevância: " +
+artigo.relevancia +
+"\n\n";
+
+
+if(artigo.resumo) {
+
+texto +=
+"📖 RESUMO\n" +
+artigo.resumo +
+"\n\n";
+
+}
+else {
+
+texto +=
+"📖 RESUMO\n" +
+"Resumo não disponível para este artigo.\n\n";
+
+}
+
+
+if(artigo.pmid) {
+
+texto +=
+"PMID: " +
+artigo.pmid +
+"\n";
+
+}
+
+
+if(artigo.link) {
+
+texto +=
+"🔗 " +
+artigo.link +
+"\n";
+
+}
+
+
+texto += "\n";
+
+});
+
+
+return texto;
+
+}
+
+
+/* ---------- ROTEIRO ---------- */
 
 function gerarRoteiro(
-    tema,
-    duracao,
-    tipo,
-    profundidade,
-    artigos,
-    narracao,
-    legenda,
-    musica,
-    referencias
+tema,
+duracao,
+tipo,
+profundidade,
+artigos,
+narracao,
+legenda,
+musica,
+referencias
 ) {
 
 
-    const palavrasPorMinuto = 140;
+const palavras =
+duracao * 140;
 
-    const palavras =
-        duracao *
-        palavrasPorMinuto;
 
+let texto = "";
 
-    let roteiro = "";
 
+texto +=
+"🎬 BIOVIDEO AI — ROTEIRO\n\n";
 
-    roteiro +=
-        "🎬 BIOVIDEO AI — ROTEIRO\n\n";
+texto +=
+"━━━━━━━━━━━━━━━━━━━━\n\n";
 
+texto +=
+"📌 TEMA\n" +
+tema +
+"\n\n";
 
-    roteiro +=
-        "━━━━━━━━━━━━━━━━━━━━\n\n";
+texto +=
+"⏱️ DURAÇÃO\n" +
+duracao +
+" minuto" +
+(duracao > 1 ? "s" : "") +
+"\n\n";
 
+texto +=
+"📝 TAMANHO ESTIMADO\n" +
+palavras +
+" palavras\n\n";
 
-    roteiro +=
-        "📌 TEMA\n" +
-        tema +
-        "\n\n";
+texto +=
+"🎥 TIPO\n" +
+tipo +
+"\n\n";
 
+texto +=
+"🔎 PROFUNDIDADE\n" +
+profundidade +
+"\n\n";
 
-    roteiro +=
-        "⏱️ DURAÇÃO\n" +
-        duracao +
-        " minuto" +
-        (duracao > 1 ? "s" : "") +
-        "\n\n";
+texto +=
+"📚 ARTIGOS ANALISADOS\n" +
+artigos.length +
+"\n\n";
 
+texto +=
+"━━━━━━━━━━━━━━━━━━━━\n\n";
 
-    roteiro +=
-        "📝 TAMANHO ESTIMADO\n" +
-        palavras +
-        " palavras de narração\n\n";
 
+/* CENA 1 */
 
-    roteiro +=
-        "🎥 TIPO\n" +
-        tipo +
-        "\n\n";
+texto +=
+"🎯 CENA 1 — INTRODUÇÃO\n\n";
 
+texto +=
+"⏱️ 0:00–0:20\n\n";
 
-    roteiro +=
-        "🔎 PESQUISA\n" +
-        profundidade +
-        "\n\n";
+texto +=
+"🖼️ VISUAL SUGERIDO\n" +
+"Imagem ou animação diretamente relacionada ao tema.\n\n";
 
 
-    roteiro +=
-        "━━━━━━━━━━━━━━━━━━━━\n\n";
+if(narracao) {
 
-
-    /* CENA 1 */
-
-    roteiro +=
-        "🎯 CENA 1 — INTRODUÇÃO\n\n";
-
-    roteiro +=
-        "⏱️ 0:00–0:20\n\n";
-
-    roteiro +=
-        "🖼️ VISUAL\n" +
-        "Mostrar uma imagem ou animação relacionada diretamente ao tema.\n\n";
-
-
-    if (narracao) {
-
-        roteiro +=
-            "🎙️ NARRAÇÃO\n" +
-            "Você já parou para pensar sobre " +
-            tema +
-            "? Neste vídeo vamos entender esse assunto, " +
-            "explicando seus principais conceitos e mostrando " +
-            "por que ele é importante.\n\n";
-
-    }
-
-
-    if (legenda) {
-
-        roteiro +=
-            "📝 LEGENDA\n" +
-            tema +
-            "\n\n";
-
-    }
-
-
-    roteiro +=
-        "━━━━━━━━━━━━━━━━━━━━\n\n";
-
-
-    /* CENA 2 */
-
-    roteiro +=
-        "🎯 CENA 2 — CONCEITO PRINCIPAL\n\n";
-
-    roteiro +=
-        "⏱️ 0:20–0:55\n\n";
-
-    roteiro +=
-        "🖼️ VISUAL\n" +
-        "Apresentar visualmente os principais elementos relacionados ao tema.\n\n";
-
-
-    if (narracao) {
-
-        roteiro +=
-            "🎙️ NARRAÇÃO\n" +
-            "Para compreender " +
-            tema +
-            ", primeiro precisamos entender seus conceitos fundamentais. " +
-            "A pesquisa científica ajuda a explicar como esse fenômeno, " +
-            "processo ou tecnologia funciona.\n\n";
-
-    }
-
-
-    if (legenda) {
-
-        roteiro +=
-            "📝 LEGENDA\n" +
-            "O que é e como funciona?\n\n";
-
-    }
-
-
-    roteiro +=
-        "━━━━━━━━━━━━━━━━━━━━\n\n";
-
-
-    /* CENA 3 */
-
-    roteiro +=
-        "🎯 CENA 3 — COMO FUNCIONA\n\n";
-
-    roteiro +=
-        "⏱️ 0:55–1:35\n\n";
-
-    roteiro +=
-        "🖼️ VISUAL\n" +
-        "Mostrar uma animação passo a passo do processo.\n\n";
-
-
-    if (narracao) {
-
-        roteiro +=
-            "🎙️ NARRAÇÃO\n" +
-            "Na prática, o assunto envolve diferentes etapas e mecanismos. " +
-            "Esses processos podem ser estudados por pesquisadores para " +
-            "entender suas aplicações e suas limitações.\n\n";
-
-    }
-
-
-    if (legenda) {
-
-        roteiro +=
-            "📝 LEGENDA\n" +
-            "Entenda o processo\n\n";
-
-    }
-
-
-    roteiro +=
-        "━━━━━━━━━━━━━━━━━━━━\n\n";
-
-
-    /* CENA 4 */
-
-    roteiro +=
-        "🎯 CENA 4 — APLICAÇÕES\n\n";
-
-    roteiro +=
-        "⏱️ 1:35–2:15\n\n";
-
-    roteiro +=
-        "🖼️ VISUAL\n" +
-        "Mostrar exemplos reais relacionados ao tema.\n\n";
-
-
-    if (narracao) {
-
-        roteiro +=
-            "🎙️ NARRAÇÃO\n" +
-            "Uma das partes mais importantes desse assunto são suas aplicações. " +
-            "Dependendo do tema, elas podem aparecer na medicina, na ciência, " +
-            "na tecnologia, no meio ambiente, na educação ou em outras áreas.\n\n";
-
-    }
-
-
-    if (legenda) {
-
-        roteiro +=
-            "📝 LEGENDA\n" +
-            "Aplicações no mundo real\n\n";
-
-    }
-
-
-    roteiro +=
-        "━━━━━━━━━━━━━━━━━━━━\n\n";
-
-
-    /* CENA 5 */
-
-    roteiro +=
-        "🎯 CENA 5 — EVIDÊNCIAS CIENTÍFICAS\n\n";
-
-    roteiro +=
-        "⏱️ 2:15–3:00\n\n";
-
-    roteiro +=
-        "🖼️ VISUAL\n" +
-        "Mostrar laboratório, pesquisadores, artigos científicos e dados.\n\n";
-
-
-    if (artigos.length > 0) {
-
-        roteiro +=
-            "📚 ESTUDOS ENCONTRADOS\n\n";
-
-
-        artigos
-        .slice(0, 5)
-        .forEach((artigo, i) => {
-
-            roteiro +=
-                "• " +
-                artigo.titulo +
-                "\n";
-
-        });
-
-
-        roteiro += "\n";
-
-    }
-
-
-    if (narracao) {
-
-        roteiro +=
-            "🎙️ NARRAÇÃO\n" +
-            "Para analisar esse tema de maneira responsável, " +
-            "é importante consultar pesquisas científicas. " +
-            "Os estudos encontrados nesta pesquisa servem como " +
-            "base documental para o desenvolvimento deste vídeo.\n\n";
-
-    }
-
-
-    roteiro +=
-        "━━━━━━━━━━━━━━━━━━━━\n\n";
-
-
-    /* CENA 6 */
-
-    if (duracao >= 3) {
-
-        roteiro +=
-            "🎯 CENA 6 — BENEFÍCIOS, LIMITAÇÕES E RISCOS\n\n";
-
-        roteiro +=
-            "⏱️ 3:00–3:35\n\n";
-
-        roteiro +=
-            "🖼️ VISUAL\n" +
-            "Apresentar uma comparação visual entre possibilidades, " +
-            "limitações e possíveis riscos.\n\n";
-
-
-        if (narracao) {
-
-            roteiro +=
-                "🎙️ NARRAÇÃO\n" +
-                "Assim como qualquer área científica ou tecnológica, " +
-                "existem possibilidades e também limitações. " +
-                "Por isso, é necessário analisar as evidências, " +
-                "as incertezas e os possíveis impactos antes de tirar conclusões.\n\n";
-
-        }
-
-
-        if (legenda) {
-
-            roteiro +=
-                "📝 LEGENDA\n" +
-                "Possibilidades • Limitações • Riscos\n\n";
-
-        }
-
-
-        roteiro +=
-            "━━━━━━━━━━━━━━━━━━━━\n\n";
-
-    }
-
-
-    /* CENA FINAL */
-
-    roteiro +=
-        "🎯 CENA FINAL — CONCLUSÃO\n\n";
-
-    roteiro +=
-        "⏱️ FINAL\n\n";
-
-    roteiro +=
-        "🖼️ VISUAL\n" +
-        "Retomar os principais elementos visuais apresentados no vídeo.\n\n";
-
-
-    if (narracao) {
-
-        roteiro +=
-            "🎙️ NARRAÇÃO\n" +
-            "Em resumo, " +
-            tema +
-            " é um assunto que envolve diferentes aspectos " +
-            "científicos e sociais. " +
-            "Conhecer as evidências, as possibilidades e as limitações " +
-            "é fundamental para compreender melhor o tema.\n\n";
-
-    }
-
-
-    if (legenda) {
-
-        roteiro +=
-            "📝 LEGENDA\n" +
-            "Conhecimento transforma possibilidades.\n\n";
-
-    }
-
-
-    roteiro +=
-        "━━━━━━━━━━━━━━━━━━━━\n\n";
-
-
-    /* RECURSOS */
-
-    roteiro +=
-        "🎛️ RECURSOS SELECIONADOS\n\n";
-
-    roteiro +=
-        "🎙️ Narração: " +
-        (narracao ? "SIM" : "NÃO") +
-        "\n";
-
-    roteiro +=
-        "📝 Legendas: " +
-        (legenda ? "SIM" : "NÃO") +
-        "\n";
-
-    roteiro +=
-        "🎵 Música: " +
-        (musica ? "SIM" : "NÃO") +
-        "\n";
-
-    roteiro +=
-        "📚 Referências: " +
-        (referencias ? "SIM" : "NÃO") +
-        "\n\n";
-
-
-    /* REFERÊNCIAS */
-
-    if (referencias) {
-
-        roteiro +=
-            "📚 REFERÊNCIAS CIENTÍFICAS\n\n";
-
-
-        if (artigos.length === 0) {
-
-            roteiro +=
-                "Nenhum artigo científico foi encontrado " +
-                "no PubMed para esta pesquisa.\n\n";
-
-        }
-
-
-        artigos.forEach((artigo, indice) => {
-
-            roteiro +=
-                (indice + 1) +
-                ". " +
-                artigo.titulo +
-                "\n";
-
-            if (artigo.pmid) {
-
-                roteiro +=
-                    "PMID: " +
-                    artigo.pmid +
-                    "\n";
-
-                roteiro +=
-                    artigo.link +
-                    "\n";
-
-            }
-
-            roteiro += "\n";
-
-        });
-
-    }
-
-
-    roteiro +=
-        "━━━━━━━━━━━━━━━━━━━━\n\n";
-
-
-    roteiro +=
-        "🚀 PRÓXIMA ETAPA\n\n" +
-        "Este roteiro está preparado para receber " +
-        "narração, legendas, música, imagens e edição.\n\n" +
-        "BIOVIDEO AI V1.6";
-
-
-    return roteiro;
+texto +=
+"🎙️ NARRAÇÃO\n" +
+"Neste vídeo vamos entender " +
+tema +
+", utilizando pesquisas científicas para explicar " +
+"os principais conceitos, aplicações e desafios relacionados ao assunto.\n\n";
 
 }
 
 
-/* ---------- CRIAR VÍDEO ---------- */
+if(legenda) {
+
+texto +=
+"📝 TEXTO NA TELA\n" +
+tema +
+"\n\n";
+
+}
+
+
+texto +=
+"━━━━━━━━━━━━━━━━━━━━\n\n";
+
+
+/* CENA 2 */
+
+texto +=
+"🎯 CENA 2 — CONCEITO PRINCIPAL\n\n";
+
+texto +=
+"⏱️ 0:20–0:55\n\n";
+
+texto +=
+"🖼️ VISUAL SUGERIDO\n" +
+"Animação mostrando os principais elementos científicos do tema.\n\n";
+
+
+if(narracao) {
+
+texto +=
+"🎙️ NARRAÇÃO\n" +
+"Para compreender esse assunto, primeiro precisamos conhecer " +
+"seus conceitos fundamentais e entender como eles se relacionam.\n\n";
+
+}
+
+
+texto +=
+"━━━━━━━━━━━━━━━━━━━━\n\n";
+
+
+/* CENA 3 */
+
+texto +=
+"🎯 CENA 3 — O QUE A CIÊNCIA MOSTRA?\n\n";
+
+texto +=
+"⏱️ 0:55–1:40\n\n";
+
+texto +=
+"🖼️ VISUAL SUGERIDO\n" +
+"Laboratório, pesquisadores, microscopia, moléculas ou imagens relacionadas ao tema.\n\n";
+
+
+if(narracao) {
+
+texto +=
+"🎙️ NARRAÇÃO\n" +
+"A pesquisa científica permite observar o tema a partir de evidências publicadas. " +
+"Os estudos encontrados nesta busca foram analisados considerando sua relação " +
+"com o assunto pesquisado.\n\n";
+
+}
+
+
+/* MOSTRAR PRINCIPAIS ESTUDOS */
+
+artigos
+.slice(0,3)
+.forEach(
+(artigo,index) => {
+
+texto +=
+"📚 Estudo " +
+(index + 1) +
+": " +
+artigo.titulo +
+"\n\n";
+
+});
+
+
+texto +=
+"━━━━━━━━━━━━━━━━━━━━\n\n";
+
+
+/* CENA 4 */
+
+texto +=
+"🎯 CENA 4 — APLICAÇÕES\n\n";
+
+texto +=
+"⏱️ 1:40–2:30\n\n";
+
+texto +=
+"🖼️ VISUAL SUGERIDO\n" +
+"Exemplos reais das aplicações relacionadas ao tema.\n\n";
+
+
+if(narracao) {
+
+texto +=
+"🎙️ NARRAÇÃO\n" +
+"As pesquisas relacionadas ao tema ajudam a compreender possíveis aplicações " +
+"e caminhos de desenvolvimento. " +
+"Essas aplicações podem envolver diferentes áreas dependendo do assunto estudado.\n\n";
+
+}
+
+
+texto +=
+"━━━━━━━━━━━━━━━━━━━━\n\n";
+
+
+/* CENA 5 */
+
+texto +=
+"🎯 CENA 5 — BENEFÍCIOS E LIMITAÇÕES\n\n";
+
+texto +=
+"⏱️ 2:30–3:20\n\n";
+
+texto +=
+"🖼️ VISUAL SUGERIDO\n" +
+"Comparação visual entre possibilidades, limitações e desafios.\n\n";
+
+
+if(narracao) {
+
+texto +=
+"🎙️ NARRAÇÃO\n" +
+"É importante lembrar que resultados científicos possuem limites. " +
+"Uma pesquisa pode apresentar evidências promissoras sem significar " +
+"que uma aplicação já esteja comprovada ou disponível para uso amplo.\n\n";
+
+}
+
+
+texto +=
+"━━━━━━━━━━━━━━━━━━━━\n\n";
+
+
+/* CENA 6 */
+
+if(duracao >= 3) {
+
+texto +=
+"🎯 CENA 6 — IMPACTO E QUESTÕES IMPORTANTES\n\n";
+
+texto +=
+"⏱️ 3:20–3:45\n\n";
+
+texto +=
+"🖼️ VISUAL SUGERIDO\n" +
+"Pessoas, sociedade e aplicações relacionadas ao tema.\n\n";
+
+
+if(narracao) {
+
+texto +=
+"🎙️ NARRAÇÃO\n" +
+"Além dos aspectos científicos, também é importante considerar " +
+"as possíveis consequências sociais, éticas e práticas relacionadas ao assunto.\n\n";
+
+}
+
+
+texto +=
+"━━━━━━━━━━━━━━━━━━━━\n\n";
+
+}
+
+
+/* FINAL */
+
+texto +=
+"🎯 CENA FINAL — CONCLUSÃO\n\n";
+
+texto +=
+"⏱️ FINAL\n\n";
+
+texto +=
+"🖼️ VISUAL SUGERIDO\n" +
+"Retomar os principais elementos apresentados no vídeo.\n\n";
+
+
+if(narracao) {
+
+texto +=
+"🎙️ NARRAÇÃO\n" +
+"Em resumo, compreender " +
+tema +
+" exige observar as evidências científicas, " +
+"as possibilidades, as limitações e seus possíveis impactos. " +
+"A ciência continua investigando essas questões, " +
+"e novas pesquisas podem ampliar nosso conhecimento.\n\n";
+
+}
+
+
+if(legenda) {
+
+texto +=
+"📝 TEXTO NA TELA\n" +
+"Conhecimento transforma possibilidades.\n\n";
+
+}
+
+
+texto +=
+"━━━━━━━━━━━━━━━━━━━━\n\n";
+
+
+/* RECURSOS */
+
+texto +=
+"🎛️ RECURSOS\n\n";
+
+texto +=
+"🎙️ Narração: " +
+(narracao ? "SIM" : "NÃO") +
+"\n";
+
+texto +=
+"📝 Legendas: " +
+(legenda ? "SIM" : "NÃO") +
+"\n";
+
+texto +=
+"🎵 Música: " +
+(musica ? "SIM" : "NÃO") +
+"\n";
+
+texto +=
+"📚 Referências: " +
+(referencias ? "SIM" : "NÃO") +
+"\n\n";
+
+
+return texto;
+
+}
+
+
+/* ---------- CRIAR ---------- */
 
 async function criarRascunho() {
 
-    const resultado =
-        document.getElementById(
-            "resultado"
-        );
+const resultado =
+document.getElementById(
+"resultado"
+);
 
-    const roteiro =
-        document.getElementById(
-            "roteiro"
-        );
+const roteiro =
+document.getElementById(
+"roteiro"
+);
 
-    const status =
-        document.getElementById(
-            "status"
-        );
-
-
-    const tema =
-        document.getElementById(
-            "tema"
-        ).value.trim();
+const status =
+document.getElementById(
+"status"
+);
 
 
-    const duracao =
-        parseInt(
-            document.getElementById(
-                "duracao"
-            ).value
-        );
+const tema =
+document
+.getElementById("tema")
+.value
+.trim();
 
 
-    const tipo =
-        document.getElementById(
-            "tipo"
-        ).value;
+const duracao =
+parseInt(
+document
+.getElementById("duracao")
+.value
+);
 
 
-    const profundidade =
-        document.getElementById(
-            "profundidade"
-        ).value;
+const tipo =
+document
+.getElementById("tipo")
+.value;
 
 
-    const narracao =
-        document.getElementById(
-            "usarNarracao"
-        ).checked;
+const profundidade =
+document
+.getElementById("profundidade")
+.value;
 
 
-    const legenda =
-        document.getElementById(
-            "usarLegenda"
-        ).checked;
+const narracao =
+document
+.getElementById("usarNarracao")
+.checked;
 
 
-    const musica =
-        document.getElementById(
-            "usarMusica"
-        ).checked;
+const legenda =
+document
+.getElementById("usarLegenda")
+.checked;
 
 
-    const referencias =
-        document.getElementById(
-            "usarReferencias"
-        ).checked;
+const musica =
+document
+.getElementById("usarMusica")
+.checked;
 
 
-    if (!tema) {
-
-        alert(
-            "Digite o tema do vídeo primeiro."
-        );
-
-        return;
-
-    }
+const referencias =
+document
+.getElementById("usarReferencias")
+.checked;
 
 
-    resultado.style.display =
-        "block";
+if(!tema) {
+
+alert(
+"Digite o tema do vídeo primeiro."
+);
+
+return;
+
+}
 
 
-    resultado.scrollIntoView({
-        behavior: "smooth"
-    });
+resultado.style.display =
+"block";
 
 
-    status.textContent =
-        "🔎 Pesquisando artigos científicos sobre: " +
-        tema;
+resultado.scrollIntoView({
+behavior:"smooth"
+});
 
 
-    roteiro.textContent =
-        "Aguarde...\n\n" +
-        "🔎 Pesquisa iniciada.";
+status.textContent =
+"🔎 Pesquisando o tema...";
 
 
-    try {
-
-        await esperar(500);
-
-
-        status.textContent =
-            "📚 Procurando estudos no PubMed...";
+roteiro.textContent =
+"Aguarde...\n\n" +
+"🔎 Consultando literatura científica.";
 
 
-        const ids =
-            await pesquisarPubMed(
-                tema,
-                profundidade
-            );
+try {
+
+await esperar(500);
 
 
-        status.textContent =
-            "📖 Recuperando informações dos artigos...";
+status.textContent =
+"📚 Encontrando artigos no PubMed...";
 
 
-        const artigos =
-            await buscarArtigos(ids);
+const ids =
+await pesquisarPubMed(
+tema,
+profundidade
+);
 
 
-        status.textContent =
-            "🧠 Organizando pesquisa e preparando o roteiro...";
+status.textContent =
+"📖 Recuperando títulos e resumos...";
 
 
-        await esperar(500);
+const artigos =
+await buscarArtigos(ids);
 
 
-        const resultadoFinal =
-            gerarRoteiro(
-                tema,
-                duracao,
-                tipo,
-                profundidade,
-                artigos,
-                narracao,
-                legenda,
-                musica,
-                referencias
-            );
+status.textContent =
+"🧠 Analisando relevância dos estudos...";
 
 
-        roteiro.textContent =
-            resultadoFinal;
+const ordenados =
+ordenarPorRelevancia(
+artigos,
+tema
+);
 
 
-        status.textContent =
-            "✅ Roteiro preparado! " +
-            artigos.length +
-            " artigo(s) científico(s) encontrado(s).";
+await esperar(500);
 
 
-    }
-
-    catch (erro) {
-
-        console.error(erro);
+status.textContent =
+"✍️ Preparando roteiro baseado na pesquisa...";
 
 
-        status.textContent =
-            "⚠️ A pesquisa encontrou um problema.";
+const roteiroFinal =
+gerarRoteiro(
+tema,
+duracao,
+tipo,
+profundidade,
+ordenados,
+narracao,
+legenda,
+musica,
+referencias
+);
 
 
-        roteiro.textContent =
-            "Não foi possível completar a pesquisa.\n\n" +
-            "Erro: " +
-            erro.message +
-            "\n\n" +
-            "Você pode tentar novamente.";
+const evidencias =
+gerarEvidencias(
+ordenados.slice(0,8)
+);
 
-    }
+
+roteiro.textContent =
+roteiroFinal +
+"\n\n" +
+"━━━━━━━━━━━━━━━━━━━━\n\n" +
+evidencias;
+
+
+status.textContent =
+"✅ Pesquisa concluída — " +
+ordenados.length +
+" artigo(s) analisado(s).";
+
+}
+
+catch(erro) {
+
+console.error(erro);
+
+
+status.textContent =
+"⚠️ Ocorreu um problema na pesquisa.";
+
+
+roteiro.textContent =
+"Não foi possível completar a pesquisa.\n\n" +
+erro.message;
+
+}
 
 }
 
