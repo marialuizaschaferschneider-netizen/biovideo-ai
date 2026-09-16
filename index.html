@@ -3,171 +3,92 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>BioVideo AI</title>
 
 <style>
-* {
-    box-sizing: border-box;
+*{box-sizing:border-box}
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#eef7f1;
+color:#17352a
 }
-
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f4f8f5;
-    color: #17352a;
+.container{
+max-width:950px;
+width:92%;
+margin:auto;
+padding:25px 0 50px
 }
-
-.container {
-    width: 92%;
-    max-width: 900px;
-    margin: auto;
-    padding: 25px 0 50px;
+.header{text-align:center;padding:25px}
+.logo{font-size:38px;font-weight:bold}
+.subtitle{color:#60756b;margin-top:8px}
+.card{
+background:white;
+border-radius:20px;
+padding:24px;
+margin-top:18px;
+box-shadow:0 5px 20px #00000010
 }
-
-.header {
-    text-align: center;
-    padding: 25px 10px;
+label{display:block;font-weight:bold;margin-bottom:8px}
+textarea,select{
+width:100%;
+padding:14px;
+border:1px solid #ccdcd3;
+border-radius:12px;
+font-size:16px;
+background:white
 }
-
-.logo {
-    font-size: 38px;
-    font-weight: bold;
+textarea{min-height:130px}
+.grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:14px;
+margin-top:15px
 }
-
-.subtitle {
-    color: #557064;
-    margin-top: 8px;
+button{
+border:0;
+border-radius:13px;
+padding:15px;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+margin-top:15px;
+background:#237a57;
+color:white
 }
-
-.card {
-    background: white;
-    border-radius: 18px;
-    padding: 22px;
-    margin-top: 18px;
-    box-shadow: 0 4px 18px rgba(0,0,0,.07);
+button:hover{opacity:.9}
+.secondary{background:#4b6f60}
+.danger{background:#9b3d3d}
+.status{
+background:#edf8f1;
+padding:15px;
+border-radius:12px;
+margin-bottom:15px
 }
-
-label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 8px;
+.scene{
+border:1px solid #d6e4dc;
+border-radius:15px;
+padding:18px;
+margin:15px 0;
+background:#fafdfb
 }
-
-textarea,
-select {
-    width: 100%;
-    border: 1px solid #cbdad2;
-    border-radius: 12px;
-    padding: 14px;
-    font-size: 16px;
-    background: white;
+.scene h3{margin-top:0}
+.reference{
+padding:14px;
+border-left:4px solid #237a57;
+background:#f5faf7;
+margin:10px 0;
+border-radius:8px
 }
-
-textarea {
-    min-height: 130px;
-    resize: vertical;
+.reference a{
+color:#176544;
+font-weight:bold
 }
-
-.options {
-    display: grid;
-    grid-template-columns: repeat(2,1fr);
-    gap: 12px;
-    margin-top: 15px;
-}
-
-.option {
-    border: 1px solid #d3e0da;
-    border-radius: 12px;
-    padding: 13px;
-}
-
-button {
-    width: 100%;
-    border: none;
-    border-radius: 14px;
-    padding: 16px;
-    margin-top: 20px;
-    font-size: 17px;
-    font-weight: bold;
-    cursor: pointer;
-    background: #237a57;
-    color: white;
-}
-
-button:hover {
-    background: #1c6347;
-}
-
-#resultado {
-    display: none;
-}
-
-.status {
-    background: #eef7f1;
-    border-radius: 12px;
-    padding: 15px;
-    margin-bottom: 15px;
-}
-
-pre {
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    font-size: 15px;
-}
-
-.article {
-    border-left: 4px solid #237a57;
-    padding: 14px;
-    margin: 12px 0;
-    background: #f7faf8;
-    border-radius: 8px;
-}
-
-.article-title {
-    font-weight: bold;
-    margin-bottom: 8px;
-}
-
-.article-meta {
-    font-size: 13px;
-    color: #63766d;
-    margin-bottom: 10px;
-}
-
-.article-summary {
-    font-size: 14px;
-    line-height: 1.5;
-}
-
-.article a {
-    color: #237a57;
-    font-weight: bold;
-}
-
-.checkbox-grid {
-    display: grid;
-    grid-template-columns: repeat(2,1fr);
-    gap: 10px;
-}
-
-.checkbox {
-    border: 1px solid #d3e0da;
-    padding: 12px;
-    border-radius: 10px;
-}
-
-@media(max-width:600px) {
-    .options,
-    .checkbox-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .logo {
-        font-size: 30px;
-    }
+.hidden{display:none}
+.small{font-size:13px;color:#65776f}
+@media(max-width:650px){
+.grid{grid-template-columns:1fr}
+.logo{font-size:30px}
 }
 </style>
 </head>
@@ -177,143 +98,89 @@ pre {
 <div class="container">
 
 <div class="header">
-
-<div class="logo">
-🧬 BioVideo AI
-</div>
-
+<div class="logo">🧬 BioVideo AI</div>
 <div class="subtitle">
-Pesquisa científica e criação de roteiros educativos
+Pesquisa científica • Roteiro • Narração • Legendas
 </div>
-
 </div>
-
 
 <div class="card">
 
-<label for="tema">
-Sobre o que será o vídeo?
-</label>
+<label for="tema">Sobre o que será o vídeo?</label>
 
-<textarea
-id="tema"
-placeholder="Exemplo: Biotecnologia e o cérebro"
-></textarea>
+<textarea id="tema"
+placeholder="Exemplo: Biotecnologia e o cérebro"></textarea>
 
+<div class="grid">
 
-<div class="options">
-
-<div class="option">
-
+<div>
 <label>Duração</label>
-
 <select id="duracao">
-
 <option value="1">1 minuto</option>
 <option value="2">2 minutos</option>
 <option value="3">3 minutos</option>
 <option value="4" selected>4 minutos</option>
-
 </select>
-
 </div>
 
-
-<div class="option">
-
+<div>
 <label>Tipo de vídeo</label>
-
 <select id="tipo">
-
 <option>Pesquisa</option>
 <option>Educativo</option>
 <option>Explicativo</option>
 <option>Curiosidades</option>
-<option>Trabalho escolar</option>
-
 </select>
-
 </div>
 
-
-<div class="option">
-
-<label>Profundidade da pesquisa</label>
-
+<div>
+<label>Pesquisa</label>
 <select id="profundidade">
-
-<option value="rapida">
-Pesquisa rápida
-</option>
-
-<option value="completa">
-Pesquisa completa
-</option>
-
-<option value="profunda" selected>
-Pesquisa profunda
-</option>
-
+<option value="rapida">Rápida</option>
+<option value="completa">Completa</option>
+<option value="profunda" selected>Profunda</option>
 </select>
+</div>
 
+<div>
+<label>Voz</label>
+<select id="voz">
+<option>Carregando vozes...</option>
+</select>
 </div>
 
 </div>
 
-
-<br>
-
-<label>
-Recursos
-</label>
-
-<div class="checkbox-grid">
-
-<div class="checkbox">
-<label>
-<input id="usarNarracao" type="checkbox" checked>
-🎙️ Narração
-</label>
-</div>
-
-<div class="checkbox">
-<label>
-<input id="usarLegenda" type="checkbox" checked>
-📝 Legendas
-</label>
-</div>
-
-<div class="checkbox">
-<label>
-<input id="usarMusica" type="checkbox" checked>
-🎵 Música
-</label>
-</div>
-
-<div class="checkbox">
-<label>
-<input id="usarReferencias" type="checkbox" checked>
-📚 Referências
-</label>
-</div>
-
-</div>
-
-
-<button onclick="criarRascunho()">
-🚀 Criar vídeo
+<button onclick="criarVideo()">
+🚀 Criar roteiro
 </button>
 
 </div>
 
 
-<div class="card" id="resultado">
+<div id="resultado" class="card hidden">
 
-<div class="status" id="status">
+<div id="status" class="status">
 Preparando...
 </div>
 
-<pre id="roteiro"></pre>
+<div id="controles">
+
+<button onclick="ouvirRoteiro()">
+▶️ Ouvir narração
+</button>
+
+<button class="secondary" onclick="pausarNarracao()">
+⏸️ Pausar
+</button>
+
+<button class="danger" onclick="pararNarracao()">
+⏹️ Parar
+</button>
+
+</div>
+
+<div id="roteiro"></div>
 
 </div>
 
@@ -322,242 +189,212 @@ Preparando...
 
 <script>
 
-/* ==================================================
-   BIOVIDEO AI V1.7
-   ================================================== */
+/* =========================
+BIOVIDEO AI V1.8
+========================= */
+
+const synth = window.speechSynthesis;
+
+let vozes = [];
+let textoNarracao = "";
 
 
-/* ---------- DICIONÁRIO ---------- */
+/* VOZES */
 
-const dicionario = {
+function carregarVozes(){
 
-"cerebro":"brain",
+if(!("speechSynthesis" in window)){
+
+document.getElementById("voz").innerHTML =
+"<option>Narração não suportada</option>";
+
+return;
+
+}
+
+vozes = synth.getVoices();
+
+const select =
+document.getElementById("voz");
+
+select.innerHTML="";
+
+
+const brasileiras =
+vozes.filter(v =>
+v.lang.toLowerCase().startsWith("pt")
+);
+
+
+const lista =
+brasileiras.length
+? brasileiras
+: vozes;
+
+
+lista.forEach((voz,index)=>{
+
+const option =
+document.createElement("option");
+
+option.value =
+vozes.indexOf(voz);
+
+option.textContent =
+voz.name +
+" (" +
+voz.lang +
+")";
+
+select.appendChild(option);
+
+});
+
+}
+
+
+carregarVozes();
+
+if(synth.onvoiceschanged !== undefined){
+
+synth.onvoiceschanged =
+carregarVozes;
+
+}
+
+
+/* ESPERA */
+
+function esperar(ms){
+
+return new Promise(
+resolve=>setTimeout(resolve,ms)
+);
+
+}
+
+
+/* DICIONÁRIO */
+
+const palavras = {
+
 "cérebro":"brain",
-"mente":"mind",
-
-"neuronio":"neuron",
+"cerebro":"brain",
 "neurônio":"neuron",
-"neuronios":"neurons",
+"neuronio":"neuron",
 "neurônios":"neurons",
-
-"doenca":"disease",
+"neuronios":"neurons",
+"dna":"DNA",
+"rna":"RNA",
+"genética":"genetics",
+"genetica":"genetics",
+"biotecnologia":"biotechnology",
+"medicina":"medicine",
+"saúde":"health",
+"saude":"health",
 "doença":"disease",
-"doencas":"diseases",
+"doenca":"disease",
 "doenças":"diseases",
-
-"cancer":"cancer",
+"doencas":"diseases",
 "câncer":"cancer",
-
+"cancer":"cancer",
+"vacina":"vaccine",
+"vacinas":"vaccines",
 "agricultura":"agriculture",
-
 "plantas":"plants",
-"planta":"plant",
-
-"fotossintese":"photosynthesis",
-"fotossíntese":"photosynthesis",
-
-"clima":"climate",
-
-"ambiente":"environment",
-"ambiental":"environment",
-
-"agua":"water",
-"água":"water",
-
+"bactéria":"bacteria",
 "bacteria":"bacteria",
 "bactérias":"bacteria",
 "bacterias":"bacteria",
-
-"virus":"virus",
 "vírus":"virus",
-
-"vacina":"vaccine",
-"vacinas":"vaccines",
-
-"genetica":"genetics",
-"genética":"genetics",
-
-"genetico":"genetic",
-"genético":"genetic",
-
-"dna":"DNA",
-"rna":"RNA",
-
-"biotecnologia":"biotechnology",
-
-"medicina":"medicine",
-
-"saude":"health",
-"saúde":"health",
-
-"tecnologia":"technology",
-
-"inteligencia":"intelligence",
-"inteligência":"intelligence",
-
-"artificial":"artificial",
-
-"educacao":"education",
-"educação":"education",
-
+"virus":"virus",
 "psicologia":"psychology",
-
-"comportamento":"behavior",
-
-"memoria":"memory",
 "memória":"memory",
-
-"sono":"sleep",
-
-"alimentacao":"nutrition",
-"alimentação":"nutrition",
-
-"nutricao":"nutrition",
-"nutrição":"nutrition"
+"memoria":"memory",
+"comportamento":"behavior"
 
 };
 
 
-/* ---------- ESPERA ---------- */
+/* TERMOS */
 
-function esperar(ms) {
+function gerarTermos(tema){
 
-return new Promise(
-resolve => setTimeout(resolve,ms)
-);
+const original =
+tema.toLowerCase().trim();
 
-}
-
-
-/* ---------- TERMOS ---------- */
-
-function gerarTermosDePesquisa(tema) {
-
-const texto =
-tema
-.toLowerCase()
-.trim();
-
-const palavras =
-texto
+const partes =
+original
 .replace(/[?!.,;:()]/g,"")
 .split(/\s+/);
 
-const traduzidas = [];
+const ingles = [];
 
-palavras.forEach(palavra => {
+partes.forEach(p=>{
 
-if(dicionario[palavra]) {
-
-traduzidas.push(
-dicionario[palavra]
-);
-
-}
+if(palavras[p])
+ingles.push(palavras[p]);
 
 });
 
+const termos=[original];
 
-const termos = [];
+if(ingles.length)
+termos.push(ingles.join(" AND "));
 
-
-/* Busca original */
-
+if(ingles.length>=2)
 termos.push(
-texto
-);
-
-
-/* Busca em inglês */
-
-if(traduzidas.length > 0) {
-
-termos.push(
-traduzidas.join(" AND ")
-);
-
-}
-
-
-/* Busca restrita */
-
-if(traduzidas.length >= 2) {
-
-termos.push(
-traduzidas.join(" AND ") +
+ingles.join(" AND ") +
 "[Title/Abstract]"
 );
-
-}
-
 
 return termos;
 
 }
 
 
-/* ---------- PESQUISA ---------- */
+/* PUBMED */
 
-async function pesquisarPubMed(
-tema,
-profundidade
-) {
+async function pesquisar(tema,profundidade){
 
-let limite = 5;
+let limite=5;
 
-if(profundidade === "completa") {
-limite = 10;
-}
+if(profundidade==="completa")
+limite=10;
 
-if(profundidade === "profunda") {
-limite = 15;
-}
+if(profundidade==="profunda")
+limite=15;
 
+const termos=gerarTermos(tema);
 
-const termos =
-gerarTermosDePesquisa(tema);
+const ids=[];
+const usados=new Set();
 
+for(const termo of termos){
 
-const ids = [];
-const usados = new Set();
+try{
 
-
-for(const termo of termos) {
-
-try {
-
-const url =
-"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi" +
-"?db=pubmed" +
-"&term=" +
-encodeURIComponent(termo) +
-"&retmax=" +
-limite +
-"&retmode=json" +
-"&sort=relevance" +
+const url=
+"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"+
+"?db=pubmed"+
+"&term="+encodeURIComponent(termo)+
+"&retmax="+limite+
+"&retmode=json"+
+"&sort=relevance"+
 "&tool=BioVideoAI";
 
-
-const resposta =
+const resposta=
 await fetch(url);
 
-
-if(!resposta.ok) {
-continue;
-}
-
-
-const dados =
+const dados=
 await resposta.json();
 
-
-const encontrados =
+const encontrados=
 dados.esearchresult.idlist || [];
 
+encontrados.forEach(id=>{
 
-encontrados.forEach(id => {
-
-if(!usados.has(id)) {
+if(!usados.has(id)){
 
 usados.add(id);
 ids.push(id);
@@ -566,931 +403,489 @@ ids.push(id);
 
 });
 
-
 await esperar(300);
 
-}
+}catch(e){
 
-catch(erro) {
-
-console.log(
-"Erro na busca:",
-erro
-);
+console.log(e);
 
 }
 
 }
-
 
 return ids.slice(0,limite);
 
 }
 
 
-/* ---------- BUSCAR ARTIGOS ---------- */
+/* ARTIGOS */
 
-async function buscarArtigos(ids) {
+async function artigos(ids){
 
-if(ids.length === 0) {
+if(!ids.length)
 return [];
-}
 
-
-const url =
-"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi" +
-"?db=pubmed" +
-"&id=" +
-ids.join(",") +
-"&retmode=xml" +
+const url=
+"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"+
+"?db=pubmed"+
+"&id="+ids.join(",")+
+"&retmode=xml"+
 "&tool=BioVideoAI";
 
+const resposta=await fetch(url);
 
-const resposta =
-await fetch(url);
+const xml=await resposta.text();
 
+const doc=
+new DOMParser()
+.parseFromString(xml,"text/xml");
 
-if(!resposta.ok) {
-throw new Error(
-"Falha ao recuperar artigos."
-);
+const encontrados=[];
+
+doc.querySelectorAll("PubmedArticle")
+.forEach(a=>{
+
+const titulo=a.querySelector("ArticleTitle");
+const pmid=a.querySelector("PMID");
+
+let resumo="";
+
+a.querySelectorAll("AbstractText")
+.forEach(x=>{
+resumo+=x.textContent+" ";
+});
+
+encontrados.push({
+
+titulo:
+titulo?
+titulo.textContent:
+"Título não disponível",
+
+pmid:
+pmid?
+pmid.textContent:"",
+
+resumo:
+resumo.trim(),
+
+link:
+pmid?
+"https://pubmed.ncbi.nlm.nih.gov/"+
+pmid.textContent+"/":""
+
+});
+
+});
+
+return encontrados;
+
 }
 
 
-const xml =
-await resposta.text();
+/* ROTEIRO */
+
+function criarCenas(
+tema,
+duracao,
+artigos
+){
+
+const total=
+duracao*60;
+
+const cenaTempo=
+Math.floor(total/6);
+
+const cenas=[];
+
+const modelos=[
+
+[
+"INTRODUÇÃO",
+"Imagem ou animação relacionada diretamente ao tema.",
+"Você já parou para pensar sobre "+tema+"? Neste vídeo vamos entender esse assunto de forma simples e baseada em pesquisas científicas.",
+tema
+],
+
+[
+"O QUE É?",
+"Mostrar os principais elementos científicos relacionados ao assunto.",
+"Primeiro, precisamos entender o que significa "+tema+" e quais são os conceitos fundamentais envolvidos.",
+"O que é "+tema+"?"
+],
+
+[
+"COMO FUNCIONA?",
+"Animação mostrando o processo passo a passo.",
+"Agora vamos entender como esse processo funciona e quais mecanismos científicos estão envolvidos.",
+"Como funciona?"
+],
+
+[
+"APLICAÇÕES",
+"Mostrar exemplos reais de aplicações.",
+"Uma das partes mais interessantes são as aplicações. A pesquisa científica investiga diferentes possibilidades relacionadas a esse campo.",
+"Aplicações no mundo real"
+],
+
+[
+"EVIDÊNCIAS",
+"Laboratório, pesquisadores, artigos científicos e dados.",
+"Os estudos científicos ajudam a compreender o que já sabemos, o que ainda está sendo investigado e quais são as limitações das evidências disponíveis.",
+"O que dizem as pesquisas?"
+],
+
+[
+"CONCLUSÃO",
+"Retomar os principais elementos apresentados.",
+"Em resumo, "+tema+" envolve ciência, tecnologia e diferentes possibilidades. Conhecer as evidências ajuda a compreender o assunto de maneira responsável.",
+"Ciência transforma conhecimento em possibilidades."
+]
+
+];
 
 
-const documento =
-new DOMParser()
-.parseFromString(
-xml,
-"text/xml"
+for(let i=0;i<6;i++){
+
+const inicio=i*cenaTempo;
+const fim=(i+1)*cenaTempo;
+
+cenas.push({
+
+titulo:modelos[i][0],
+
+tempo:
+formatarTempo(inicio)+
+" – "+
+formatarTempo(fim),
+
+visual:modelos[i][1],
+
+narracao:modelos[i][2],
+
+legenda:modelos[i][3]
+
+});
+
+}
+
+return cenas;
+
+}
+
+
+/* TEMPO */
+
+function formatarTempo(segundos){
+
+const min=
+Math.floor(segundos/60);
+
+const seg=
+segundos%60;
+
+return min+
+":"+
+String(seg).padStart(2,"0");
+
+}
+
+
+/* EXIBIR */
+
+function mostrarResultado(
+tema,
+duracao,
+tipo,
+artigosEncontrados
+){
+
+const resultado=
+document.getElementById("resultado");
+
+const roteiro=
+document.getElementById("roteiro");
+
+resultado.classList.remove("hidden");
+
+const cenas=
+criarCenas(
+tema,
+duracao,
+artigosEncontrados
 );
 
 
-const artigosXML =
-documento.querySelectorAll(
-"PubmedArticle"
-);
+textoNarracao="";
 
 
-const artigos = [];
+let html="";
+
+html+=
+"<h2>🎬 Roteiro preparado</h2>";
+
+html+=
+"<p><b>Tema:</b> "+
+tema+
+"</p>";
+
+html+=
+"<p><b>Duração:</b> "+
+duracao+
+" minuto(s)</p>";
+
+html+=
+"<p><b>Tipo:</b> "+
+tipo+
+"</p>";
 
 
-artigosXML.forEach(
-artigo => {
+cenas.forEach((cena,i)=>{
 
-const titulo =
-artigo.querySelector(
-"ArticleTitle"
-);
+html+=
+'<div class="scene">';
+
+html+=
+"<h3>🎬 Cena "+
+(i+1)+
+" — "+
+cena.titulo+
+"</h3>";
+
+html+=
+"<p><b>⏱️ Tempo:</b> "+
+cena.tempo+
+"</p>";
+
+html+=
+"<p><b>🖼️ Visual:</b><br>"+
+cena.visual+
+"</p>";
+
+html+=
+"<p><b>🎙️ Narração:</b><br>"+
+cena.narracao+
+"</p>";
+
+html+=
+"<p><b>📝 Texto na tela:</b><br>"+
+cena.legenda+
+"</p>";
+
+html+="</div>";
 
 
-const pmid =
-artigo.querySelector(
-"PMID"
-);
-
-
-const abstracts =
-artigo.querySelectorAll(
-"AbstractText"
-);
-
-
-let resumo = "";
-
-
-abstracts.forEach(
-parte => {
-
-resumo +=
-parte.textContent +
+textoNarracao+=
+cena.narracao+
 " ";
 
 });
 
 
-artigos.push({
+html+=
+"<h2>📚 Referências científicas</h2>";
 
-titulo:
-titulo
-? titulo.textContent.trim()
-: "Título não disponível",
 
-resumo:
-resumo.trim(),
+if(!artigosEncontrados.length){
 
-pmid:
-pmid
-? pmid.textContent
-: "",
+html+=
+"<p>Nenhum artigo encontrado.</p>";
 
-link:
-pmid
-? "https://pubmed.ncbi.nlm.nih.gov/" +
-pmid.textContent +
-"/"
-: ""
+}else{
+
+artigosEncontrados.forEach((a,i)=>{
+
+html+=
+'<div class="reference">';
+
+html+=
+"<b>"+(i+1)+
+". "+
+a.titulo+
+"</b>";
+
+if(a.pmid){
+
+html+=
+"<p class='small'>PMID: "+
+a.pmid+
+"</p>";
+
+}
+
+if(a.resumo){
+
+html+=
+"<p>"+
+a.resumo+
+"</p>";
+
+}
+
+if(a.link){
+
+html+=
+'<a href="'+
+a.link+
+'" target="_blank">'+
+"🔗 Abrir artigo no PubMed"+
+"</a>";
+
+}
+
+html+="</div>";
 
 });
 
-});
+}
 
 
-return artigos;
+roteiro.innerHTML=html;
 
 }
 
 
-/* ---------- PALAVRAS PRINCIPAIS ---------- */
+/* CRIAR */
 
-function palavrasPrincipais(tema) {
+async function criarVideo(){
 
-const ignoradas = [
+const tema=
+document.getElementById("tema")
+.value.trim();
 
-"como",
-"para",
-"sobre",
-"uma",
-"umas",
-"uns",
-"dos",
-"das",
-"que",
-"qual",
-"quais",
-"isso",
-"esta",
-"este",
-"com",
-"sem",
-"por",
-"uma",
-"um",
-"e",
-"ou",
-"de",
-"da",
-"do",
-"em",
-"na",
-"no"
-
-];
-
-
-return tema
-.toLowerCase()
-.replace(/[?!.,;:()]/g,"")
-.split(/\s+/)
-.filter(
-p =>
-p.length > 3 &&
-!ignoradas.includes(p)
-);
-
-}
-
-
-/* ---------- PONTUAÇÃO DE RELEVÂNCIA ---------- */
-
-function calcularRelevancia(
-artigo,
-tema
-) {
-
-const palavras =
-palavrasPrincipais(tema);
-
-
-const texto =
-(
-artigo.titulo +
-" " +
-artigo.resumo
-)
-.toLowerCase();
-
-
-let pontos = 0;
-
-
-palavras.forEach(
-palavra => {
-
-if(
-texto.includes(
-palavra
-)
-) {
-
-pontos += 2;
-
-}
-
-});
-
-
-/*
-Termos científicos em inglês
-também recebem peso.
-*/
-
-const traduzidas =
-gerarTermosDePesquisa(
-tema
-);
-
-
-traduzidas.forEach(
-termo => {
-
-const partes =
-termo
-.replace(
-"[Title/Abstract]",
-""
-)
-.split("AND");
-
-partes.forEach(
-parte => {
-
-const palavra =
-parte
-.trim()
-.toLowerCase();
-
-if(
-palavra.length > 3 &&
-texto.includes(palavra)
-) {
-
-pontos += 3;
-
-}
-
-});
-
-});
-
-
-return pontos;
-
-}
-
-
-/* ---------- ORDENAR ARTIGOS ---------- */
-
-function ordenarPorRelevancia(
-artigos,
-tema
-) {
-
-return artigos
-.map(
-artigo => ({
-
-...artigo,
-
-relevancia:
-calcularRelevancia(
-artigo,
-tema
-)
-
-})
-)
-.sort(
-(a,b) =>
-b.relevancia -
-a.relevancia
-);
-
-}
-
-
-/* ---------- EVIDÊNCIAS ---------- */
-
-function gerarEvidencias(
-artigos
-) {
-
-let texto = "";
-
-
-texto +=
-"📚 EVIDÊNCIAS CIENTÍFICAS UTILIZADAS\n\n";
-
-
-if(artigos.length === 0) {
-
-texto +=
-"Nenhum artigo científico foi encontrado.\n";
-
-return texto;
-
-}
-
-
-artigos.forEach(
-(artigo,index) => {
-
-texto +=
-"━━━━━━━━━━━━━━━━━━━━\n\n";
-
-
-texto +=
-"📄 ARTIGO " +
-(index + 1) +
-"\n\n";
-
-
-texto +=
-"📌 TÍTULO\n" +
-artigo.titulo +
-"\n\n";
-
-
-texto +=
-"🧪 RELEVÂNCIA\n" +
-"Pontuação de relevância: " +
-artigo.relevancia +
-"\n\n";
-
-
-if(artigo.resumo) {
-
-texto +=
-"📖 RESUMO\n" +
-artigo.resumo +
-"\n\n";
-
-}
-else {
-
-texto +=
-"📖 RESUMO\n" +
-"Resumo não disponível para este artigo.\n\n";
-
-}
-
-
-if(artigo.pmid) {
-
-texto +=
-"PMID: " +
-artigo.pmid +
-"\n";
-
-}
-
-
-if(artigo.link) {
-
-texto +=
-"🔗 " +
-artigo.link +
-"\n";
-
-}
-
-
-texto += "\n";
-
-});
-
-
-return texto;
-
-}
-
-
-/* ---------- ROTEIRO ---------- */
-
-function gerarRoteiro(
-tema,
-duracao,
-tipo,
-profundidade,
-artigos,
-narracao,
-legenda,
-musica,
-referencias
-) {
-
-
-const palavras =
-duracao * 140;
-
-
-let texto = "";
-
-
-texto +=
-"🎬 BIOVIDEO AI — ROTEIRO\n\n";
-
-texto +=
-"━━━━━━━━━━━━━━━━━━━━\n\n";
-
-texto +=
-"📌 TEMA\n" +
-tema +
-"\n\n";
-
-texto +=
-"⏱️ DURAÇÃO\n" +
-duracao +
-" minuto" +
-(duracao > 1 ? "s" : "") +
-"\n\n";
-
-texto +=
-"📝 TAMANHO ESTIMADO\n" +
-palavras +
-" palavras\n\n";
-
-texto +=
-"🎥 TIPO\n" +
-tipo +
-"\n\n";
-
-texto +=
-"🔎 PROFUNDIDADE\n" +
-profundidade +
-"\n\n";
-
-texto +=
-"📚 ARTIGOS ANALISADOS\n" +
-artigos.length +
-"\n\n";
-
-texto +=
-"━━━━━━━━━━━━━━━━━━━━\n\n";
-
-
-/* CENA 1 */
-
-texto +=
-"🎯 CENA 1 — INTRODUÇÃO\n\n";
-
-texto +=
-"⏱️ 0:00–0:20\n\n";
-
-texto +=
-"🖼️ VISUAL SUGERIDO\n" +
-"Imagem ou animação diretamente relacionada ao tema.\n\n";
-
-
-if(narracao) {
-
-texto +=
-"🎙️ NARRAÇÃO\n" +
-"Neste vídeo vamos entender " +
-tema +
-", utilizando pesquisas científicas para explicar " +
-"os principais conceitos, aplicações e desafios relacionados ao assunto.\n\n";
-
-}
-
-
-if(legenda) {
-
-texto +=
-"📝 TEXTO NA TELA\n" +
-tema +
-"\n\n";
-
-}
-
-
-texto +=
-"━━━━━━━━━━━━━━━━━━━━\n\n";
-
-
-/* CENA 2 */
-
-texto +=
-"🎯 CENA 2 — CONCEITO PRINCIPAL\n\n";
-
-texto +=
-"⏱️ 0:20–0:55\n\n";
-
-texto +=
-"🖼️ VISUAL SUGERIDO\n" +
-"Animação mostrando os principais elementos científicos do tema.\n\n";
-
-
-if(narracao) {
-
-texto +=
-"🎙️ NARRAÇÃO\n" +
-"Para compreender esse assunto, primeiro precisamos conhecer " +
-"seus conceitos fundamentais e entender como eles se relacionam.\n\n";
-
-}
-
-
-texto +=
-"━━━━━━━━━━━━━━━━━━━━\n\n";
-
-
-/* CENA 3 */
-
-texto +=
-"🎯 CENA 3 — O QUE A CIÊNCIA MOSTRA?\n\n";
-
-texto +=
-"⏱️ 0:55–1:40\n\n";
-
-texto +=
-"🖼️ VISUAL SUGERIDO\n" +
-"Laboratório, pesquisadores, microscopia, moléculas ou imagens relacionadas ao tema.\n\n";
-
-
-if(narracao) {
-
-texto +=
-"🎙️ NARRAÇÃO\n" +
-"A pesquisa científica permite observar o tema a partir de evidências publicadas. " +
-"Os estudos encontrados nesta busca foram analisados considerando sua relação " +
-"com o assunto pesquisado.\n\n";
-
-}
-
-
-/* MOSTRAR PRINCIPAIS ESTUDOS */
-
-artigos
-.slice(0,3)
-.forEach(
-(artigo,index) => {
-
-texto +=
-"📚 Estudo " +
-(index + 1) +
-": " +
-artigo.titulo +
-"\n\n";
-
-});
-
-
-texto +=
-"━━━━━━━━━━━━━━━━━━━━\n\n";
-
-
-/* CENA 4 */
-
-texto +=
-"🎯 CENA 4 — APLICAÇÕES\n\n";
-
-texto +=
-"⏱️ 1:40–2:30\n\n";
-
-texto +=
-"🖼️ VISUAL SUGERIDO\n" +
-"Exemplos reais das aplicações relacionadas ao tema.\n\n";
-
-
-if(narracao) {
-
-texto +=
-"🎙️ NARRAÇÃO\n" +
-"As pesquisas relacionadas ao tema ajudam a compreender possíveis aplicações " +
-"e caminhos de desenvolvimento. " +
-"Essas aplicações podem envolver diferentes áreas dependendo do assunto estudado.\n\n";
-
-}
-
-
-texto +=
-"━━━━━━━━━━━━━━━━━━━━\n\n";
-
-
-/* CENA 5 */
-
-texto +=
-"🎯 CENA 5 — BENEFÍCIOS E LIMITAÇÕES\n\n";
-
-texto +=
-"⏱️ 2:30–3:20\n\n";
-
-texto +=
-"🖼️ VISUAL SUGERIDO\n" +
-"Comparação visual entre possibilidades, limitações e desafios.\n\n";
-
-
-if(narracao) {
-
-texto +=
-"🎙️ NARRAÇÃO\n" +
-"É importante lembrar que resultados científicos possuem limites. " +
-"Uma pesquisa pode apresentar evidências promissoras sem significar " +
-"que uma aplicação já esteja comprovada ou disponível para uso amplo.\n\n";
-
-}
-
-
-texto +=
-"━━━━━━━━━━━━━━━━━━━━\n\n";
-
-
-/* CENA 6 */
-
-if(duracao >= 3) {
-
-texto +=
-"🎯 CENA 6 — IMPACTO E QUESTÕES IMPORTANTES\n\n";
-
-texto +=
-"⏱️ 3:20–3:45\n\n";
-
-texto +=
-"🖼️ VISUAL SUGERIDO\n" +
-"Pessoas, sociedade e aplicações relacionadas ao tema.\n\n";
-
-
-if(narracao) {
-
-texto +=
-"🎙️ NARRAÇÃO\n" +
-"Além dos aspectos científicos, também é importante considerar " +
-"as possíveis consequências sociais, éticas e práticas relacionadas ao assunto.\n\n";
-
-}
-
-
-texto +=
-"━━━━━━━━━━━━━━━━━━━━\n\n";
-
-}
-
-
-/* FINAL */
-
-texto +=
-"🎯 CENA FINAL — CONCLUSÃO\n\n";
-
-texto +=
-"⏱️ FINAL\n\n";
-
-texto +=
-"🖼️ VISUAL SUGERIDO\n" +
-"Retomar os principais elementos apresentados no vídeo.\n\n";
-
-
-if(narracao) {
-
-texto +=
-"🎙️ NARRAÇÃO\n" +
-"Em resumo, compreender " +
-tema +
-" exige observar as evidências científicas, " +
-"as possibilidades, as limitações e seus possíveis impactos. " +
-"A ciência continua investigando essas questões, " +
-"e novas pesquisas podem ampliar nosso conhecimento.\n\n";
-
-}
-
-
-if(legenda) {
-
-texto +=
-"📝 TEXTO NA TELA\n" +
-"Conhecimento transforma possibilidades.\n\n";
-
-}
-
-
-texto +=
-"━━━━━━━━━━━━━━━━━━━━\n\n";
-
-
-/* RECURSOS */
-
-texto +=
-"🎛️ RECURSOS\n\n";
-
-texto +=
-"🎙️ Narração: " +
-(narracao ? "SIM" : "NÃO") +
-"\n";
-
-texto +=
-"📝 Legendas: " +
-(legenda ? "SIM" : "NÃO") +
-"\n";
-
-texto +=
-"🎵 Música: " +
-(musica ? "SIM" : "NÃO") +
-"\n";
-
-texto +=
-"📚 Referências: " +
-(referencias ? "SIM" : "NÃO") +
-"\n\n";
-
-
-return texto;
-
-}
-
-
-/* ---------- CRIAR ---------- */
-
-async function criarRascunho() {
-
-const resultado =
-document.getElementById(
-"resultado"
-);
-
-const roteiro =
-document.getElementById(
-"roteiro"
-);
-
-const status =
-document.getElementById(
-"status"
-);
-
-
-const tema =
-document
-.getElementById("tema")
-.value
-.trim();
-
-
-const duracao =
-parseInt(
-document
-.getElementById("duracao")
-.value
-);
-
-
-const tipo =
-document
-.getElementById("tipo")
-.value;
-
-
-const profundidade =
-document
-.getElementById("profundidade")
-.value;
-
-
-const narracao =
-document
-.getElementById("usarNarracao")
-.checked;
-
-
-const legenda =
-document
-.getElementById("usarLegenda")
-.checked;
-
-
-const musica =
-document
-.getElementById("usarMusica")
-.checked;
-
-
-const referencias =
-document
-.getElementById("usarReferencias")
-.checked;
-
-
-if(!tema) {
+if(!tema){
 
 alert(
-"Digite o tema do vídeo primeiro."
+"Digite o tema primeiro."
 );
 
 return;
 
 }
 
+const duracao=
+parseInt(
+document.getElementById("duracao").value
+);
 
-resultado.style.display =
-"block";
+const tipo=
+document.getElementById("tipo").value;
 
+const profundidade=
+document.getElementById("profundidade").value;
 
-resultado.scrollIntoView({
-behavior:"smooth"
-});
+const resultado=
+document.getElementById("resultado");
 
+const status=
+document.getElementById("status");
 
-status.textContent =
-"🔎 Pesquisando o tema...";
+resultado.classList.remove("hidden");
 
+status.textContent=
+"🔎 Pesquisando artigos científicos...";
 
-roteiro.textContent =
-"Aguarde...\n\n" +
-"🔎 Consultando literatura científica.";
+await esperar(300);
 
+try{
 
-try {
-
-await esperar(500);
-
-
-status.textContent =
-"📚 Encontrando artigos no PubMed...";
-
-
-const ids =
-await pesquisarPubMed(
+const ids=
+await pesquisar(
 tema,
 profundidade
 );
 
+status.textContent=
+"📚 Recuperando artigos e resumos...";
 
-status.textContent =
-"📖 Recuperando títulos e resumos...";
+const encontrados=
+await artigos(ids);
 
-
-const artigos =
-await buscarArtigos(ids);
-
-
-status.textContent =
-"🧠 Analisando relevância dos estudos...";
-
-
-const ordenados =
-ordenarPorRelevancia(
-artigos,
-tema
-);
-
+status.textContent=
+"🧠 Preparando roteiro...";
 
 await esperar(500);
 
-
-status.textContent =
-"✍️ Preparando roteiro baseado na pesquisa...";
-
-
-const roteiroFinal =
-gerarRoteiro(
+mostrarResultado(
 tema,
 duracao,
 tipo,
-profundidade,
-ordenados,
-narracao,
-legenda,
-musica,
-referencias
+encontrados
 );
 
+status.textContent=
+"✅ Roteiro pronto! "+
+encontrados.length+
+" artigo(s) encontrado(s).";
 
-const evidencias =
-gerarEvidencias(
-ordenados.slice(0,8)
-);
+}catch(e){
 
+console.error(e);
 
-roteiro.textContent =
-roteiroFinal +
-"\n\n" +
-"━━━━━━━━━━━━━━━━━━━━\n\n" +
-evidencias;
-
-
-status.textContent =
-"✅ Pesquisa concluída — " +
-ordenados.length +
-" artigo(s) analisado(s).";
+status.textContent=
+"⚠️ Erro ao pesquisar.";
 
 }
 
-catch(erro) {
-
-console.error(erro);
+}
 
 
-status.textContent =
-"⚠️ Ocorreu um problema na pesquisa.";
+/* NARRAÇÃO */
 
+function ouvirRoteiro(){
 
-roteiro.textContent =
-"Não foi possível completar a pesquisa.\n\n" +
-erro.message;
+if(!("speechSynthesis" in window)){
+
+alert(
+"Seu navegador não possui suporte à narração."
+);
+
+return;
 
 }
+
+synth.cancel();
+
+const texto=
+new SpeechSynthesisUtterance(
+textoNarracao
+);
+
+const select=
+document.getElementById("voz");
+
+const indice=
+parseInt(select.value);
+
+if(vozes[indice]){
+
+texto.voice=
+vozes[indice];
+
+}
+
+texto.lang="pt-BR";
+texto.rate=0.95;
+texto.pitch=1;
+texto.volume=1;
+
+synth.speak(texto);
+
+}
+
+
+function pausarNarracao(){
+
+if(synth.speaking)
+synth.pause();
+
+}
+
+
+function pararNarracao(){
+
+synth.cancel();
 
 }
 
