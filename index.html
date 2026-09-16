@@ -712,6 +712,36 @@ Preparando...
 
 </div>
 
+  <div id="videoGenerator" class="card">
+
+<h2>🎬 Gerar vídeo</h2>
+
+<p>
+Seu roteiro está pronto. Agora transforme-o em um vídeo.
+</p>
+
+<button onclick="gerarVideoBio()">
+🎬 Gerar vídeo
+</button>
+
+<div id="videoStatus">
+Aguardando...
+</div>
+
+<video
+id="videoPreview"
+controls
+style="width:100%;display:none;margin-top:15px;border-radius:15px;">
+</video>
+
+<a
+id="downloadVideo"
+download="BioVideoAI.webm"
+style="display:none;">
+⬇️ Salvar vídeo
+</a>
+
+</div>
 
 <script>
 
