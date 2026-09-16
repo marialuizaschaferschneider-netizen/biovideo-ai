@@ -6,6 +6,532 @@
 <title>BioVideo AI</title>
 
 <style>
+  <!-- GERADOR DE VÍDEO BIOVIDEO AI -->
+<div id="videoGenerator" style="
+    background:white;
+    border-radius:18px;
+    padding:20px;
+    margin:20px 0;
+    box-shadow:0 4px 18px rgba(0,0,0,.08);
+">
+
+<h2>🎬 Gerador de vídeo</h2>
+
+<p>
+Transforme o roteiro preparado em um vídeo vertical.
+</p>
+
+<button onclick="gerarVideoBio()">
+🎬 Gerar vídeo
+</button>
+
+<div id="videoStatus" style="
+    margin-top:15px;
+    padding:12px;
+    border-radius:10px;
+    background:#eef7f1;
+">
+Aguardando...
+</div>
+
+<video id="videoPreview"
+    controls
+    style="
+    width:100%;
+    margin-top:15px;
+    border-radius:15px;
+    display:none;
+">
+</video>
+
+<a id="downloadVideo"
+   style="
+   display:none;
+   margin-top:15px;
+   padding:14px;
+   background:#237a57;
+   color:white;
+   text-decoration:none;
+   border-radius:12px;
+   text-align:center;
+   font-weight:bold;
+"
+download="BioVideoAI.mp4">
+⬇️ Salvar vídeo
+</a>
+
+</div>
+
+
+<script>
+
+async function gerarVideoBio(){
+
+    const tema =
+        document.getElementById("tema")?.value ||
+        "Biotecnologia e o cérebro";
+
+    const duracao =
+        parseInt(
+            document.getElementById("duracao")?.value || 1
+        );
+
+    const status =
+        document.getElementById("videoStatus");
+
+    const preview =
+        document.getElementById("videoPreview");
+
+    const download =
+        document.getElementById("downloadVideo");
+
+    status.innerText =
+        "🎬 Preparando o vídeo...";
+
+    preview.style.display = "none";
+    download.style.display = "none";
+
+
+    const canvas =
+        document.createElement("canvas");
+
+    canvas.width = 1080;
+    canvas.height = 1920;
+
+    const ctx =
+        canvas.getContext("2d");
+
+
+    const stream =
+        canvas.captureStream(30);
+
+
+    let mimeType = "video/webm";
+
+    if(
+        MediaRecorder.isTypeSupported(
+            "video/webm;codecs=vp9"
+        )
+    ){
+
+        mimeType =
+            "video/webm;codecs=vp9";
+
+    }
+    else if(
+        MediaRecorder.isTypeSupported(
+            "video/webm"
+        )
+    ){
+
+        mimeType =
+            "video/webm";
+
+    }
+
+
+    const recorder =
+        new MediaRecorder(
+            stream,
+            {
+                mimeType:mimeType,
+                videoBitsPerSecond:5000000
+            }
+        );
+
+
+    const chunks=[];
+
+
+    recorder.ondataavailable =
+        function(event){
+
+            if(event.data.size > 0){
+
+                chunks.push(
+                    event.data
+                );
+
+            }
+
+        };
+
+
+    const videoBlobPromise =
+        new Promise(resolve => {
+
+            recorder.onstop =
+                function(){
+
+                    resolve(
+                        new Blob(
+                            chunks,
+                            {
+                                type:mimeType
+                            }
+                        )
+                    );
+
+                };
+
+        });
+
+
+    recorder.start();
+
+
+    const cenas = [
+
+        {
+            titulo:"INTRODUÇÃO",
+            texto:
+            "Você já parou para pensar como " +
+            tema +
+            " está presente no mundo?"
+        },
+
+        {
+            titulo:"O QUE É?",
+            texto:
+            "Vamos entender os principais conceitos " +
+            "relacionados a esse assunto."
+        },
+
+        {
+            titulo:"COMO FUNCIONA?",
+            texto:
+            "A ciência permite estudar esses processos " +
+            "e compreender como eles funcionam."
+        },
+
+        {
+            titulo:"APLICAÇÕES",
+            texto:
+            "A biotecnologia pode gerar aplicações " +
+            "em diferentes áreas da sociedade."
+        },
+
+        {
+            titulo:"PESQUISA CIENTÍFICA",
+            texto:
+            "Pesquisas científicas ajudam a descobrir " +
+            "novas possibilidades e também seus limites."
+        },
+
+        {
+            titulo:"CONCLUSÃO",
+            texto:
+            "Conhecimento científico ajuda a transformar " +
+            "possibilidades em novas descobertas."
+        }
+
+    ];
+
+
+    const tempoTotal =
+        duracao * 60 * 1000;
+
+    const tempoCena =
+        tempoTotal / cenas.length;
+
+
+    const inicio =
+        performance.now();
+
+
+    function desenhar(){
+
+        const agora =
+            performance.now();
+
+        const decorrido =
+            agora - inicio;
+
+
+        const indice =
+            Math.min(
+                Math.floor(
+                    decorrido / tempoCena
+                ),
+                cenas.length - 1
+            );
+
+
+        const progresso =
+            (
+                decorrido %
+                tempoCena
+            ) / tempoCena;
+
+
+        const cena =
+            cenas[indice];
+
+
+        /* FUNDO */
+
+        const gradiente =
+            ctx.createLinearGradient(
+                0,0,
+                1080,1920
+            );
+
+        gradiente.addColorStop(
+            0,
+            "#0c3327"
+        );
+
+        gradiente.addColorStop(
+            1,
+            "#1e7655"
+        );
+
+        ctx.fillStyle =
+            gradiente;
+
+        ctx.fillRect(
+            0,0,
+            1080,1920
+        );
+
+
+        /* CÍRCULOS ANIMADOS */
+
+        for(let i=0;i<8;i++){
+
+            const x =
+                100 +
+                i*140;
+
+            const y =
+                300 +
+                Math.sin(
+                    progresso * Math.PI * 2 +
+                    i
+                ) * 80;
+
+            ctx.beginPath();
+
+            ctx.arc(
+                x,
+                y,
+                35,
+                0,
+                Math.PI*2
+            );
+
+            ctx.fillStyle =
+                "rgba(255,255,255,.15)";
+
+            ctx.fill();
+
+        }
+
+
+        /* LOGO */
+
+        ctx.fillStyle =
+            "white";
+
+        ctx.font =
+            "bold 54px Arial";
+
+        ctx.textAlign =
+            "center";
+
+        ctx.fillText(
+            "🧬 BioVideo AI",
+            540,
+            180
+        );
+
+
+        /* CENA */
+
+        ctx.font =
+            "bold 70px Arial";
+
+        ctx.fillText(
+            cena.titulo,
+            540,
+            650
+        );
+
+
+        /* TEXTO */
+
+        ctx.font =
+            "42px Arial";
+
+        const linhas =
+            quebrarTexto(
+                cena.texto,
+                850
+            );
+
+
+        linhas.forEach(
+            (linha,i)=>{
+
+                ctx.fillText(
+                    linha,
+                    540,
+                    850 + i*65
+                );
+
+            }
+        );
+
+
+        /* BARRA DE PROGRESSO */
+
+        ctx.fillStyle =
+            "rgba(255,255,255,.25)";
+
+        ctx.fillRect(
+            100,
+            1730,
+            880,
+            10
+        );
+
+
+        ctx.fillStyle =
+            "white";
+
+        ctx.fillRect(
+            100,
+            1730,
+            880 * (
+                decorrido /
+                tempoTotal
+            ),
+            10
+        );
+
+
+        if(
+            decorrido <
+            tempoTotal
+        ){
+
+            requestAnimationFrame(
+                desenhar
+            );
+
+        }
+        else{
+
+            recorder.stop();
+
+            status.innerText =
+                "⏳ Finalizando o vídeo...";
+
+        }
+
+    }
+
+
+    function quebrarTexto(
+        texto,
+        largura
+    ){
+
+        const palavras =
+            texto.split(" ");
+
+        const linhas=[];
+
+        let linha="";
+
+
+        palavras.forEach(
+            palavra=>{
+
+                const teste =
+                    linha +
+                    palavra +
+                    " ";
+
+                if(
+                    ctx.measureText(
+                        teste
+                    ).width >
+                    largura
+                ){
+
+                    linhas.push(
+                        linha
+                    );
+
+                    linha =
+                        palavra +
+                        " ";
+
+                }
+                else{
+
+                    linha =
+                        teste;
+
+                }
+
+            }
+        );
+
+
+        if(linha)
+            linhas.push(linha);
+
+
+        return linhas;
+
+    }
+
+
+    desenhar();
+
+
+    const blob =
+        await videoBlobPromise;
+
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+
+    preview.src =
+        url;
+
+    preview.style.display =
+        "block";
+
+
+    download.href =
+        url;
+
+    download.style.display =
+        "block";
+
+
+    download.download =
+        "BioVideoAI-" +
+        tema
+        .replace(
+            /[^a-z0-9]/gi,
+            "-"
+        ) +
+        ".webm";
+
+
+    status.innerText =
+        "✅ Vídeo criado!";
+
+}
+
+</script>
 *{box-sizing:border-box}
 body{
 margin:0;
