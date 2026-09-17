@@ -1356,7 +1356,6 @@ return linhas;
 /* =========================
    DESENHAR CENA
 ========================= */
-
 function desenharCena(
 ctx,
 cena,
@@ -1365,160 +1364,337 @@ progresso,
 tema
 ){
 
-const largura =
-1080;
+const largura = 1080;
+const altura = 1920;
 
-const altura =
-1920;
+/* FUNDO */
 
-
-const gradiente =
-ctx.createLinearGradient(
-0,
-0,
-largura,
-altura
+const fundo = ctx.createLinearGradient(
+0,0,
+largura,altura
 );
 
+fundo.addColorStop(0,"#071f19");
+fundo.addColorStop(.5,"#123f32");
+fundo.addColorStop(1,"#071a15");
 
-gradiente.addColorStop(
-0,
-"#0c3327"
-);
-
-
-gradiente.addColorStop(
-1,
-"#1e7655"
-);
+ctx.fillStyle = fundo;
+ctx.fillRect(0,0,largura,altura);
 
 
-ctx.fillStyle =
-gradiente;
+/* PARTÍCULAS */
 
-
-ctx.fillRect(
-0,
-0,
-largura,
-altura
-);
-
-
-/* ELEMENTOS EM MOVIMENTO */
-
-for(
-let i=0;
-i<10;
-i++
-){
+for(let i=0;i<35;i++){
 
 const x =
-80 +
-i * 110;
-
+(i*137 + progresso*180) % largura;
 
 const y =
-350 +
-Math.sin(
-progresso *
-Math.PI *
-2 +
-i
-) *
-70;
+(i*83 + Math.sin(progresso*6+i)*100)
+% 1500 + 180;
 
+const tamanho =
+4 + (i%5);
 
 ctx.beginPath();
-
 
 ctx.arc(
 x,
 y,
-30,
+tamanho,
 0,
-Math.PI * 2
+Math.PI*2
 );
 
-
 ctx.fillStyle =
-"rgba(255,255,255,.14)";
-
+"rgba(150,255,210,.18)";
 
 ctx.fill();
 
 }
 
 
-/* MARCA */
+/* DNA ANIMADO */
+
+if(
+tema.toLowerCase().includes("dna") ||
+tema.toLowerCase().includes("biotecnologia")
+){
+
+ctx.save();
+
+ctx.translate(540,650);
+
+ctx.strokeStyle =
+"rgba(120,255,210,.65)";
+
+ctx.lineWidth=7;
+
+ctx.beginPath();
+
+for(
+let y=-300;
+y<300;
+y+=8
+){
+
+const x =
+Math.sin(
+y/65 +
+progresso*6
+)*170;
+
+if(y===-300)
+ctx.moveTo(x,y);
+else
+ctx.lineTo(x,y);
+
+}
+
+ctx.stroke();
+
+
+ctx.beginPath();
+
+for(
+let y=-300;
+y<300;
+y+=8
+){
+
+const x =
+-Math.sin(
+y/65 +
+progresso*6
+)*170;
+
+if(y===-300)
+ctx.moveTo(x,y);
+else
+ctx.lineTo(x,y);
+
+}
+
+ctx.stroke();
+
+
+for(
+let y=-280;
+y<280;
+y+=45
+){
+
+const x1 =
+Math.sin(
+y/65+
+progresso*6
+)*170;
+
+const x2 =
+-x1;
+
+ctx.beginPath();
+
+ctx.moveTo(x1,y);
+ctx.lineTo(x2,y);
+
+ctx.strokeStyle =
+"rgba(220,255,240,.45)";
+
+ctx.lineWidth=4;
+
+ctx.stroke();
+
+}
+
+ctx.restore();
+
+}
+
+
+/* CÍRCULO / CÉLULA */
+
+ctx.save();
+
+const cx=540;
+const cy=650;
+
+const raio =
+190 +
+Math.sin(progresso*6)*8;
+
+ctx.beginPath();
+
+ctx.arc(
+cx,
+cy,
+raio,
+0,
+Math.PI*2
+);
 
 ctx.fillStyle =
-"white";
+"rgba(80,190,150,.12)";
 
-ctx.textAlign =
-"center";
+ctx.fill();
+
+ctx.strokeStyle =
+"rgba(130,255,210,.45)";
+
+ctx.lineWidth=8;
+
+ctx.stroke();
 
 
-ctx.font =
-"bold 52px Arial";
+/* NÚCLEO */
 
+ctx.beginPath();
+
+ctx.arc(
+cx,
+cy,
+80,
+0,
+Math.PI*2
+);
+
+ctx.fillStyle =
+"rgba(190,255,230,.18)";
+
+ctx.fill();
+
+ctx.strokeStyle =
+"rgba(200,255,235,.6)";
+
+ctx.lineWidth=5;
+
+ctx.stroke();
+
+
+/* PEQUENAS ORGANELAS */
+
+for(
+let i=0;
+i<9;
+i++
+){
+
+const angulo =
+(i/9)*Math.PI*2 +
+progresso*2;
+
+const x =
+cx +
+Math.cos(angulo)*130;
+
+const y =
+cy +
+Math.sin(angulo)*130;
+
+ctx.beginPath();
+
+ctx.arc(
+x,
+y,
+12,
+0,
+Math.PI*2
+);
+
+ctx.fillStyle =
+"rgba(210,255,235,.7)";
+
+ctx.fill();
+
+}
+
+ctx.restore();
+
+
+/* MARCA */
+
+ctx.textAlign="center";
+
+ctx.font=
+"bold 34px Arial";
+
+ctx.fillStyle=
+"rgba(255,255,255,.75)";
 
 ctx.fillText(
-"🧬 BioVideo AI",
+"BioVideo AI",
+540,
+115
+);
+
+
+/* NÚMERO DA CENA */
+
+ctx.font=
+"bold 27px Arial";
+
+ctx.fillStyle=
+"rgba(190,255,225,.8)";
+
+ctx.fillText(
+"CENA "+(indice+1)+" / 6",
 540,
 170
 );
 
 
-/* CENA */
-
-ctx.font =
-"bold 38px Arial";
-
-
-ctx.fillText(
-"CENA " +
-(indice + 1),
-540,
-480
-);
-
-
 /* TÍTULO */
 
-ctx.font =
-"bold 64px Arial";
+ctx.font=
+"bold 65px Arial";
 
+ctx.fillStyle=
+"#ffffff";
 
 ctx.fillText(
 cena.titulo,
 540,
-650
+1030
 );
 
 
-/* LEGENDA */
+/* LINHA DECORATIVA */
 
-ctx.font =
-"42px Arial";
+ctx.fillStyle=
+"#80e5bb";
 
+ctx.fillRect(
+390,
+1080,
+300,
+7
+);
+
+
+/* TEXTO */
+
+ctx.font=
+"38px Arial";
+
+ctx.fillStyle=
+"rgba(255,255,255,.9)";
 
 const linhas =
 quebrarTexto(
 ctx,
 cena.legenda,
-850
+820
 );
 
-
-linhas.forEach(
+linhas
+.slice(0,4)
+.forEach(
 function(linha,i){
 
 ctx.fillText(
 linha,
 540,
-850 +
-i * 70
+1190+i*62
 );
 
 });
@@ -1526,61 +1702,71 @@ i * 70
 
 /* TEMA */
 
-ctx.font =
-"30px Arial";
+ctx.font=
+"26px Arial";
 
+ctx.fillStyle=
+"rgba(210,240,230,.65)";
 
 const temaLinhas =
 quebrarTexto(
 ctx,
 tema,
-800
+760
 );
 
-
 temaLinhas
-.slice(0,3)
+.slice(0,2)
 .forEach(
 function(linha,i){
 
 ctx.fillText(
 linha,
 540,
-1100 +
-i * 48
+1480+i*42
 );
 
 });
 
 
-/* BARRA */
+/* BARRA DE PROGRESSO */
 
-ctx.fillStyle =
-"rgba(255,255,255,.25)";
-
+ctx.fillStyle=
+"rgba(255,255,255,.18)";
 
 ctx.fillRect(
 100,
-1740,
+1770,
 880,
-12
+10
+);
+
+ctx.fillStyle=
+"#80e5bb";
+
+ctx.fillRect(
+100,
+1770,
+880*progresso,
+10
 );
 
 
-ctx.fillStyle =
-"white";
+/* TEMPO VISUAL */
 
+ctx.font=
+"24px Arial";
 
-ctx.fillRect(
-100,
-1740,
-880 *
-progresso,
-12
+ctx.fillStyle=
+"rgba(255,255,255,.55)";
+
+ctx.fillText(
+Math.round(progresso*100)+"%",
+540,
+1830
 );
 
 }
-
 
 /* =========================
    GERADOR DE VÍDEO
