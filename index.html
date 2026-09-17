@@ -1,364 +1,1975 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BioVideo AI</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#eef7f1;
+  color:#17352a;
+}
+
+.container{
+  max-width:900px;
+  width:92%;
+  margin:auto;
+  padding:25px 0 50px;
+}
+
+.header{
+  text-align:center;
+  padding:20px;
+}
+
+.logo{
+  font-size:36px;
+  font-weight:bold;
+}
+
+.subtitle{
+  color:#60756b;
+  margin-top:8px;
+}
+
+.card{
+  background:white;
+  border-radius:18px;
+  padding:22px;
+  margin-top:18px;
+  box-shadow:0 4px 18px rgba(0,0,0,.08);
+}
+
+label{
+  display:block;
+  font-weight:bold;
+  margin:12px 0 7px;
+}
+
+textarea,select{
+  width:100%;
+  padding:13px;
+  border:1px solid #ccdcd3;
+  border-radius:10px;
+  font-size:16px;
+  box-sizing:border-box;
+  background:white;
+}
+
+textarea{
+  min-height:120px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+button{
+  border:0;
+  border-radius:11px;
+  padding:14px 18px;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+  margin-top:15px;
+  background:#237a57;
+  color:white;
+}
+
+.secondary{
+  background:#4b6f60;
+}
+
+.danger{
+  background:#8e4141;
+}
+
+.status{
+  padding:13px;
+  border-radius:10px;
+  background:#edf8f1;
+  margin-top:14px;
+}
+
+.scene{
+  border:1px solid #d7e5dd;
+  border-radius:13px;
+  padding:16px;
+  margin:13px 0;
+  background:#fbfdfc;
+}
+
+.reference{
+  padding:13px;
+  border-left:4px solid #237a57;
+  background:#f5faf7;
+  margin:10px 0;
+}
+
+.hidden{
+  display:none;
+}
+
+#videoPreview{
+  display:none;
+  width:100%;
+  margin-top:15px;
+  border-radius:12px;
+}
+
+#downloadVideo{
+  display:none;
+  text-align:center;
+  text-decoration:none;
+  background:#237a57;
+  color:#fff;
+  padding:13px;
+  border-radius:10px;
+  margin-top:12px;
+}
+
+.small{
+  font-size:13px;
+  color:#65776f;
+}
+
+@media(max-width:650px){
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .logo{
+    font-size:30px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+<div class="logo">🧬 BioVideo AI</div>
+<div class="subtitle">
+Pesquisa • Roteiro • Narração • Vídeo educativo
+</div>
+</div>
+
+
+<div class="card">
+
+<label for="tema">
+Sobre o que será o vídeo?
+</label>
+
+<textarea
+id="tema"
+placeholder="Exemplo: Biotecnologia e o cérebro"
+></textarea>
+
+
+<div class="grid">
+
+<div>
+
+<label>Duração máxima</label>
+
+<select id="duracao">
+
+<option value="1">
+1 minuto
+</option>
+
+<option value="2">
+2 minutos
+</option>
+
+<option value="3">
+3 minutos
+</option>
+
+<option value="4" selected>
+4 minutos
+</option>
+
+</select>
+
+</div>
+
+
+<div>
+
+<label>Tipo de vídeo</label>
+
+<select id="tipo">
+
+<option>
+Pesquisa
+</option>
+
+<option>
+Educativo
+</option>
+
+<option>
+Explicativo
+</option>
+
+<option>
+Curiosidades
+</option>
+
+</select>
+
+</div>
+
+
+<div>
+
+<label>Profundidade da pesquisa</label>
+
+<select id="profundidade">
+
+<option value="rapida">
+Rápida
+</option>
+
+<option value="completa">
+Completa
+</option>
+
+<option value="profunda" selected>
+Pesquisa profunda
+</option>
+
+</select>
+
+</div>
+
+
+<div>
+
+<label>Voz</label>
+
+<select id="voz">
+
+<option>
+Carregando vozes...
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+<button id="btnRoteiro">
+🚀 Criar roteiro
+</button>
+
+</div>
+
+
+<div id="resultado" class="card hidden">
+
+<div id="status" class="status">
+Preparando...
+</div>
+
+
+<div>
+
+<button id="btnOuvir">
+▶️ Ouvir narração
+</button>
+
+<button id="btnPausar" class="secondary">
+⏸️ Pausar
+</button>
+
+<button id="btnParar" class="danger">
+⏹️ Parar
+</button>
+
+</div>
+
+
+<div id="roteiro"></div>
+
+</div>
+
+
+<div id="videoGenerator" class="card">
+
+<h2>
+🎬 Gerar vídeo
+</h2>
+
+<p>
+Seu roteiro está pronto. Agora vamos transformá-lo em um vídeo vertical.
+</p>
+
+
+<button id="btnGerarVideo">
+🎬 Gerar vídeo
+</button>
+
+
+<div id="videoStatus" class="status">
+Aguardando...
+</div>
+
+
+<video
+id="videoPreview"
+controls>
+</video>
+
+
+<a
+id="downloadVideo"
+download="BioVideoAI.webm">
+
+⬇️ Salvar vídeo
+
+</a>
+
+</div>
+
+</div>
+
+
 <script>
 
-async function gerarVideoBio() {
+"use strict";
 
-    const status = document.getElementById("videoStatus");
-    const video = document.getElementById("videoPreview");
-    const download = document.getElementById("downloadVideo");
 
-    const tema =
-        document.getElementById("tema")?.value?.trim() ||
-        "Biotecnologia e o cérebro";
+/* =========================
+   VARIÁVEIS
+========================= */
 
-    const duracao =
-        parseInt(
-            document.getElementById("duracao")?.value || "1"
-        );
+const synth =
+window.speechSynthesis;
 
-    if (!status || !video || !download) {
-        alert("Elementos do gerador de vídeo não foram encontrados.");
-        return;
-    }
+let vozes = [];
 
-    status.innerText = "🎬 Preparando o vídeo...";
+let cenasAtuais = [];
 
-    const canvas = document.createElement("canvas");
+let textoNarracao = "";
 
-    canvas.width = 1080;
-    canvas.height = 1920;
 
-    const ctx = canvas.getContext("2d");
+/* =========================
+   VOZES
+========================= */
 
-    if (!canvas.captureStream || !window.MediaRecorder) {
-        status.innerText =
-            "⚠️ Seu navegador não suporta a geração de vídeo.";
-        return;
-    }
+function carregarVozes(){
 
-    const stream = canvas.captureStream(30);
+if(!synth) return;
 
-    const partes = [];
+vozes =
+synth.getVoices();
 
-    const recorder = new MediaRecorder(stream, {
-        mimeType: "video/webm"
-    });
+const select =
+document.getElementById("voz");
 
-    recorder.ondataavailable = function(event) {
+select.innerHTML = "";
 
-        if (event.data.size > 0) {
-            partes.push(event.data);
-        }
+const brasileiras =
+vozes.filter(function(v){
 
-    };
+return v.lang &&
+v.lang.toLowerCase()
+.startsWith("pt");
 
-    recorder.onstop = function() {
+});
 
-        const blob = new Blob(
-            partes,
-            { type: "video/webm" }
-        );
+const lista =
+brasileiras.length ?
+brasileiras :
+vozes;
 
-        const url =
-            URL.createObjectURL(blob);
+lista.forEach(function(v){
 
-        video.src = url;
-        video.style.display = "block";
+const option =
+document.createElement("option");
 
-        download.href = url;
-        download.style.display = "block";
-        download.download = "BioVideoAI.webm";
+option.value =
+vozes.indexOf(v);
 
-        status.innerText =
-            "✅ Vídeo criado com sucesso!";
+option.textContent =
+v.name +
+" (" +
+v.lang +
+")";
 
-    };
+select.appendChild(option);
 
-
-    const cenas = [
-
-        {
-            titulo: "INTRODUÇÃO",
-            texto:
-                "Você já parou para pensar como " +
-                tema +
-                " está presente no mundo?"
-        },
-
-        {
-            titulo: "O QUE É?",
-            texto:
-                "Vamos entender os principais conceitos " +
-                "científicos relacionados a esse assunto."
-        },
-
-        {
-            titulo: "COMO FUNCIONA?",
-            texto:
-                "A ciência permite estudar esses processos " +
-                "e compreender como eles funcionam."
-        },
-
-        {
-            titulo: "APLICAÇÕES",
-            texto:
-                "A biotecnologia apresenta aplicações " +
-                "em diferentes áreas da sociedade."
-        },
-
-        {
-            titulo: "PESQUISA CIENTÍFICA",
-            texto:
-                "Pesquisas científicas ajudam a descobrir " +
-                "novas possibilidades e também seus limites."
-        },
-
-        {
-            titulo: "CONCLUSÃO",
-            texto:
-                "Conhecer a ciência ajuda a compreender " +
-                "como novas tecnologias podem transformar a sociedade."
-        }
-
-    ];
-
-
-    /* DURAÇÃO REAL ESCOLHIDA PELO USUÁRIO */
-
-    const duracaoTotal =
-        duracao * 60 * 1000;
-
-    const duracaoCena =
-        duracaoTotal / cenas.length;
-
-
-    const inicio =
-        performance.now();
-
-
-    function quebrarTexto(texto, largura) {
-
-        const palavras =
-            texto.split(" ");
-
-        const linhas = [];
-
-        let linha = "";
-
-        palavras.forEach(palavra => {
-
-            const teste =
-                linha + palavra + " ";
-
-            if (
-                ctx.measureText(teste).width >
-                largura
-            ) {
-
-                linhas.push(linha);
-
-                linha =
-                    palavra + " ";
-
-            } else {
-
-                linha =
-                    teste;
-
-            }
-
-        });
-
-        if (linha) {
-            linhas.push(linha);
-        }
-
-        return linhas;
-
-    }
-
-
-    function desenhar() {
-
-        const agora =
-            performance.now();
-
-        const decorrido =
-            agora - inicio;
-
-
-        const indice =
-            Math.min(
-                Math.floor(
-                    decorrido / duracaoCena
-                ),
-                cenas.length - 1
-            );
-
-
-        const cena =
-            cenas[indice];
-
-
-        /* FUNDO */
-
-        ctx.fillStyle = "#123f30";
-
-        ctx.fillRect(
-            0,
-            0,
-            canvas.width,
-            canvas.height
-        );
-
-
-        /* ELEMENTOS ANIMADOS */
-
-        for (let i = 0; i < 9; i++) {
-
-            const x =
-                120 + i * 120;
-
-            const y =
-                350 +
-                Math.sin(
-                    decorrido / 700 + i
-                ) * 70;
-
-            ctx.beginPath();
-
-            ctx.arc(
-                x,
-                y,
-                35,
-                0,
-                Math.PI * 2
-            );
-
-            ctx.fillStyle =
-                "rgba(255,255,255,0.12)";
-
-            ctx.fill();
-
-        }
-
-
-        /* MARCA */
-
-        ctx.fillStyle = "white";
-
-        ctx.textAlign = "center";
-
-        ctx.font =
-            "bold 58px Arial";
-
-        ctx.fillText(
-            "🧬 BioVideo AI",
-            540,
-            180
-        );
-
-
-        /* CENA */
-
-        ctx.font =
-            "bold 42px Arial";
-
-        ctx.fillText(
-            "CENA " + (indice + 1),
-            540,
-            520
-        );
-
-
-        /* TÍTULO */
-
-        ctx.font =
-            "bold 66px Arial";
-
-        ctx.fillText(
-            cena.titulo,
-            540,
-            700
-        );
-
-
-        /* TEXTO */
-
-        ctx.font =
-            "42px Arial";
-
-        const linhas =
-            quebrarTexto(
-                cena.texto,
-                850
-            );
-
-
-        linhas.forEach((linha, i) => {
-
-            ctx.fillText(
-                linha,
-                540,
-                900 + i * 70
-            );
-
-        });
-
-
-        /* PROGRESSO */
-
-        ctx.fillStyle =
-            "rgba(255,255,255,0.25)";
-
-        ctx.fillRect(
-            100,
-            1720,
-            880,
-            14
-        );
-
-
-        ctx.fillStyle = "white";
-
-        ctx.fillRect(
-            100,
-            1720,
-            880 *
-            Math.min(
-                decorrido / duracaoTotal,
-                1
-            ),
-            14
-        );
-
-
-        /* CONTINUAR */
-
-        if (decorrido < duracaoTotal) {
-
-            requestAnimationFrame(
-                desenhar
-            );
-
-        } else {
-
-            recorder.stop();
-
-        }
-
-    }
-
-
-    status.innerText =
-        "🎥 Gerando vídeo de " +
-        duracao +
-        " minuto(s)...";
-
-
-    recorder.start();
-
-    desenhar();
+});
 
 }
 
+carregarVozes();
+
+if(
+synth.onvoiceschanged !== undefined
+){
+
+synth.onvoiceschanged =
+carregarVozes;
+
+}
+
+
+/* =========================
+   TERMOS
+========================= */
+
+const termos = {
+
+"cérebro":"brain",
+"cerebro":"brain",
+
+"neurônio":"neuron",
+"neuronio":"neuron",
+
+"neurônios":"neurons",
+"neuronios":"neurons",
+
+"dna":"DNA",
+"rna":"RNA",
+
+"genética":"genetics",
+"genetica":"genetics",
+
+"biotecnologia":"biotechnology",
+
+"medicina":"medicine",
+
+"saúde":"health",
+"saude":"health",
+
+"doença":"disease",
+"doenca":"disease",
+
+"câncer":"cancer",
+"cancer":"cancer",
+
+"vacina":"vaccine",
+"vacinas":"vaccines",
+
+"agricultura":"agriculture",
+
+"plantas":"plants",
+
+"bactéria":"bacteria",
+"bacteria":"bacteria",
+
+"vírus":"virus",
+"virus":"virus",
+
+"psicologia":"psychology",
+
+"memória":"memory",
+"memoria":"memory",
+
+"comportamento":"behavior"
+
+};
+
+
+/* =========================
+   TERMOS DE PESQUISA
+========================= */
+
+function gerarTermos(tema){
+
+const partes =
+tema
+.toLowerCase()
+.replace(/[?!.,;:()]/g,"")
+.split(/\s+/);
+
+const ingles = [];
+
+partes.forEach(function(p){
+
+if(termos[p])
+ingles.push(termos[p]);
+
+});
+
+const lista = [tema];
+
+if(ingles.length){
+
+lista.push(
+ingles.join(" AND ")
+);
+
+}
+
+return lista;
+
+}
+
+
+/* =========================
+   PUBMED
+========================= */
+
+async function pesquisar(
+tema,
+profundidade
+){
+
+let limite = 5;
+
+if(
+profundidade === "completa"
+)
+limite = 10;
+
+if(
+profundidade === "profunda"
+)
+limite = 15;
+
+
+const termosPesquisa =
+gerarTermos(tema);
+
+const ids = [];
+
+const usados = {};
+
+
+for(
+let i=0;
+i<termosPesquisa.length;
+i++
+){
+
+try{
+
+const url =
+"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi" +
+
+"?db=pubmed" +
+
+"&term=" +
+encodeURIComponent(
+termosPesquisa[i]
+) +
+
+"&retmax=" +
+limite +
+
+"&retmode=json" +
+
+"&sort=relevance" +
+
+"&tool=BioVideoAI";
+
+
+const resposta =
+await fetch(url);
+
+const dados =
+await resposta.json();
+
+
+const encontrados =
+dados
+.esearchresult
+.idlist || [];
+
+
+encontrados.forEach(function(id){
+
+if(!usados[id]){
+
+usados[id] = true;
+
+ids.push(id);
+
+}
+
+});
+
+}
+catch(e){
+
+console.log(e);
+
+}
+
+}
+
+
+return ids.slice(
+0,
+limite
+);
+
+}
+
+
+/* =========================
+   ARTIGOS
+========================= */
+
+async function buscarArtigos(ids){
+
+if(!ids.length)
+return [];
+
+
+try{
+
+const url =
+"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi" +
+
+"?db=pubmed" +
+
+"&id=" +
+ids.join(",") +
+
+"&retmode=xml" +
+
+"&tool=BioVideoAI";
+
+
+const resposta =
+await fetch(url);
+
+const xml =
+await resposta.text();
+
+
+const doc =
+new DOMParser()
+.parseFromString(
+xml,
+"text/xml"
+);
+
+
+const lista = [];
+
+
+doc
+.querySelectorAll(
+"PubmedArticle"
+)
+.forEach(function(a){
+
+const titulo =
+a.querySelector(
+"ArticleTitle"
+);
+
+const pmid =
+a.querySelector(
+"PMID"
+);
+
+
+let resumo = "";
+
+
+a
+.querySelectorAll(
+"AbstractText"
+)
+.forEach(function(x){
+
+resumo +=
+x.textContent +
+" ";
+
+});
+
+
+lista.push({
+
+titulo:
+titulo ?
+titulo.textContent :
+"Título não disponível",
+
+pmid:
+pmid ?
+pmid.textContent :
+"",
+
+resumo:
+resumo.trim(),
+
+link:
+pmid ?
+"https://pubmed.ncbi.nlm.nih.gov/" +
+pmid.textContent +
+"/" :
+""
+
+});
+
+});
+
+
+return lista;
+
+}
+catch(e){
+
+console.log(e);
+
+return [];
+
+}
+
+}
+
+
+/* =========================
+   TEMPO
+========================= */
+
+function formatarTempo(segundos){
+
+return (
+
+Math.floor(
+segundos / 60
+)
+
++
+
+":"
+
++
+
+String(
+Math.floor(
+segundos % 60
+)
+)
+.padStart(
+2,
+"0"
+)
+
+);
+
+}
+
+
+/* =========================
+   CENAS
+========================= */
+
+function criarCenas(
+tema,
+duracao
+){
+
+const total =
+duracao * 60;
+
+const parte =
+total / 6;
+
+
+const dados = [
+
+[
+
+"INTRODUÇÃO",
+
+"Imagem ou animação relacionada diretamente ao tema.",
+
+"Você já parou para pensar sobre " +
+tema +
+"? Neste vídeo vamos entender esse assunto de forma simples e baseada em ciência.",
+
+"Conheça o tema"
+
+],
+
+[
+
+"O QUE É?",
+
+"Mostrar os principais conceitos científicos relacionados ao assunto.",
+
+"Primeiro, vamos entender o que significa " +
+tema +
+" e quais são os conceitos fundamentais envolvidos.",
+
+"O que é?"
+
+],
+
+[
+
+"COMO FUNCIONA?",
+
+"Animação mostrando o processo de forma didática.",
+
+"Agora vamos entender como esse processo funciona e quais mecanismos científicos estão envolvidos.",
+
+"Como funciona?"
+
+],
+
+[
+
+"APLICAÇÕES",
+
+"Mostrar exemplos de aplicações no mundo real.",
+
+"A pesquisa científica investiga diferentes aplicações e possibilidades relacionadas a esse campo.",
+
+"Aplicações reais"
+
+],
+
+[
+
+"EVIDÊNCIAS CIENTÍFICAS",
+
+"Mostrar laboratório, pesquisadores e artigos científicos.",
+
+"Os estudos científicos ajudam a compreender o que já sabemos, o que ainda está sendo investigado e quais são as limitações das evidências.",
+
+"O que dizem as pesquisas?"
+
+],
+
+[
+
+"CONCLUSÃO",
+
+"Retomar os principais pontos apresentados.",
+
+"Em resumo, " +
+tema +
+" envolve ciência, tecnologia e diferentes possibilidades. Conhecer as evidências ajuda a compreender o assunto de maneira responsável.",
+
+"Conclusão"
+
+]
+
+];
+
+
+const cenas = [];
+
+
+for(
+let i=0;
+i<6;
+i++
+){
+
+const inicio =
+i * parte;
+
+const fim =
+i === 5 ?
+total :
+(i + 1) * parte;
+
+
+cenas.push({
+
+titulo:
+dados[i][0],
+
+visual:
+dados[i][1],
+
+narracao:
+dados[i][2],
+
+legenda:
+dados[i][3],
+
+inicio:
+inicio,
+
+fim:
+fim,
+
+tempo:
+formatarTempo(inicio) +
+" – " +
+formatarTempo(fim)
+
+});
+
+}
+
+
+return cenas;
+
+}
+
+
+/* =========================
+   MOSTRAR ROTEIRO
+========================= */
+
+function mostrarResultado(
+tema,
+duracao,
+tipo,
+artigos
+){
+
+cenasAtuais =
+criarCenas(
+tema,
+duracao
+);
+
+
+textoNarracao = "";
+
+
+let html =
+"<h2>🎬 Roteiro preparado!</h2>";
+
+
+html +=
+"<p><b>Tema:</b> " +
+tema +
+"</p>";
+
+
+html +=
+"<p><b>Duração:</b> " +
+duracao +
+" minuto(s)</p>";
+
+
+html +=
+"<p><b>Tipo:</b> " +
+tipo +
+"</p>";
+
+
+cenasAtuais.forEach(
+function(cena,i){
+
+html +=
+'<div class="scene">';
+
+
+html +=
+"<h3>🎬 Cena " +
+(i + 1) +
+" — " +
+cena.titulo +
+"</h3>";
+
+
+html +=
+"<p><b>⏱️ Tempo:</b> " +
+cena.tempo +
+"</p>";
+
+
+html +=
+"<p><b>🖼️ Visual:</b> " +
+cena.visual +
+"</p>";
+
+
+html +=
+"<p><b>🎙️ Narração:</b> " +
+cena.narracao +
+"</p>";
+
+
+html +=
+"<p><b>📝 Texto na tela:</b> " +
+cena.legenda +
+"</p>";
+
+
+html +=
+"</div>";
+
+
+textoNarracao +=
+cena.narracao +
+" ";
+
+});
+
+
+html +=
+"<h2>📚 Referências científicas</h2>";
+
+
+if(!artigos.length){
+
+html +=
+"<p>Nenhum artigo encontrado para esse tema.</p>";
+
+}
+
+
+artigos.forEach(
+function(a,i){
+
+html +=
+'<div class="reference">';
+
+
+html +=
+"<b>" +
+(i + 1) +
+". " +
+a.titulo +
+"</b>";
+
+
+if(a.pmid){
+
+html +=
+"<p class='small'>PMID: " +
+a.pmid +
+"</p>";
+
+}
+
+
+if(a.resumo){
+
+html +=
+"<p>" +
+a.resumo +
+"</p>";
+
+}
+
+
+if(a.link){
+
+html +=
+'<a href="' +
+a.link +
+'" target="_blank">' +
+"🔗 Abrir artigo no PubMed" +
+"</a>";
+
+}
+
+
+html +=
+"</div>";
+
+});
+
+
+document
+.getElementById(
+"roteiro"
+)
+.innerHTML = html;
+
+
+document
+.getElementById(
+"resultado"
+)
+.classList
+.remove("hidden");
+
+}
+
+
+/* =========================
+   CRIAR ROTEIRO
+========================= */
+
+async function criarRoteiro(){
+
+const tema =
+document
+.getElementById("tema")
+.value
+.trim();
+
+
+if(!tema){
+
+alert(
+"Digite o tema primeiro."
+);
+
+return;
+
+}
+
+
+const duracao =
+parseInt(
+document
+.getElementById("duracao")
+.value,
+10
+);
+
+
+const tipo =
+document
+.getElementById("tipo")
+.value;
+
+
+const profundidade =
+document
+.getElementById("profundidade")
+.value;
+
+
+const resultado =
+document
+.getElementById("resultado");
+
+
+const status =
+document
+.getElementById("status");
+
+
+resultado
+.classList
+.remove("hidden");
+
+
+status.textContent =
+"🔎 Pesquisando artigos científicos...";
+
+
+const ids =
+await pesquisar(
+tema,
+profundidade
+);
+
+
+status.textContent =
+"📚 Recuperando artigos e resumos...";
+
+
+const artigos =
+await buscarArtigos(ids);
+
+
+status.textContent =
+"🧠 Preparando roteiro...";
+
+
+mostrarResultado(
+tema,
+duracao,
+tipo,
+artigos
+);
+
+
+status.textContent =
+"✅ Roteiro pronto! " +
+artigos.length +
+" artigo(s) encontrado(s).";
+
+}
+
+
+/* =========================
+   NARRAÇÃO
+========================= */
+
+function ouvir(){
+
+if(!synth){
+
+alert(
+"Narração não suportada."
+);
+
+return;
+
+}
+
+
+synth.cancel();
+
+
+const utterance =
+new SpeechSynthesisUtterance(
+textoNarracao
+);
+
+
+const indice =
+parseInt(
+document
+.getElementById("voz")
+.value,
+10
+);
+
+
+if(vozes[indice]){
+
+utterance.voice =
+vozes[indice];
+
+}
+
+
+utterance.lang =
+"pt-BR";
+
+utterance.rate =
+0.95;
+
+utterance.pitch =
+1;
+
+utterance.volume =
+1;
+
+
+synth.speak(
+utterance
+);
+
+}
+
+
+function pausar(){
+
+if(
+synth &&
+synth.speaking
+){
+
+synth.pause();
+
+}
+
+}
+
+
+function parar(){
+
+if(synth){
+
+synth.cancel();
+
+}
+
+}
+
+
+/* =========================
+   QUEBRAR TEXTO
+========================= */
+
+function quebrarTexto(
+ctx,
+texto,
+largura
+){
+
+const palavras =
+texto.split(" ");
+
+const linhas = [];
+
+let linha = "";
+
+
+palavras.forEach(
+function(palavra){
+
+const teste =
+linha +
+palavra +
+" ";
+
+
+if(
+ctx.measureText(
+teste
+).width >
+largura
+){
+
+if(linha)
+linhas.push(
+linha
+);
+
+
+linha =
+palavra +
+" ";
+
+}
+else{
+
+linha =
+teste;
+
+}
+
+});
+
+
+if(linha)
+linhas.push(
+linha
+);
+
+
+return linhas;
+
+}
+
+
+/* =========================
+   DESENHAR CENA
+========================= */
+
+function desenharCena(
+ctx,
+cena,
+indice,
+progresso,
+tema
+){
+
+const largura =
+1080;
+
+const altura =
+1920;
+
+
+const gradiente =
+ctx.createLinearGradient(
+0,
+0,
+largura,
+altura
+);
+
+
+gradiente.addColorStop(
+0,
+"#0c3327"
+);
+
+
+gradiente.addColorStop(
+1,
+"#1e7655"
+);
+
+
+ctx.fillStyle =
+gradiente;
+
+
+ctx.fillRect(
+0,
+0,
+largura,
+altura
+);
+
+
+/* ELEMENTOS EM MOVIMENTO */
+
+for(
+let i=0;
+i<10;
+i++
+){
+
+const x =
+80 +
+i * 110;
+
+
+const y =
+350 +
+Math.sin(
+progresso *
+Math.PI *
+2 +
+i
+) *
+70;
+
+
+ctx.beginPath();
+
+
+ctx.arc(
+x,
+y,
+30,
+0,
+Math.PI * 2
+);
+
+
+ctx.fillStyle =
+"rgba(255,255,255,.14)";
+
+
+ctx.fill();
+
+}
+
+
+/* MARCA */
+
+ctx.fillStyle =
+"white";
+
+ctx.textAlign =
+"center";
+
+
+ctx.font =
+"bold 52px Arial";
+
+
+ctx.fillText(
+"🧬 BioVideo AI",
+540,
+170
+);
+
+
+/* CENA */
+
+ctx.font =
+"bold 38px Arial";
+
+
+ctx.fillText(
+"CENA " +
+(indice + 1),
+540,
+480
+);
+
+
+/* TÍTULO */
+
+ctx.font =
+"bold 64px Arial";
+
+
+ctx.fillText(
+cena.titulo,
+540,
+650
+);
+
+
+/* LEGENDA */
+
+ctx.font =
+"42px Arial";
+
+
+const linhas =
+quebrarTexto(
+ctx,
+cena.legenda,
+850
+);
+
+
+linhas.forEach(
+function(linha,i){
+
+ctx.fillText(
+linha,
+540,
+850 +
+i * 70
+);
+
+});
+
+
+/* TEMA */
+
+ctx.font =
+"30px Arial";
+
+
+const temaLinhas =
+quebrarTexto(
+ctx,
+tema,
+800
+);
+
+
+temaLinhas
+.slice(0,3)
+.forEach(
+function(linha,i){
+
+ctx.fillText(
+linha,
+540,
+1100 +
+i * 48
+);
+
+});
+
+
+/* BARRA */
+
+ctx.fillStyle =
+"rgba(255,255,255,.25)";
+
+
+ctx.fillRect(
+100,
+1740,
+880,
+12
+);
+
+
+ctx.fillStyle =
+"white";
+
+
+ctx.fillRect(
+100,
+1740,
+880 *
+progresso,
+12
+);
+
+}
+
+
+/* =========================
+   GERADOR DE VÍDEO
+========================= */
+
+async function gerarVideoBio(){
+
+const status =
+document
+.getElementById(
+"videoStatus"
+);
+
+
+const video =
+document
+.getElementById(
+"videoPreview"
+);
+
+
+const download =
+document
+.getElementById(
+"downloadVideo"
+);
+
+
+const tema =
+document
+.getElementById(
+"tema"
+)
+.value
+.trim()
+||
+"Biotecnologia e o cérebro";
+
+
+const duracao =
+parseInt(
+document
+.getElementById(
+"duracao"
+)
+.value,
+10
+)
+||
+1;
+
+
+/* PRECISA TER ROTEIRO */
+
+if(
+!cenasAtuais.length
+){
+
+alert(
+"Primeiro clique em Criar roteiro."
+);
+
+return;
+
+}
+
+
+/* VERIFICA SUPORTE */
+
+if(
+!HTMLCanvasElement
+.prototype
+.captureStream
+||
+!window.MediaRecorder
+){
+
+status.textContent =
+"⚠️ Este navegador não suporta a geração de vídeo.";
+
+return;
+
+}
+
+
+status.textContent =
+"🎬 Preparando vídeo de " +
+duracao +
+" minuto(s)...";
+
+
+/* CANVAS */
+
+const canvas =
+document
+.createElement(
+"canvas"
+);
+
+
+canvas.width =
+1080;
+
+canvas.height =
+1920;
+
+
+const ctx =
+canvas.getContext(
+"2d"
+);
+
+
+/* STREAM */
+
+const stream =
+canvas.captureStream(
+30
+);
+
+
+let tipoVideo =
+"video/webm";
+
+
+if(
+MediaRecorder
+.isTypeSupported(
+"video/webm;codecs=vp9"
+)
+){
+
+tipoVideo =
+"video/webm;codecs=vp9";
+
+}
+else if(
+MediaRecorder
+.isTypeSupported(
+"video/webm;codecs=vp8"
+)
+){
+
+tipoVideo =
+"video/webm;codecs=vp8";
+
+}
+
+
+const partes = [];
+
+
+const recorder =
+new MediaRecorder(
+stream,
+{
+mimeType:
+tipoVideo
+}
+);
+
+
+recorder
+.ondataavailable =
+function(event){
+
+if(
+event.data.size > 0
+){
+
+partes.push(
+event.data
+);
+
+}
+
+};
+
+
+const terminou =
+new Promise(
+function(resolve){
+
+recorder.onstop =
+resolve;
+
+});
+
+
+/* COMEÇA GRAVAÇÃO */
+
+recorder.start(
+1000
+);
+
+
+/* DURAÇÃO REAL */
+
+const inicio =
+performance.now();
+
+
+const duracaoTotal =
+duracao *
+60 *
+1000;
+
+
+/* ANIMAÇÃO */
+
+function quadro(){
+
+const agora =
+performance.now();
+
+
+const decorrido =
+agora -
+inicio;
+
+
+const progresso =
+Math.min(
+decorrido /
+duracaoTotal,
+1
+);
+
+
+const indice =
+Math.min(
+Math.floor(
+progresso *
+cenasAtuais.length
+),
+cenasAtuais.length - 1
+);
+
+
+const cena =
+cenasAtuais[indice];
+
+
+desenharCena(
+ctx,
+cena,
+indice,
+progresso,
+tema
+);
+
+
+status.textContent =
+"🎥 Gerando cena " +
+(indice + 1) +
+" de " +
+cenasAtuais.length +
+" • " +
+Math.round(
+progresso * 100
+) +
+"%";
+
+
+if(
+decorrido <
+duracaoTotal
+){
+
+requestAnimationFrame(
+quadro
+);
+
+}
+else{
+
+recorder.stop();
+
+}
+
+}
+
+
+quadro();
+
+
+/* ESPERA TERMINAR */
+
+await terminou;
+
+
+/* CRIA ARQUIVO */
+
+const blob =
+new Blob(
+partes,
+{
+type:
+tipoVideo
+}
+);
+
+
+const url =
+URL.createObjectURL(
+blob
+);
+
+
+video.src =
+url;
+
+
+video.style.display =
+"block";
+
+
+download.href =
+url;
+
+
+download.style.display =
+"block";
+
+
+download.download =
+"BioVideoAI.webm";
+
+
+status.textContent =
+"✅ Vídeo criado com sucesso!";
+
+}
+
+
+/* =========================
+   BOTÕES
+========================= */
+
+document
+.getElementById(
+"btnRoteiro"
+)
+.addEventListener(
+"click",
+criarRoteiro
+);
+
+
+document
+.getElementById(
+"btnOuvir"
+)
+.addEventListener(
+"click",
+ouvir
+);
+
+
+document
+.getElementById(
+"btnPausar"
+)
+.addEventListener(
+"click",
+pausar
+);
+
+
+document
+.getElementById(
+"btnParar"
+)
+.addEventListener(
+"click",
+parar
+);
+
+
+document
+.getElementById(
+"btnGerarVideo"
+)
+.addEventListener(
+"click",
+gerarVideoBio
+);
+
 </script>
+
+</body>
+</html>
