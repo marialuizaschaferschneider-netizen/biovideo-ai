@@ -1356,152 +1356,186 @@ return linhas;
 /* =========================
    DESENHAR CENA
 ========================= */
-function desenharCena(
-ctx,
-cena,
-indice,
-progresso,
-tema
-){
+function desenharCena(ctx, cena, indice, progresso, tema){
 
-const largura = 1080;
-const altura = 1920;
+const W = 1080;
+const H = 1920;
 
-/* FUNDO */
+ctx.clearRect(0,0,W,H);
 
-const fundo = ctx.createLinearGradient(
-0,0,
-largura,altura
-);
+/* =========================
+   FUNDO
+========================= */
 
-fundo.addColorStop(0,"#071f19");
-fundo.addColorStop(.5,"#123f32");
-fundo.addColorStop(1,"#071a15");
+const fundo = ctx.createLinearGradient(0,0,W,H);
+
+fundo.addColorStop(0,"#071c18");
+fundo.addColorStop(.45,"#103f34");
+fundo.addColorStop(1,"#061510");
 
 ctx.fillStyle = fundo;
-ctx.fillRect(0,0,largura,altura);
+ctx.fillRect(0,0,W,H);
 
 
-/* PARTÍCULAS */
+/* =========================
+   MOVIMENTO DE FUNDO
+========================= */
 
-for(let i=0;i<35;i++){
+for(let i=0;i<28;i++){
 
 const x =
-(i*137 + progresso*180) % largura;
+((i*173)+(progresso*180)) % 1150 - 35;
 
 const y =
-(i*83 + Math.sin(progresso*6+i)*100)
-% 1500 + 180;
+180 +
+((i*97)%1450);
 
-const tamanho =
-4 + (i%5);
+const r =
+5 + (i%5);
 
 ctx.beginPath();
 
 ctx.arc(
 x,
 y,
-tamanho,
+r,
 0,
 Math.PI*2
 );
 
 ctx.fillStyle =
-"rgba(150,255,210,.18)";
+"rgba(120,255,205,.15)";
 
 ctx.fill();
 
 }
 
 
-/* DNA ANIMADO */
+/* =========================
+   TIPO DE ILUSTRAÇÃO
+========================= */
+
+const t =
+tema.toLowerCase();
+
+
+/* =========================
+   CÉREBRO
+========================= */
 
 if(
-tema.toLowerCase().includes("dna") ||
-tema.toLowerCase().includes("biotecnologia")
+t.includes("cérebro") ||
+t.includes("cerebro") ||
+t.includes("neur")
 ){
+
+const cx = 540;
+const cy = 670;
+
+
+/* cérebro */
 
 ctx.save();
 
-ctx.translate(540,650);
+ctx.translate(cx,cy);
 
-ctx.strokeStyle =
-"rgba(120,255,210,.65)";
-
-ctx.lineWidth=7;
+ctx.scale(
+1 + Math.sin(progresso*Math.PI*2)*.025,
+1 + Math.sin(progresso*Math.PI*2)*.025
+);
 
 ctx.beginPath();
 
-for(
-let y=-300;
-y<300;
-y+=8
-){
+ctx.moveTo(-210,20);
 
-const x =
-Math.sin(
-y/65 +
-progresso*6
-)*170;
+ctx.bezierCurveTo(
+-270,-100,
+-210,-250,
+-70,-270
+);
 
-if(y===-300)
-ctx.moveTo(x,y);
-else
-ctx.lineTo(x,y);
+ctx.bezierCurveTo(
+20,-350,
+180,-290,
+210,-170
+);
 
-}
+ctx.bezierCurveTo(
+280,-60,
+240,120,
+130,180
+);
+
+ctx.bezierCurveTo(
+30,260,
+-120,230,
+-210,20
+);
+
+ctx.closePath();
+
+const cerebro =
+ctx.createRadialGradient(
+0,-50,
+20,
+0,0,
+300
+);
+
+cerebro.addColorStop(
+0,
+"#ff9bd2"
+);
+
+cerebro.addColorStop(
+1,
+"#a94c9c"
+);
+
+ctx.fillStyle = cerebro;
+ctx.fill();
+
+ctx.strokeStyle =
+"#ffd0ee";
+
+ctx.lineWidth = 9;
 
 ctx.stroke();
 
 
-ctx.beginPath();
-
-for(
-let y=-300;
-y<300;
-y+=8
-){
-
-const x =
--Math.sin(
-y/65 +
-progresso*6
-)*170;
-
-if(y===-300)
-ctx.moveTo(x,y);
-else
-ctx.lineTo(x,y);
-
-}
-
-ctx.stroke();
-
-
-for(
-let y=-280;
-y<280;
-y+=45
-){
-
-const x1 =
-Math.sin(
-y/65+
-progresso*6
-)*170;
-
-const x2 =
--x1;
-
-ctx.beginPath();
-
-ctx.moveTo(x1,y);
-ctx.lineTo(x2,y);
+/* sulcos */
 
 ctx.strokeStyle =
-"rgba(220,255,240,.45)";
+"rgba(255,230,250,.65)";
 
-ctx.lineWidth=4;
+ctx.lineWidth = 7;
+
+for(let i=-2;i<=2;i++){
+
+ctx.beginPath();
+
+ctx.moveTo(
+-150,
+i*55
+);
+
+ctx.bezierCurveTo(
+-60,
+i*55-50,
+-50,
+i*55+60,
+20,
+i*55
+);
+
+ctx.bezierCurveTo(
+80,
+i*55-50,
+130,
+i*55+50,
+170,
+i*55-10
+);
 
 ctx.stroke();
 
@@ -1509,44 +1543,341 @@ ctx.stroke();
 
 ctx.restore();
 
+
+/* neurônios */
+
+for(let i=0;i<7;i++){
+
+const ang =
+i*Math.PI*2/7 +
+progresso*Math.PI*2;
+
+const x =
+540 +
+Math.cos(ang)*360;
+
+const y =
+670 +
+Math.sin(ang)*300;
+
+ctx.beginPath();
+
+ctx.arc(
+x,
+y,
+18,
+0,
+Math.PI*2
+);
+
+ctx.fillStyle =
+"#8df5d0";
+
+ctx.fill();
+
+
+ctx.beginPath();
+
+ctx.moveTo(
+x,
+y
+);
+
+ctx.lineTo(
+540 +
+Math.cos(ang)*200,
+670 +
+Math.sin(ang)*160
+);
+
+ctx.strokeStyle =
+"rgba(141,245,208,.35)";
+
+ctx.lineWidth = 5;
+
+ctx.stroke();
+
+}
+
 }
 
 
-/* CÍRCULO / CÉLULA */
+/* =========================
+   DNA
+========================= */
 
-ctx.save();
+else if(
+t.includes("dna") ||
+t.includes("genét") ||
+t.includes("genet")
+){
 
-const cx=540;
-const cy=650;
+const centro = 540;
 
-const raio =
-190 +
-Math.sin(progresso*6)*8;
+ctx.lineWidth = 8;
+
+for(
+let y=350;
+y<1000;
+y+=7
+){
+
+const fase =
+y/70 +
+progresso*Math.PI*4;
+
+const x1 =
+centro +
+Math.sin(fase)*190;
+
+const x2 =
+centro -
+Math.sin(fase)*190;
+
+
+ctx.beginPath();
+
+ctx.arc(
+x1,
+y,
+7,
+0,
+Math.PI*2
+);
+
+ctx.fillStyle =
+"#73f0bd";
+
+ctx.fill();
+
+
+ctx.beginPath();
+
+ctx.arc(
+x2,
+y,
+7,
+0,
+Math.PI*2
+);
+
+ctx.fillStyle =
+"#ff9bd2";
+
+ctx.fill();
+
+
+if(y%42===0){
+
+ctx.beginPath();
+
+ctx.moveTo(
+x1,
+y
+);
+
+ctx.lineTo(
+x2,
+y
+);
+
+ctx.strokeStyle =
+"rgba(255,255,255,.55)";
+
+ctx.stroke();
+
+}
+
+}
+
+}
+
+
+/* =========================
+   CÉLULA
+========================= */
+
+else if(
+t.includes("célula") ||
+t.includes("celula") ||
+t.includes("bactéria") ||
+t.includes("bacteria")
+){
+
+const cx = 540;
+const cy = 670;
+
+
+/* membrana */
 
 ctx.beginPath();
 
 ctx.arc(
 cx,
 cy,
-raio,
+270,
+0,
+Math.PI*2
+);
+
+const celula =
+ctx.createRadialGradient(
+cx-70,
+cy-80,
+30,
+cx,
+cy,
+300
+);
+
+celula.addColorStop(
+0,
+"#72e8b2"
+);
+
+celula.addColorStop(
+1,
+"#176c54"
+);
+
+ctx.fillStyle = celula;
+ctx.fill();
+
+ctx.strokeStyle =
+"#b9ffe0";
+
+ctx.lineWidth = 9;
+
+ctx.stroke();
+
+
+/* núcleo */
+
+ctx.beginPath();
+
+ctx.arc(
+cx,
+cy,
+100,
 0,
 Math.PI*2
 );
 
 ctx.fillStyle =
-"rgba(80,190,150,.12)";
+"#b36ed2";
 
 ctx.fill();
 
 ctx.strokeStyle =
-"rgba(130,255,210,.45)";
+"#f0caff";
 
-ctx.lineWidth=8;
+ctx.lineWidth = 7;
 
 ctx.stroke();
 
 
-/* NÚCLEO */
+/* organelas */
+
+for(let i=0;i<12;i++){
+
+const a =
+i*Math.PI*2/12 +
+progresso;
+
+const x =
+cx +
+Math.cos(a)*170;
+
+const y =
+cy +
+Math.sin(a)*170;
+
+ctx.beginPath();
+
+ctx.ellipse(
+x,
+y,
+25,
+14,
+a,
+0,
+Math.PI*2
+);
+
+ctx.fillStyle =
+"#ffd47a";
+
+ctx.fill();
+
+}
+
+}
+
+
+/* =========================
+   BIOTECNOLOGIA
+========================= */
+
+else{
+
+/* molécula */
+
+const cx = 540;
+const cy = 650;
+
+for(let i=0;i<8;i++){
+
+const a =
+i*Math.PI*2/8 +
+progresso*Math.PI*2;
+
+const x =
+cx +
+Math.cos(a)*250;
+
+const y =
+cy +
+Math.sin(a)*250;
+
+ctx.beginPath();
+
+ctx.arc(
+x,
+y,
+35,
+0,
+Math.PI*2
+);
+
+ctx.fillStyle =
+i%2===0 ?
+"#74edbd" :
+"#d78bea";
+
+ctx.fill();
+
+
+ctx.beginPath();
+
+ctx.moveTo(
+cx,
+cy
+);
+
+ctx.lineTo(
+x,
+y
+);
+
+ctx.strokeStyle =
+"rgba(255,255,255,.35)";
+
+ctx.lineWidth = 5;
+
+ctx.stroke();
+
+}
+
 
 ctx.beginPath();
 
@@ -1559,125 +1890,71 @@ Math.PI*2
 );
 
 ctx.fillStyle =
-"rgba(190,255,230,.18)";
+"#fff";
 
 ctx.fill();
 
-ctx.strokeStyle =
-"rgba(200,255,235,.6)";
 
-ctx.lineWidth=5;
-
-ctx.stroke();
-
-
-/* PEQUENAS ORGANELAS */
-
-for(
-let i=0;
-i<9;
-i++
-){
-
-const angulo =
-(i/9)*Math.PI*2 +
-progresso*2;
-
-const x =
-cx +
-Math.cos(angulo)*130;
-
-const y =
-cy +
-Math.sin(angulo)*130;
-
-ctx.beginPath();
-
-ctx.arc(
-x,
-y,
-12,
-0,
-Math.PI*2
-);
+ctx.font =
+"bold 55px Arial";
 
 ctx.fillStyle =
-"rgba(210,255,235,.7)";
+"#164d3b";
 
-ctx.fill();
+ctx.textAlign =
+"center";
+
+ctx.fillText(
+"BIO",
+cx,
+cy+20
+);
 
 }
 
-ctx.restore();
 
+/* =========================
+   TÍTULO DA CENA
+========================= */
 
-/* MARCA */
+ctx.textAlign =
+"center";
 
-ctx.textAlign="center";
+ctx.font =
+"bold 64px Arial";
 
-ctx.font=
-"bold 34px Arial";
-
-ctx.fillStyle=
-"rgba(255,255,255,.75)";
-
-ctx.fillText(
-"BioVideo AI",
-540,
-115
-);
-
-
-/* NÚMERO DA CENA */
-
-ctx.font=
-"bold 27px Arial";
-
-ctx.fillStyle=
-"rgba(190,255,225,.8)";
-
-ctx.fillText(
-"CENA "+(indice+1)+" / 6",
-540,
-170
-);
-
-
-/* TÍTULO */
-
-ctx.font=
-"bold 65px Arial";
-
-ctx.fillStyle=
+ctx.fillStyle =
 "#ffffff";
 
 ctx.fillText(
 cena.titulo,
 540,
-1030
+1120
 );
 
 
-/* LINHA DECORATIVA */
+/* linha */
 
-ctx.fillStyle=
-"#80e5bb";
+ctx.fillStyle =
+"#7ff2c0";
 
 ctx.fillRect(
 390,
-1080,
+1170,
 300,
 7
 );
 
 
-/* TEXTO */
+/* =========================
+   LEGENDA
+========================= */
 
-ctx.font=
+ctx.font =
 "38px Arial";
 
-ctx.fillStyle=
-"rgba(255,255,255,.9)";
+ctx.fillStyle =
+"#ffffff";
 
 const linhas =
 quebrarTexto(
@@ -1694,76 +1971,51 @@ function(linha,i){
 ctx.fillText(
 linha,
 540,
-1190+i*62
+1280+i*65
 );
 
 });
 
 
-/* TEMA */
+/* =========================
+   NOME DO PROJETO
+========================= */
 
-ctx.font=
-"26px Arial";
+ctx.font =
+"28px Arial";
 
-ctx.fillStyle=
-"rgba(210,240,230,.65)";
-
-const temaLinhas =
-quebrarTexto(
-ctx,
-tema,
-760
-);
-
-temaLinhas
-.slice(0,2)
-.forEach(
-function(linha,i){
+ctx.fillStyle =
+"rgba(255,255,255,.65)";
 
 ctx.fillText(
-linha,
+"BioVideo AI • Vídeo educativo",
 540,
-1480+i*42
+1690
 );
 
-});
 
+/* =========================
+   PROGRESSO
+========================= */
 
-/* BARRA DE PROGRESSO */
-
-ctx.fillStyle=
-"rgba(255,255,255,.18)";
+ctx.fillStyle =
+"rgba(255,255,255,.2)";
 
 ctx.fillRect(
 100,
-1770,
+1780,
 880,
 10
 );
 
-ctx.fillStyle=
-"#80e5bb";
+ctx.fillStyle =
+"#7ff2c0";
 
 ctx.fillRect(
 100,
-1770,
+1780,
 880*progresso,
 10
-);
-
-
-/* TEMPO VISUAL */
-
-ctx.font=
-"24px Arial";
-
-ctx.fillStyle=
-"rgba(255,255,255,.55)";
-
-ctx.fillText(
-Math.round(progresso*100)+"%",
-540,
-1830
 );
 
 }
