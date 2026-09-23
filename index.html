@@ -2026,168 +2026,175 @@ ctx.fillRect(
 
 async function gerarVideoBio(){
 
-const status =
-document
-.getElementById(
-"videoStatus"
-);
+async function gerarVideoBio(){
 
+const status=document.getElementById("videoStatus");
+const video=document.getElementById("videoPreview");
+const download=document.getElementById("downloadVideo");
 
-const video =
-document
-.getElementById(
-"videoPreview"
-);
-
-
-const download =
-document
-.getElementById(
-"downloadVideo"
-);
-
-
-const tema =
-document
-.getElementById(
-"tema"
-)
-.value
-.trim()
-||
+const tema=document.getElementById("tema").value.trim() ||
 "Biotecnologia e o cérebro";
 
-
-const duracao =
-parseInt(
-document
-.getElementById(
-"duracao"
-)
-.value,
+const duracao=parseInt(
+document.getElementById("duracao").value,
 10
-)
-||
-1;
+)||1;
 
+if(!cenasAtuais.length){
 
-/* PRECISA TER ROTEIRO */
-
-if(
-!cenasAtuais.length
-){
-
-alert(
-"Primeiro clique em Criar roteiro."
-);
-
+alert("Primeiro clique em Criar roteiro.");
 return;
 
 }
 
-
-/* VERIFICA SUPORTE */
-
 if(
-!HTMLCanvasElement
-.prototype
-.captureStream
-||
+!HTMLCanvasElement.prototype.captureStream ||
 !window.MediaRecorder
 ){
 
-status.textContent =
+status.textContent=
 "⚠️ Este navegador não suporta a geração de vídeo.";
 
 return;
 
 }
 
-
-status.textContent =
-"🎬 Preparando vídeo de " +
-duracao +
-" minuto(s)...";
+status.textContent=
+"🎬 Preparando vídeo...";
 
 
-/* CANVAS */
+/* =========================
+   CANVAS
+========================= */
 
-const canvas =
-document
-.createElement(
-"canvas"
+const canvas=document.createElement("canvas");
+
+canvas.width=1080;
+canvas.height=1920;
+
+const ctx=canvas.getContext("2d");
+
+
+/* =========================
+   ÁUDIO
+========================= */
+
+let audioContext=null;
+let destination=null;
+let audioStream=null;
+
+try{
+
+audioContext=
+new (window.AudioContext ||
+window.webkitAudioContext)();
+
+destination=
+audioContext.createMediaStreamDestination();
+
+audioStream=
+destination.stream;
+
+}catch(e){
+
+console.log(
+"Áudio não disponível:",
+e
 );
 
-
-canvas.width =
-1080;
-
-canvas.height =
-1920;
+}
 
 
-const ctx =
-canvas.getContext(
-"2d"
-);
+/* =========================
+   STREAM DO VÍDEO
+========================= */
+
+const videoStream=
+canvas.captureStream(30);
 
 
-/* STREAM */
+/* =========================
+   JUNTAR VÍDEO + ÁUDIO
+========================= */
 
-const stream =
-canvas.captureStream(
-30
-);
+let streamFinal;
 
 
-let tipoVideo =
+if(audioStream){
+
+const tracks=[
+...videoStream.getVideoTracks(),
+...audioStream.getAudioTracks()
+];
+
+streamFinal=
+new MediaStream(tracks);
+
+}
+else{
+
+streamFinal=
+videoStream;
+
+}
+
+
+/* =========================
+   FORMATO
+========================= */
+
+let tipoVideo=
 "video/webm";
 
 
 if(
-MediaRecorder
-.isTypeSupported(
-"video/webm;codecs=vp9"
+MediaRecorder.isTypeSupported(
+"video/webm;codecs=vp9,opus"
 )
 ){
 
-tipoVideo =
-"video/webm;codecs=vp9";
+tipoVideo=
+"video/webm;codecs=vp9,opus";
 
 }
 else if(
-MediaRecorder
-.isTypeSupported(
-"video/webm;codecs=vp8"
+MediaRecorder.isTypeSupported(
+"video/webm;codecs=vp8,opus"
 )
 ){
 
-tipoVideo =
-"video/webm;codecs=vp8";
+tipoVideo=
+"video/webm;codecs=vp8,opus";
+
+}
+else if(
+MediaRecorder.isTypeSupported(
+"video/webm"
+)
+){
+
+tipoVideo=
+"video/webm";
 
 }
 
 
-const partes = [];
+const partes=[];
 
 
-const recorder =
+const recorder=
 new MediaRecorder(
-stream,
+streamFinal,
 {
-mimeType:
-tipoVideo
+mimeType:tipoVideo
 }
 );
 
 
-recorder
-.ondataavailable =
+recorder.ondataavailable=
 function(event){
 
-if(
-event.data.size > 0
-){
+if(event.data.size>0){
 
 partes.push(
 event.data
@@ -2198,69 +2205,150 @@ event.data
 };
 
 
-const terminou =
+const terminou=
 new Promise(
 function(resolve){
 
-recorder.onstop =
+recorder.onstop=
 resolve;
 
 });
 
 
-/* COMEÇA GRAVAÇÃO */
+/* =========================
+   GRAVAÇÃO
+========================= */
 
-recorder.start(
-1000
+recorder.start(1000);
+
+
+/* =========================
+   TEMPO
+========================= */
+
+const inicio=
+performance.now();
+
+const duracaoTotal=
+duracao*60*1000;
+
+
+/* =========================
+   NARRAÇÃO
+========================= */
+
+let audioFonte=null;
+
+if(audioContext && destination){
+
+try{
+
+const ganho=
+audioContext.createGain();
+
+ganho.gain.value=1;
+
+ganho.connect(
+destination
 );
 
 
-/* DURAÇÃO REAL */
+/*
+IMPORTANTE:
 
-const inicio =
-performance.now();
+O speechSynthesis do navegador
+não possui saída de áudio
+diretamente para o MediaRecorder.
+
+Por isso criamos uma narração
+visual sincronizada e tentamos
+usar o áudio do navegador quando
+o dispositivo permitir.
+*/
+
+}catch(e){
+
+console.log(e);
+
+}
+
+}
 
 
-const duracaoTotal =
-duracao *
-60 *
-1000;
+/* =========================
+   FALAR
+========================= */
+
+if(synth){
+
+synth.cancel();
+
+const utterance=
+new SpeechSynthesisUtterance(
+textoNarracao
+);
+
+const indice=
+parseInt(
+document.getElementById("voz").value,
+10
+);
+
+if(vozes[indice]){
+
+utterance.voice=
+vozes[indice];
+
+}
+
+utterance.lang="pt-BR";
+
+utterance.rate=0.95;
+
+utterance.pitch=1;
+
+utterance.volume=1;
+
+synth.speak(
+utterance
+);
+
+}
 
 
-/* ANIMAÇÃO */
+/* =========================
+   ANIMAÇÃO
+========================= */
 
 function quadro(){
 
-const agora =
+const agora=
 performance.now();
 
+const decorrido=
+agora-inicio;
 
-const decorrido =
-agora -
-inicio;
-
-
-const progresso =
+const progresso=
 Math.min(
-decorrido /
-duracaoTotal,
+decorrido/duracaoTotal,
 1
 );
 
 
-const indice =
+const indice=
 Math.min(
 Math.floor(
-progresso *
-cenasAtuais.length
+progresso*cenasAtuais.length
 ),
-cenasAtuais.length - 1
+cenasAtuais.length-1
 );
 
 
-const cena =
+const cena=
 cenasAtuais[indice];
 
+
+/* desenha */
 
 desenharCena(
 ctx,
@@ -2271,22 +2359,19 @@ tema
 );
 
 
-status.textContent =
-"🎥 Gerando cena " +
-(indice + 1) +
-" de " +
-cenasAtuais.length +
-" • " +
-Math.round(
-progresso * 100
-) +
+/* status */
+
+status.textContent=
+"🎥 Gerando cena "+
+(indice+1)+
+" de "+
+cenasAtuais.length+
+" • "+
+Math.round(progresso*100)+
 "%";
 
 
-if(
-decorrido <
-duracaoTotal
-){
+if(decorrido<duracaoTotal){
 
 requestAnimationFrame(
 quadro
@@ -2294,6 +2379,17 @@ quadro
 
 }
 else{
+
+/* termina fala */
+
+if(synth){
+
+synth.cancel();
+
+}
+
+
+/* termina gravação */
 
 recorder.stop();
 
@@ -2305,54 +2401,67 @@ recorder.stop();
 quadro();
 
 
-/* ESPERA TERMINAR */
+/* =========================
+   ESPERAR ARQUIVO
+========================= */
 
 await terminou;
 
 
-/* CRIA ARQUIVO */
+/* =========================
+   LIMPAR ÁUDIO
+========================= */
 
-const blob =
+if(audioContext){
+
+try{
+
+await audioContext.close();
+
+}catch(e){
+
+console.log(e);
+
+}
+
+}
+
+
+/* =========================
+   ARQUIVO FINAL
+========================= */
+
+const blob=
 new Blob(
 partes,
 {
-type:
-tipoVideo
+type:tipoVideo
 }
 );
 
 
-const url =
+const url=
 URL.createObjectURL(
 blob
 );
 
 
-video.src =
-url;
+video.src=url;
 
+video.style.display="block";
 
-video.style.display =
-"block";
+download.href=url;
 
+download.style.display="block";
 
-download.href =
-url;
-
-
-download.style.display =
-"block";
-
-
-download.download =
+download.download=
 "BioVideoAI.webm";
 
 
-status.textContent =
+status.textContent=
 "✅ Vídeo criado com sucesso!";
 
 }
-
 
 /* =========================
    BOTÕES
