@@ -1365,223 +1365,897 @@ progresso,
 tema
 ){
 
-const largura =
-1080;
-
-const altura =
-1920;
+const W = 1080;
+const H = 1920;
 
 
-const gradiente =
-ctx.createLinearGradient(
+/* =====================================================
+   FUNDO
+===================================================== */
+
+const fundo = ctx.createLinearGradient(
 0,
 0,
-largura,
-altura
+W,
+H
 );
 
+fundo.addColorStop(0,"#061c25");
+fundo.addColorStop(0.5,"#0b3b45");
+fundo.addColorStop(1,"#06251e");
 
-gradiente.addColorStop(
-0,
-"#0c3327"
-);
-
-
-gradiente.addColorStop(
-1,
-"#1e7655"
-);
+ctx.fillStyle = fundo;
+ctx.fillRect(0,0,W,H);
 
 
-ctx.fillStyle =
-gradiente;
+/* =====================================================
+   ANIMAÇÃO GERAL
+===================================================== */
+
+const movimento =
+progresso * Math.PI * 2;
+
+ctx.textAlign = "center";
 
 
-ctx.fillRect(
-0,
-0,
-largura,
-altura
-);
+/* =====================================================
+   PARTÍCULAS
+===================================================== */
 
-
-/* ELEMENTOS EM MOVIMENTO */
-
-for(
-let i=0;
-i<10;
-i++
-){
+for(let i=0;i<24;i++){
 
 const x =
-80 +
-i * 110;
-
+((i * 97) +
+(progresso * 160 * (i % 3 + 1))) % 1200 - 60;
 
 const y =
-350 +
-Math.sin(
-progresso *
-Math.PI *
-2 +
-i
-) *
-70;
+150 + ((i * 83) % 1450);
 
+const tamanho =
+4 + (i % 4) * 3;
 
 ctx.beginPath();
-
 
 ctx.arc(
 x,
 y,
-30,
+tamanho,
 0,
 Math.PI * 2
 );
 
-
 ctx.fillStyle =
-"rgba(255,255,255,.14)";
-
+"rgba(130,245,210,.25)";
 
 ctx.fill();
 
 }
 
 
-/* MARCA */
-
-ctx.fillStyle =
-"white";
-
-ctx.textAlign =
-"center";
-
+/* =====================================================
+   TÍTULO DA CENA
+===================================================== */
 
 ctx.font =
-"bold 52px Arial";
+"bold 56px Arial";
 
+ctx.fillStyle =
+"#ffffff";
 
 ctx.fillText(
-"🧬 BioVideo AI",
-540,
-170
+cena.titulo,
+W/2,
+180
 );
 
 
-/* CENA */
+/* =====================================================
+   CENA 1 — INTRODUÇÃO
+===================================================== */
+
+if(indice === 0){
+
+/* moléculas flutuando */
+
+for(let i=0;i<9;i++){
+
+const angulo =
+(i/9)*Math.PI*2 +
+movimento;
+
+const raio = 270;
+
+const x =
+W/2 +
+Math.cos(angulo)*raio;
+
+const y =
+700 +
+Math.sin(angulo)*raio;
+
+ctx.beginPath();
+
+ctx.arc(
+x,
+y,
+32,
+0,
+Math.PI*2
+);
+
+ctx.fillStyle =
+i%2 === 0 ?
+"#72e6bd" :
+"#d99ad9";
+
+ctx.fill();
+
+ctx.beginPath();
+
+ctx.moveTo(
+W/2,
+700
+);
+
+ctx.lineTo(
+x,
+y
+);
+
+ctx.strokeStyle =
+"rgba(255,255,255,.25)";
+
+ctx.lineWidth = 5;
+
+ctx.stroke();
+
+}
+
+/* núcleo */
+
+ctx.beginPath();
+
+ctx.arc(
+W/2,
+700,
+80,
+0,
+Math.PI*2
+);
+
+ctx.fillStyle =
+"#ffffff";
+
+ctx.fill();
+
+ctx.fillStyle =
+"#0a5142";
+
+ctx.font =
+"bold 34px Arial";
+
+ctx.fillText(
+"BIO",
+W/2,
+712
+);
+
+}
+
+
+/* =====================================================
+   CENA 2 — O QUE É?
+===================================================== */
+
+if(indice === 1){
+
+/* célula */
+
+const cx = W/2;
+const cy = 700;
+
+
+/* membrana */
+
+ctx.beginPath();
+
+ctx.arc(
+cx,
+cy,
+280,
+0,
+Math.PI*2
+);
+
+const celula =
+ctx.createRadialGradient(
+cx-80,
+cy-100,
+20,
+cx,
+cy,
+300
+);
+
+celula.addColorStop(
+0,
+"#a6f4c8"
+);
+
+celula.addColorStop(
+1,
+"#16705b"
+);
+
+ctx.fillStyle =
+celula;
+
+ctx.fill();
+
+ctx.strokeStyle =
+"#d5ffe9";
+
+ctx.lineWidth = 12;
+
+ctx.stroke();
+
+
+/* núcleo */
+
+ctx.beginPath();
+
+ctx.arc(
+cx,
+cy,
+105,
+0,
+Math.PI*2
+);
+
+ctx.fillStyle =
+"#a967c6";
+
+ctx.fill();
+
+ctx.strokeStyle =
+"#f2cfff";
+
+ctx.lineWidth = 8;
+
+ctx.stroke();
+
+
+/* organelas */
+
+for(let i=0;i<12;i++){
+
+const a =
+i*Math.PI*2/12 +
+movimento;
+
+const x =
+cx +
+Math.cos(a)*175;
+
+const y =
+cy +
+Math.sin(a)*175;
+
+ctx.beginPath();
+
+ctx.ellipse(
+x,
+y,
+34,
+20,
+a,
+0,
+Math.PI*2
+);
+
+ctx.fillStyle =
+i%2 === 0 ?
+"#ffcf75" :
+"#ff9bd7";
+
+ctx.fill();
+
+}
+
+}
+
+
+/* =====================================================
+   CENA 3 — COMO FUNCIONA?
+===================================================== */
+
+if(indice === 2){
+
+/* DNA */
+
+const centro = W/2;
+
+for(
+let y=400;
+y<=1000;
+y+=8
+){
+
+const fase =
+y/70 +
+movimento;
+
+const x1 =
+centro +
+Math.sin(fase)*220;
+
+const x2 =
+centro -
+Math.sin(fase)*220;
+
+
+/* fita 1 */
+
+ctx.beginPath();
+
+ctx.arc(
+x1,
+y,
+9,
+0,
+Math.PI*2
+);
+
+ctx.fillStyle =
+"#75efc1";
+
+ctx.fill();
+
+
+/* fita 2 */
+
+ctx.beginPath();
+
+ctx.arc(
+x2,
+y,
+9,
+0,
+Math.PI*2
+);
+
+ctx.fillStyle =
+"#e59cda";
+
+ctx.fill();
+
+
+/* ligação */
+
+if(y % 48 === 0){
+
+ctx.beginPath();
+
+ctx.moveTo(
+x1,
+y
+);
+
+ctx.lineTo(
+x2,
+y
+);
+
+ctx.strokeStyle =
+"rgba(255,255,255,.65)";
+
+ctx.lineWidth = 5;
+
+ctx.stroke();
+
+}
+
+}
+
+}
+
+
+/* =====================================================
+   CENA 4 — APLICAÇÕES
+===================================================== */
+
+if(indice === 3){
+
+/* laboratório */
+
+ctx.fillStyle =
+"rgba(255,255,255,.08)";
+
+ctx.roundRect(
+180,
+470,
+720,
+580,
+40,
+);
+
+ctx.fill();
+
+
+/* frasco */
+
+ctx.beginPath();
+
+ctx.roundRect(
+430,
+560,
+220,
+330,
+30
+);
+
+ctx.fillStyle =
+"#b9f4d1";
+
+ctx.fill();
+
+ctx.strokeStyle =
+"#ffffff";
+
+ctx.lineWidth = 8;
+
+ctx.stroke();
+
+
+/* líquido */
+
+ctx.beginPath();
+
+ctx.roundRect(
+450,
+720,
+180,
+150,
+20
+);
+
+ctx.fillStyle =
+"#51cfa6";
+
+ctx.fill();
+
+
+/* bolhas */
+
+for(let i=0;i<9;i++){
+
+const x =
+470 +
+(i*43)%140;
+
+const y =
+690 -
+(
+(progresso*1200 + i*70)
+% 300
+);
+
+ctx.beginPath();
+
+ctx.arc(
+x,
+y,
+8+(i%3)*4,
+0,
+Math.PI*2
+);
+
+ctx.fillStyle =
+"rgba(255,255,255,.75)";
+
+ctx.fill();
+
+}
+
+
+/* plantas */
+
+for(let i=0;i<3;i++){
+
+const x =
+310+i*230;
+
+ctx.strokeStyle =
+"#76e0a8";
+
+ctx.lineWidth = 12;
+
+ctx.beginPath();
+
+ctx.moveTo(
+x,
+1050
+);
+
+ctx.lineTo(
+x,
+900
+);
+
+ctx.stroke();
+
+
+ctx.beginPath();
+
+ctx.ellipse(
+x-35,
+900,
+45,
+22,
+-.5,
+0,
+Math.PI*2
+);
+
+ctx.fillStyle =
+"#63d69b";
+
+ctx.fill();
+
+
+ctx.beginPath();
+
+ctx.ellipse(
+x+35,
+850,
+45,
+22,
+.5,
+0,
+Math.PI*2
+);
+
+ctx.fill();
+
+}
+
+}
+
+
+/* =====================================================
+   CENA 5 — EVIDÊNCIAS CIENTÍFICAS
+===================================================== */
+
+if(indice === 4){
+
+/* artigos */
+
+for(let i=0;i<3;i++){
+
+const x =
+180 + i*250;
+
+const y =
+520 +
+Math.sin(
+movimento+i
+)*30;
+
+
+/* folha */
+
+ctx.fillStyle =
+"#ffffff";
+
+ctx.roundRect(
+x,
+y,
+210,
+300,
+18
+);
+
+ctx.fill();
+
+
+/* linhas */
+
+for(let j=0;j<6;j++){
+
+ctx.fillStyle =
+"#79a89a";
+
+ctx.fillRect(
+x+30,
+y+60+j*35,
+150,
+8
+);
+
+}
+
+
+/* gráfico */
+
+ctx.strokeStyle =
+"#38ad83";
+
+ctx.lineWidth = 7;
+
+ctx.beginPath();
+
+ctx.moveTo(
+x+30,
+y+255
+);
+
+ctx.lineTo(
+x+80,
+y+205
+);
+
+ctx.lineTo(
+x+120,
+y+225
+);
+
+ctx.lineTo(
+x+180,
+y+145
+);
+
+ctx.stroke();
+
+}
+
+
+/* lupa */
+
+ctx.beginPath();
+
+ctx.arc(
+540,
+1050,
+90,
+0,
+Math.PI*2
+);
+
+ctx.strokeStyle =
+"#8cf2cf";
+
+ctx.lineWidth = 18;
+
+ctx.stroke();
+
+ctx.beginPath();
+
+ctx.moveTo(
+605,
+1115
+);
+
+ctx.lineTo(
+720,
+1230
+);
+
+ctx.stroke();
+
+}
+
+
+/* =====================================================
+   CENA 6 — CONCLUSÃO
+===================================================== */
+
+if(indice === 5){
+
+/* grande molécula final */
+
+const cx = W/2;
+const cy = 700;
+
+for(let i=0;i<10;i++){
+
+const a =
+i*Math.PI*2/10 +
+movimento;
+
+const x =
+cx+
+Math.cos(a)*300;
+
+const y =
+cy+
+Math.sin(a)*300;
+
+
+/* ligação */
+
+ctx.beginPath();
+
+ctx.moveTo(
+cx,
+cy
+);
+
+ctx.lineTo(
+x,
+y
+);
+
+ctx.strokeStyle =
+"rgba(255,255,255,.35)";
+
+ctx.lineWidth = 7;
+
+ctx.stroke();
+
+
+/* átomo */
+
+ctx.beginPath();
+
+ctx.arc(
+x,
+y,
+38,
+0,
+Math.PI*2
+);
+
+ctx.fillStyle =
+i%2 === 0 ?
+"#77eac0" :
+"#dc9bd9";
+
+ctx.fill();
+
+}
+
+
+/* centro */
+
+ctx.beginPath();
+
+ctx.arc(
+cx,
+cy,
+90,
+0,
+Math.PI*2
+);
+
+ctx.fillStyle =
+"#ffffff";
+
+ctx.fill();
+
+
+ctx.fillStyle =
+"#14513f";
 
 ctx.font =
 "bold 38px Arial";
 
-
 ctx.fillText(
-"CENA " +
-(indice + 1),
-540,
-480
+"BIO",
+cx,
+cy+13
 );
 
-
-/* TÍTULO */
-
-ctx.font =
-"bold 64px Arial";
+}
 
 
-ctx.fillText(
-cena.titulo,
-540,
-650
-);
-
-
-/* LEGENDA */
+/* =====================================================
+   LEGENDA
+===================================================== */
 
 ctx.font =
-"42px Arial";
+"bold 38px Arial";
+
+ctx.fillStyle =
+"#ffffff";
 
 
 const linhas =
 quebrarTexto(
 ctx,
 cena.legenda,
-850
+820
 );
 
 
-linhas.forEach(
+linhas
+.slice(0,4)
+.forEach(
 function(linha,i){
 
 ctx.fillText(
 linha,
-540,
-850 +
-i * 70
+W/2,
+1250 + i*65
 );
 
 });
 
 
-/* TEMA */
+/* =====================================================
+   TEMA
+===================================================== */
 
 ctx.font =
-"30px Arial";
+"28px Arial";
+
+ctx.fillStyle =
+"rgba(255,255,255,.65)";
 
 
 const temaLinhas =
 quebrarTexto(
 ctx,
 tema,
-800
+760
 );
 
 
 temaLinhas
-.slice(0,3)
+.slice(0,2)
 .forEach(
 function(linha,i){
 
 ctx.fillText(
 linha,
-540,
-1100 +
-i * 48
+W/2,
+1530+i*42
 );
 
 });
 
 
-/* BARRA */
+/* =====================================================
+   MARCA
+===================================================== */
+
+ctx.font =
+"bold 30px Arial";
 
 ctx.fillStyle =
-"rgba(255,255,255,.25)";
+"rgba(255,255,255,.6)";
 
-
-ctx.fillRect(
-100,
-1740,
-880,
-12
+ctx.fillText(
+"🧬 BioVideo AI",
+W/2,
+1680
 );
 
 
-ctx.fillStyle =
-"white";
+/* =====================================================
+   BARRA DE PROGRESSO
+===================================================== */
 
+ctx.fillStyle =
+"rgba(255,255,255,.18)";
 
 ctx.fillRect(
 100,
-1740,
-880 *
-progresso,
-12
+1780,
+880,
+10
+);
+
+ctx.fillStyle =
+"#78edc0";
+
+ctx.fillRect(
+100,
+1780,
+880*progresso,
+10
 );
 
 }
-
-
 /* =========================
    GERADOR DE VÍDEO
 ========================= */
