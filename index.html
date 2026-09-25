@@ -1356,669 +1356,231 @@ return linhas;
 /* =========================
    DESENHAR CENA
 ========================= */
-function desenharCena(ctx, cena, indice, progresso, tema){
 
-const W = 1080;
-const H = 1920;
-
-ctx.clearRect(0,0,W,H);
-
-/* =========================
-   FUNDO
-========================= */
-
-const fundo = ctx.createLinearGradient(0,0,W,H);
-
-fundo.addColorStop(0,"#071c18");
-fundo.addColorStop(.45,"#103f34");
-fundo.addColorStop(1,"#061510");
-
-ctx.fillStyle = fundo;
-ctx.fillRect(0,0,W,H);
-
-
-/* =========================
-   MOVIMENTO DE FUNDO
-========================= */
-
-for(let i=0;i<28;i++){
-
-const x =
-((i*173)+(progresso*180)) % 1150 - 35;
-
-const y =
-180 +
-((i*97)%1450);
-
-const r =
-5 + (i%5);
-
-ctx.beginPath();
-
-ctx.arc(
-x,
-y,
-r,
-0,
-Math.PI*2
-);
-
-ctx.fillStyle =
-"rgba(120,255,205,.15)";
-
-ctx.fill();
-
-}
-
-
-/* =========================
-   TIPO DE ILUSTRAÇÃO
-========================= */
-
-const t =
-tema.toLowerCase();
-
-
-/* =========================
-   CÉREBRO
-========================= */
-
-if(
-t.includes("cérebro") ||
-t.includes("cerebro") ||
-t.includes("neur")
+function desenharCena(
+ctx,
+cena,
+indice,
+progresso,
+tema
 ){
 
-const cx = 540;
-const cy = 670;
+const largura =
+1080;
+
+const altura =
+1920;
 
 
-/* cérebro */
-
-ctx.save();
-
-ctx.translate(cx,cy);
-
-ctx.scale(
-1 + Math.sin(progresso*Math.PI*2)*.025,
-1 + Math.sin(progresso*Math.PI*2)*.025
-);
-
-ctx.beginPath();
-
-ctx.moveTo(-210,20);
-
-ctx.bezierCurveTo(
--270,-100,
--210,-250,
--70,-270
-);
-
-ctx.bezierCurveTo(
-20,-350,
-180,-290,
-210,-170
-);
-
-ctx.bezierCurveTo(
-280,-60,
-240,120,
-130,180
-);
-
-ctx.bezierCurveTo(
-30,260,
--120,230,
--210,20
-);
-
-ctx.closePath();
-
-const cerebro =
-ctx.createRadialGradient(
-0,-50,
-20,
-0,0,
-300
-);
-
-cerebro.addColorStop(
+const gradiente =
+ctx.createLinearGradient(
 0,
-"#ff9bd2"
+0,
+largura,
+altura
 );
 
-cerebro.addColorStop(
+
+gradiente.addColorStop(
+0,
+"#0c3327"
+);
+
+
+gradiente.addColorStop(
 1,
-"#a94c9c"
+"#1e7655"
 );
 
-ctx.fillStyle = cerebro;
-ctx.fill();
-
-ctx.strokeStyle =
-"#ffd0ee";
-
-ctx.lineWidth = 9;
-
-ctx.stroke();
-
-
-/* sulcos */
-
-ctx.strokeStyle =
-"rgba(255,230,250,.65)";
-
-ctx.lineWidth = 7;
-
-for(let i=-2;i<=2;i++){
-
-ctx.beginPath();
-
-ctx.moveTo(
--150,
-i*55
-);
-
-ctx.bezierCurveTo(
--60,
-i*55-50,
--50,
-i*55+60,
-20,
-i*55
-);
-
-ctx.bezierCurveTo(
-80,
-i*55-50,
-130,
-i*55+50,
-170,
-i*55-10
-);
-
-ctx.stroke();
-
-}
-
-ctx.restore();
-
-
-/* neurônios */
-
-for(let i=0;i<7;i++){
-
-const ang =
-i*Math.PI*2/7 +
-progresso*Math.PI*2;
-
-const x =
-540 +
-Math.cos(ang)*360;
-
-const y =
-670 +
-Math.sin(ang)*300;
-
-ctx.beginPath();
-
-ctx.arc(
-x,
-y,
-18,
-0,
-Math.PI*2
-);
 
 ctx.fillStyle =
-"#8df5d0";
-
-ctx.fill();
+gradiente;
 
 
-ctx.beginPath();
-
-ctx.moveTo(
-x,
-y
+ctx.fillRect(
+0,
+0,
+largura,
+altura
 );
 
-ctx.lineTo(
-540 +
-Math.cos(ang)*200,
-670 +
-Math.sin(ang)*160
-);
 
-ctx.strokeStyle =
-"rgba(141,245,208,.35)";
-
-ctx.lineWidth = 5;
-
-ctx.stroke();
-
-}
-
-}
-
-
-/* =========================
-   DNA
-========================= */
-
-else if(
-t.includes("dna") ||
-t.includes("genét") ||
-t.includes("genet")
-){
-
-const centro = 540;
-
-ctx.lineWidth = 8;
+/* ELEMENTOS EM MOVIMENTO */
 
 for(
-let y=350;
-y<1000;
-y+=7
+let i=0;
+i<10;
+i++
 ){
 
-const fase =
-y/70 +
-progresso*Math.PI*4;
+const x =
+80 +
+i * 110;
 
-const x1 =
-centro +
-Math.sin(fase)*190;
 
-const x2 =
-centro -
-Math.sin(fase)*190;
+const y =
+350 +
+Math.sin(
+progresso *
+Math.PI *
+2 +
+i
+) *
+70;
 
 
 ctx.beginPath();
 
+
 ctx.arc(
-x1,
+x,
 y,
-7,
-0,
-Math.PI*2
-);
-
-ctx.fillStyle =
-"#73f0bd";
-
-ctx.fill();
-
-
-ctx.beginPath();
-
-ctx.arc(
-x2,
-y,
-7,
-0,
-Math.PI*2
-);
-
-ctx.fillStyle =
-"#ff9bd2";
-
-ctx.fill();
-
-
-if(y%42===0){
-
-ctx.beginPath();
-
-ctx.moveTo(
-x1,
-y
-);
-
-ctx.lineTo(
-x2,
-y
-);
-
-ctx.strokeStyle =
-"rgba(255,255,255,.55)";
-
-ctx.stroke();
-
-}
-
-}
-
-}
-
-
-/* =========================
-   CÉLULA
-========================= */
-
-else if(
-t.includes("célula") ||
-t.includes("celula") ||
-t.includes("bactéria") ||
-t.includes("bacteria")
-){
-
-const cx = 540;
-const cy = 670;
-
-
-/* membrana */
-
-ctx.beginPath();
-
-ctx.arc(
-cx,
-cy,
-270,
-0,
-Math.PI*2
-);
-
-const celula =
-ctx.createRadialGradient(
-cx-70,
-cy-80,
 30,
-cx,
-cy,
-300
-);
-
-celula.addColorStop(
 0,
-"#72e8b2"
+Math.PI * 2
 );
 
-celula.addColorStop(
-1,
-"#176c54"
-);
-
-ctx.fillStyle = celula;
-ctx.fill();
-
-ctx.strokeStyle =
-"#b9ffe0";
-
-ctx.lineWidth = 9;
-
-ctx.stroke();
-
-
-/* núcleo */
-
-ctx.beginPath();
-
-ctx.arc(
-cx,
-cy,
-100,
-0,
-Math.PI*2
-);
 
 ctx.fillStyle =
-"#b36ed2";
+"rgba(255,255,255,.14)";
 
-ctx.fill();
-
-ctx.strokeStyle =
-"#f0caff";
-
-ctx.lineWidth = 7;
-
-ctx.stroke();
-
-
-/* organelas */
-
-for(let i=0;i<12;i++){
-
-const a =
-i*Math.PI*2/12 +
-progresso;
-
-const x =
-cx +
-Math.cos(a)*170;
-
-const y =
-cy +
-Math.sin(a)*170;
-
-ctx.beginPath();
-
-ctx.ellipse(
-x,
-y,
-25,
-14,
-a,
-0,
-Math.PI*2
-);
-
-ctx.fillStyle =
-"#ffd47a";
 
 ctx.fill();
 
 }
 
-}
 
-
-/* =========================
-   BIOTECNOLOGIA
-========================= */
-
-else{
-
-/* molécula */
-
-const cx = 540;
-const cy = 650;
-
-for(let i=0;i<8;i++){
-
-const a =
-i*Math.PI*2/8 +
-progresso*Math.PI*2;
-
-const x =
-cx +
-Math.cos(a)*250;
-
-const y =
-cy +
-Math.sin(a)*250;
-
-ctx.beginPath();
-
-ctx.arc(
-x,
-y,
-35,
-0,
-Math.PI*2
-);
+/* MARCA */
 
 ctx.fillStyle =
-i%2===0 ?
-"#74edbd" :
-"#d78bea";
+"white";
 
-ctx.fill();
-
-
-ctx.beginPath();
-
-ctx.moveTo(
-cx,
-cy
-);
-
-ctx.lineTo(
-x,
-y
-);
-
-ctx.strokeStyle =
-"rgba(255,255,255,.35)";
-
-ctx.lineWidth = 5;
-
-ctx.stroke();
-
-}
-
-
-ctx.beginPath();
-
-ctx.arc(
-cx,
-cy,
-80,
-0,
-Math.PI*2
-);
-
-ctx.fillStyle =
-"#fff";
-
-ctx.fill();
+ctx.textAlign =
+"center";
 
 
 ctx.font =
-"bold 55px Arial";
+"bold 52px Arial";
 
-ctx.fillStyle =
-"#164d3b";
-
-ctx.textAlign =
-"center";
 
 ctx.fillText(
-"BIO",
-cx,
-cy+20
+"🧬 BioVideo AI",
+540,
+170
 );
 
-}
+
+/* CENA */
+
+ctx.font =
+"bold 38px Arial";
 
 
-/* =========================
-   TÍTULO DA CENA
-========================= */
+ctx.fillText(
+"CENA " +
+(indice + 1),
+540,
+480
+);
 
-ctx.textAlign =
-"center";
+
+/* TÍTULO */
 
 ctx.font =
 "bold 64px Arial";
 
-ctx.fillStyle =
-"#ffffff";
 
 ctx.fillText(
 cena.titulo,
 540,
-1120
+650
 );
 
 
-/* linha */
-
-ctx.fillStyle =
-"#7ff2c0";
-
-ctx.fillRect(
-390,
-1170,
-300,
-7
-);
-
-
-/* =========================
-   LEGENDA
-========================= */
+/* LEGENDA */
 
 ctx.font =
-"38px Arial";
+"42px Arial";
 
-ctx.fillStyle =
-"#ffffff";
 
 const linhas =
 quebrarTexto(
 ctx,
 cena.legenda,
-820
+850
 );
 
-linhas
-.slice(0,4)
+
+linhas.forEach(
+function(linha,i){
+
+ctx.fillText(
+linha,
+540,
+850 +
+i * 70
+);
+
+});
+
+
+/* TEMA */
+
+ctx.font =
+"30px Arial";
+
+
+const temaLinhas =
+quebrarTexto(
+ctx,
+tema,
+800
+);
+
+
+temaLinhas
+.slice(0,3)
 .forEach(
 function(linha,i){
 
 ctx.fillText(
 linha,
 540,
-1280+i*65
+1100 +
+i * 48
 );
 
 });
 
 
-/* =========================
-   NOME DO PROJETO
-========================= */
-
-ctx.font =
-"28px Arial";
+/* BARRA */
 
 ctx.fillStyle =
-"rgba(255,255,255,.65)";
+"rgba(255,255,255,.25)";
 
-ctx.fillText(
-"BioVideo AI • Vídeo educativo",
-540,
-1690
-);
-
-
-/* =========================
-   PROGRESSO
-========================= */
-
-ctx.fillStyle =
-"rgba(255,255,255,.2)";
 
 ctx.fillRect(
 100,
-1780,
+1740,
 880,
-10
+12
 );
 
+
 ctx.fillStyle =
-"#7ff2c0";
+"white";
+
 
 ctx.fillRect(
 100,
-1780,
-880*progresso,
-10
+1740,
+880 *
+progresso,
+12
 );
 
 }
+
 
 /* =========================
    GERADOR DE VÍDEO
@@ -2026,175 +1588,168 @@ ctx.fillRect(
 
 async function gerarVideoBio(){
 
-async function gerarVideoBio(){
+const status =
+document
+.getElementById(
+"videoStatus"
+);
 
-const status=document.getElementById("videoStatus");
-const video=document.getElementById("videoPreview");
-const download=document.getElementById("downloadVideo");
 
-const tema=document.getElementById("tema").value.trim() ||
+const video =
+document
+.getElementById(
+"videoPreview"
+);
+
+
+const download =
+document
+.getElementById(
+"downloadVideo"
+);
+
+
+const tema =
+document
+.getElementById(
+"tema"
+)
+.value
+.trim()
+||
 "Biotecnologia e o cérebro";
 
-const duracao=parseInt(
-document.getElementById("duracao").value,
+
+const duracao =
+parseInt(
+document
+.getElementById(
+"duracao"
+)
+.value,
 10
-)||1;
+)
+||
+1;
 
-if(!cenasAtuais.length){
 
-alert("Primeiro clique em Criar roteiro.");
+/* PRECISA TER ROTEIRO */
+
+if(
+!cenasAtuais.length
+){
+
+alert(
+"Primeiro clique em Criar roteiro."
+);
+
 return;
 
 }
 
+
+/* VERIFICA SUPORTE */
+
 if(
-!HTMLCanvasElement.prototype.captureStream ||
+!HTMLCanvasElement
+.prototype
+.captureStream
+||
 !window.MediaRecorder
 ){
 
-status.textContent=
+status.textContent =
 "⚠️ Este navegador não suporta a geração de vídeo.";
 
 return;
 
 }
 
-status.textContent=
-"🎬 Preparando vídeo...";
+
+status.textContent =
+"🎬 Preparando vídeo de " +
+duracao +
+" minuto(s)...";
 
 
-/* =========================
-   CANVAS
-========================= */
+/* CANVAS */
 
-const canvas=document.createElement("canvas");
-
-canvas.width=1080;
-canvas.height=1920;
-
-const ctx=canvas.getContext("2d");
-
-
-/* =========================
-   ÁUDIO
-========================= */
-
-let audioContext=null;
-let destination=null;
-let audioStream=null;
-
-try{
-
-audioContext=
-new (window.AudioContext ||
-window.webkitAudioContext)();
-
-destination=
-audioContext.createMediaStreamDestination();
-
-audioStream=
-destination.stream;
-
-}catch(e){
-
-console.log(
-"Áudio não disponível:",
-e
+const canvas =
+document
+.createElement(
+"canvas"
 );
 
-}
+
+canvas.width =
+1080;
+
+canvas.height =
+1920;
 
 
-/* =========================
-   STREAM DO VÍDEO
-========================= */
-
-const videoStream=
-canvas.captureStream(30);
+const ctx =
+canvas.getContext(
+"2d"
+);
 
 
-/* =========================
-   JUNTAR VÍDEO + ÁUDIO
-========================= */
+/* STREAM */
 
-let streamFinal;
-
-
-if(audioStream){
-
-const tracks=[
-...videoStream.getVideoTracks(),
-...audioStream.getAudioTracks()
-];
-
-streamFinal=
-new MediaStream(tracks);
-
-}
-else{
-
-streamFinal=
-videoStream;
-
-}
+const stream =
+canvas.captureStream(
+30
+);
 
 
-/* =========================
-   FORMATO
-========================= */
-
-let tipoVideo=
+let tipoVideo =
 "video/webm";
 
 
 if(
-MediaRecorder.isTypeSupported(
-"video/webm;codecs=vp9,opus"
+MediaRecorder
+.isTypeSupported(
+"video/webm;codecs=vp9"
 )
 ){
 
-tipoVideo=
-"video/webm;codecs=vp9,opus";
+tipoVideo =
+"video/webm;codecs=vp9";
 
 }
 else if(
-MediaRecorder.isTypeSupported(
-"video/webm;codecs=vp8,opus"
+MediaRecorder
+.isTypeSupported(
+"video/webm;codecs=vp8"
 )
 ){
 
-tipoVideo=
-"video/webm;codecs=vp8,opus";
-
-}
-else if(
-MediaRecorder.isTypeSupported(
-"video/webm"
-)
-){
-
-tipoVideo=
-"video/webm";
+tipoVideo =
+"video/webm;codecs=vp8";
 
 }
 
 
-const partes=[];
+const partes = [];
 
 
-const recorder=
+const recorder =
 new MediaRecorder(
-streamFinal,
+stream,
 {
-mimeType:tipoVideo
+mimeType:
+tipoVideo
 }
 );
 
 
-recorder.ondataavailable=
+recorder
+.ondataavailable =
 function(event){
 
-if(event.data.size>0){
+if(
+event.data.size > 0
+){
 
 partes.push(
 event.data
@@ -2205,150 +1760,69 @@ event.data
 };
 
 
-const terminou=
+const terminou =
 new Promise(
 function(resolve){
 
-recorder.onstop=
+recorder.onstop =
 resolve;
 
 });
 
 
-/* =========================
-   GRAVAÇÃO
-========================= */
+/* COMEÇA GRAVAÇÃO */
 
-recorder.start(1000);
+recorder.start(
+1000
+);
 
 
-/* =========================
-   TEMPO
-========================= */
+/* DURAÇÃO REAL */
 
-const inicio=
+const inicio =
 performance.now();
 
-const duracaoTotal=
-duracao*60*1000;
+
+const duracaoTotal =
+duracao *
+60 *
+1000;
 
 
-/* =========================
-   NARRAÇÃO
-========================= */
-
-let audioFonte=null;
-
-if(audioContext && destination){
-
-try{
-
-const ganho=
-audioContext.createGain();
-
-ganho.gain.value=1;
-
-ganho.connect(
-destination
-);
-
-
-/*
-IMPORTANTE:
-
-O speechSynthesis do navegador
-não possui saída de áudio
-diretamente para o MediaRecorder.
-
-Por isso criamos uma narração
-visual sincronizada e tentamos
-usar o áudio do navegador quando
-o dispositivo permitir.
-*/
-
-}catch(e){
-
-console.log(e);
-
-}
-
-}
-
-
-/* =========================
-   FALAR
-========================= */
-
-if(synth){
-
-synth.cancel();
-
-const utterance=
-new SpeechSynthesisUtterance(
-textoNarracao
-);
-
-const indice=
-parseInt(
-document.getElementById("voz").value,
-10
-);
-
-if(vozes[indice]){
-
-utterance.voice=
-vozes[indice];
-
-}
-
-utterance.lang="pt-BR";
-
-utterance.rate=0.95;
-
-utterance.pitch=1;
-
-utterance.volume=1;
-
-synth.speak(
-utterance
-);
-
-}
-
-
-/* =========================
-   ANIMAÇÃO
-========================= */
+/* ANIMAÇÃO */
 
 function quadro(){
 
-const agora=
+const agora =
 performance.now();
 
-const decorrido=
-agora-inicio;
 
-const progresso=
+const decorrido =
+agora -
+inicio;
+
+
+const progresso =
 Math.min(
-decorrido/duracaoTotal,
+decorrido /
+duracaoTotal,
 1
 );
 
 
-const indice=
+const indice =
 Math.min(
 Math.floor(
-progresso*cenasAtuais.length
+progresso *
+cenasAtuais.length
 ),
-cenasAtuais.length-1
+cenasAtuais.length - 1
 );
 
 
-const cena=
+const cena =
 cenasAtuais[indice];
 
-
-/* desenha */
 
 desenharCena(
 ctx,
@@ -2359,19 +1833,22 @@ tema
 );
 
 
-/* status */
-
-status.textContent=
-"🎥 Gerando cena "+
-(indice+1)+
-" de "+
-cenasAtuais.length+
-" • "+
-Math.round(progresso*100)+
+status.textContent =
+"🎥 Gerando cena " +
+(indice + 1) +
+" de " +
+cenasAtuais.length +
+" • " +
+Math.round(
+progresso * 100
+) +
 "%";
 
 
-if(decorrido<duracaoTotal){
+if(
+decorrido <
+duracaoTotal
+){
 
 requestAnimationFrame(
 quadro
@@ -2379,17 +1856,6 @@ quadro
 
 }
 else{
-
-/* termina fala */
-
-if(synth){
-
-synth.cancel();
-
-}
-
-
-/* termina gravação */
 
 recorder.stop();
 
@@ -2401,67 +1867,54 @@ recorder.stop();
 quadro();
 
 
-/* =========================
-   ESPERAR ARQUIVO
-========================= */
+/* ESPERA TERMINAR */
 
 await terminou;
 
 
-/* =========================
-   LIMPAR ÁUDIO
-========================= */
+/* CRIA ARQUIVO */
 
-if(audioContext){
-
-try{
-
-await audioContext.close();
-
-}catch(e){
-
-console.log(e);
-
-}
-
-}
-
-
-/* =========================
-   ARQUIVO FINAL
-========================= */
-
-const blob=
+const blob =
 new Blob(
 partes,
 {
-type:tipoVideo
+type:
+tipoVideo
 }
 );
 
 
-const url=
+const url =
 URL.createObjectURL(
 blob
 );
 
 
-video.src=url;
+video.src =
+url;
 
-video.style.display="block";
 
-download.href=url;
+video.style.display =
+"block";
 
-download.style.display="block";
 
-download.download=
+download.href =
+url;
+
+
+download.style.display =
+"block";
+
+
+download.download =
 "BioVideoAI.webm";
 
 
-status.textContent=
+status.textContent =
 "✅ Vídeo criado com sucesso!";
 
 }
+
 
 /* =========================
    BOTÕES
@@ -2520,3 +1973,4 @@ gerarVideoBio
 
 </body>
 </html>
+Esse é o código completo anterior ao que foi posto aos novos códigos que me deu
