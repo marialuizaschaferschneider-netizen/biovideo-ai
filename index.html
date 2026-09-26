@@ -1357,62 +1357,44 @@ return linhas;
    DESENHAR CENA
 ========================= */
 
-function desenharCena(
-ctx,
-cena,
-indice,
-progresso,
-tema
-){
+function desenharCena(ctx,cena,indice,progresso,tema){
 
-const W = 1080;
-const H = 1920;
+const W=1080;
+const H=1920;
+
+ctx.clearRect(0,0,W,H);
 
 
 /* =====================================================
-   FUNDO
+   FUNDO DINÂMICO
 ===================================================== */
 
-const fundo = ctx.createLinearGradient(
-0,
-0,
-W,
-H
-);
+const fundo=ctx.createLinearGradient(0,0,W,H);
 
-fundo.addColorStop(0,"#061c25");
-fundo.addColorStop(0.5,"#0b3b45");
-fundo.addColorStop(1,"#06251e");
+fundo.addColorStop(0,"#071923");
+fundo.addColorStop(.5,"#0b3f43");
+fundo.addColorStop(1,"#061d27");
 
-ctx.fillStyle = fundo;
+ctx.fillStyle=fundo;
 ctx.fillRect(0,0,W,H);
-
-
-/* =====================================================
-   ANIMAÇÃO GERAL
-===================================================== */
-
-const movimento =
-progresso * Math.PI * 2;
-
-ctx.textAlign = "center";
 
 
 /* =====================================================
    PARTÍCULAS
 ===================================================== */
 
-for(let i=0;i<24;i++){
+for(let i=0;i<35;i++){
 
-const x =
-((i * 97) +
-(progresso * 160 * (i % 3 + 1))) % 1200 - 60;
+const velocidade=25+(i%5)*12;
 
-const y =
-150 + ((i * 83) % 1450);
+const x=
+((i*137)+progresso*velocidade*8)%1200-60;
 
-const tamanho =
-4 + (i % 4) * 3;
+const y=
+120+((i*91)%1450);
+
+const tamanho=
+3+(i%4)*2;
 
 ctx.beginPath();
 
@@ -1421,11 +1403,11 @@ x,
 y,
 tamanho,
 0,
-Math.PI * 2
+Math.PI*2
 );
 
-ctx.fillStyle =
-"rgba(130,245,210,.25)";
+ctx.fillStyle=
+"rgba(125,245,205,.35)";
 
 ctx.fill();
 
@@ -1433,19 +1415,20 @@ ctx.fill();
 
 
 /* =====================================================
-   TÍTULO DA CENA
+   TÍTULO
 ===================================================== */
 
-ctx.font =
-"bold 56px Arial";
+ctx.textAlign="center";
 
-ctx.fillStyle =
-"#ffffff";
+ctx.font=
+"bold 54px Arial";
+
+ctx.fillStyle="#ffffff";
 
 ctx.fillText(
 cena.titulo,
 W/2,
-180
+170
 );
 
 
@@ -1453,151 +1436,71 @@ W/2,
    CENA 1 — INTRODUÇÃO
 ===================================================== */
 
-if(indice === 0){
+if(indice===0){
 
-/* moléculas flutuando */
+const cx=540;
+const cy=690;
 
-for(let i=0;i<9;i++){
 
-const angulo =
-(i/9)*Math.PI*2 +
-movimento;
+/* moléculas orbitando */
 
-const raio = 270;
+for(let i=0;i<10;i++){
 
-const x =
-W/2 +
+const angulo=
+i*Math.PI*2/10+
+progresso*Math.PI*2;
+
+const raio=
+300+
+Math.sin(
+progresso*Math.PI*2+i
+)*20;
+
+const x=
+cx+
 Math.cos(angulo)*raio;
 
-const y =
-700 +
+const y=
+cy+
 Math.sin(angulo)*raio;
+
+
+/* conexão */
+
+ctx.beginPath();
+
+ctx.moveTo(cx,cy);
+
+ctx.lineTo(x,y);
+
+ctx.strokeStyle=
+"rgba(120,245,205,.22)";
+
+ctx.lineWidth=4;
+
+ctx.stroke();
+
+
+/* partícula */
 
 ctx.beginPath();
 
 ctx.arc(
 x,
 y,
-32,
+25,
 0,
 Math.PI*2
 );
 
-ctx.fillStyle =
-i%2 === 0 ?
-"#72e6bd" :
-"#d99ad9";
+ctx.fillStyle=
+i%2===0?
+"#70e7ba":
+"#dc9bd7";
 
 ctx.fill();
-
-ctx.beginPath();
-
-ctx.moveTo(
-W/2,
-700
-);
-
-ctx.lineTo(
-x,
-y
-);
-
-ctx.strokeStyle =
-"rgba(255,255,255,.25)";
-
-ctx.lineWidth = 5;
-
-ctx.stroke();
 
 }
-
-/* núcleo */
-
-ctx.beginPath();
-
-ctx.arc(
-W/2,
-700,
-80,
-0,
-Math.PI*2
-);
-
-ctx.fillStyle =
-"#ffffff";
-
-ctx.fill();
-
-ctx.fillStyle =
-"#0a5142";
-
-ctx.font =
-"bold 34px Arial";
-
-ctx.fillText(
-"BIO",
-W/2,
-712
-);
-
-}
-
-
-/* =====================================================
-   CENA 2 — O QUE É?
-===================================================== */
-
-if(indice === 1){
-
-/* célula */
-
-const cx = W/2;
-const cy = 700;
-
-
-/* membrana */
-
-ctx.beginPath();
-
-ctx.arc(
-cx,
-cy,
-280,
-0,
-Math.PI*2
-);
-
-const celula =
-ctx.createRadialGradient(
-cx-80,
-cy-100,
-20,
-cx,
-cy,
-300
-);
-
-celula.addColorStop(
-0,
-"#a6f4c8"
-);
-
-celula.addColorStop(
-1,
-"#16705b"
-);
-
-ctx.fillStyle =
-celula;
-
-ctx.fill();
-
-ctx.strokeStyle =
-"#d5ffe9";
-
-ctx.lineWidth = 12;
-
-ctx.stroke();
 
 
 /* núcleo */
@@ -1612,15 +1515,132 @@ cy,
 Math.PI*2
 );
 
-ctx.fillStyle =
-"#a967c6";
+const nucleo=
+ctx.createRadialGradient(
+cx-30,
+cy-40,
+10,
+cx,
+cy,
+110
+);
+
+nucleo.addColorStop(
+0,
+"#ffffff"
+);
+
+nucleo.addColorStop(
+1,
+"#62d6ae"
+);
+
+ctx.fillStyle=nucleo;
 
 ctx.fill();
 
-ctx.strokeStyle =
-"#f2cfff";
 
-ctx.lineWidth = 8;
+ctx.fillStyle="#14533f";
+
+ctx.font=
+"bold 35px Arial";
+
+ctx.fillText(
+"BIO",
+cx,
+cy+12
+);
+
+}
+
+
+/* =====================================================
+   CENA 2 — CÉLULA
+===================================================== */
+
+if(indice===1){
+
+const cx=540;
+const cy=700;
+
+const pulsar=
+1+
+Math.sin(
+progresso*Math.PI*4
+)*.035;
+
+
+/* célula */
+
+ctx.save();
+
+ctx.translate(cx,cy);
+
+ctx.scale(
+pulsar,
+pulsar
+);
+
+ctx.beginPath();
+
+ctx.arc(
+0,
+0,
+285,
+0,
+Math.PI*2
+);
+
+const celula=
+ctx.createRadialGradient(
+-80,
+-100,
+20,
+0,
+0,
+310
+);
+
+celula.addColorStop(
+0,
+"#a5f4c9"
+);
+
+celula.addColorStop(
+1,
+"#14705a"
+);
+
+ctx.fillStyle=celula;
+
+ctx.fill();
+
+ctx.strokeStyle="#d8ffeb";
+
+ctx.lineWidth=12;
+
+ctx.stroke();
+
+
+/* núcleo */
+
+ctx.beginPath();
+
+ctx.arc(
+0,
+0,
+105,
+0,
+Math.PI*2
+);
+
+ctx.fillStyle="#9c62c1";
+
+ctx.fill();
+
+ctx.strokeStyle="#edc7ff";
+
+ctx.lineWidth=8;
 
 ctx.stroke();
 
@@ -1629,16 +1649,14 @@ ctx.stroke();
 
 for(let i=0;i<12;i++){
 
-const a =
-i*Math.PI*2/12 +
-movimento;
+const a=
+i*Math.PI*2/12+
+progresso*Math.PI*2;
 
-const x =
-cx +
+const x=
 Math.cos(a)*175;
 
-const y =
-cy +
+const y=
 Math.sin(a)*175;
 
 ctx.beginPath();
@@ -1646,52 +1664,48 @@ ctx.beginPath();
 ctx.ellipse(
 x,
 y,
-34,
+35,
 20,
 a,
 0,
 Math.PI*2
 );
 
-ctx.fillStyle =
-i%2 === 0 ?
-"#ffcf75" :
-"#ff9bd7";
+ctx.fillStyle=
+i%2===0?
+"#ffd36f":
+"#ff9fd6";
 
 ctx.fill();
 
 }
 
+ctx.restore();
+
 }
 
 
 /* =====================================================
-   CENA 3 — COMO FUNCIONA?
+   CENA 3 — DNA
 ===================================================== */
 
-if(indice === 2){
+if(indice===2){
 
-/* DNA */
+const centro=540;
 
-const centro = W/2;
+for(let y=360;y<1060;y+=7){
 
-for(
-let y=400;
-y<=1000;
-y+=8
-){
+const fase=
+y/70+
+progresso*Math.PI*4;
 
-const fase =
-y/70 +
-movimento;
+const x1=
+centro+
+Math.sin(fase)*230;
 
-const x1 =
-centro +
-Math.sin(fase)*220;
-
-const x2 =
-centro -
-Math.sin(fase)*220;
+const x2=
+centro-
+Math.sin(fase)*230;
 
 
 /* fita 1 */
@@ -1706,8 +1720,7 @@ y,
 Math.PI*2
 );
 
-ctx.fillStyle =
-"#75efc1";
+ctx.fillStyle="#72edc0";
 
 ctx.fill();
 
@@ -1724,15 +1737,14 @@ y,
 Math.PI*2
 );
 
-ctx.fillStyle =
-"#e59cda";
+ctx.fillStyle="#df9bd8";
 
 ctx.fill();
 
 
 /* ligação */
 
-if(y % 48 === 0){
+if(y%48===0){
 
 ctx.beginPath();
 
@@ -1746,10 +1758,10 @@ x2,
 y
 );
 
-ctx.strokeStyle =
+ctx.strokeStyle=
 "rgba(255,255,255,.65)";
 
-ctx.lineWidth = 5;
+ctx.lineWidth=5;
 
 ctx.stroke();
 
@@ -1761,161 +1773,154 @@ ctx.stroke();
 
 
 /* =====================================================
-   CENA 4 — APLICAÇÕES
+   CENA 4 — LABORATÓRIO
 ===================================================== */
 
-if(indice === 3){
+if(indice===3){
 
-/* laboratório */
+/* bancada */
 
-ctx.fillStyle =
-"rgba(255,255,255,.08)";
+ctx.fillStyle="#123b38";
 
 ctx.roundRect(
-180,
-470,
-720,
-580,
-40,
+120,
+1050,
+840,
+30,
+15
 );
 
 ctx.fill();
 
 
-/* frasco */
+/* três tubos */
 
-ctx.beginPath();
+for(let i=0;i<3;i++){
+
+const x=
+280+i*260;
+
+
+/* tubo */
+
+ctx.fillStyle=
+"rgba(255,255,255,.92)";
 
 ctx.roundRect(
-430,
+x,
 560,
-220,
-330,
-30
+130,
+470,
+35
 );
 
-ctx.fillStyle =
-"#b9f4d1";
-
 ctx.fill();
-
-ctx.strokeStyle =
-"#ffffff";
-
-ctx.lineWidth = 8;
-
-ctx.stroke();
 
 
 /* líquido */
 
-ctx.beginPath();
+const cores=[
+"#57d7a6",
+"#d58bd1",
+"#71bde0"
+];
+
+ctx.fillStyle=
+cores[i];
 
 ctx.roundRect(
-450,
-720,
-180,
-150,
-20
+x+10,
+760,
+110,
+260,
+25
 );
-
-ctx.fillStyle =
-"#51cfa6";
 
 ctx.fill();
 
 
 /* bolhas */
 
-for(let i=0;i<9;i++){
+for(let j=0;j<6;j++){
 
-const x =
-470 +
-(i*43)%140;
-
-const y =
-690 -
+const y=
+1000-
 (
-(progresso*1200 + i*70)
-% 300
+(progresso*600+j*80)
+%250
 );
+
+ctx.beginPath();
+
+ctx.arc(
+x+35+(j%3)*30,
+y,
+7,
+0,
+Math.PI*2
+);
+
+ctx.fillStyle=
+"rgba(255,255,255,.7)";
+
+ctx.fill();
+
+}
+
+}
+
+
+/* molécula acima */
+
+for(let i=0;i<7;i++){
+
+const a=
+i*Math.PI*2/7+
+progresso*Math.PI*2;
+
+const x=
+540+
+Math.cos(a)*180;
+
+const y=
+400+
+Math.sin(a)*130;
 
 ctx.beginPath();
 
 ctx.arc(
 x,
 y,
-8+(i%3)*4,
+28,
 0,
 Math.PI*2
 );
 
-ctx.fillStyle =
-"rgba(255,255,255,.75)";
+ctx.fillStyle=
+i%2?
+"#75eac0":
+"#db9bd6";
 
 ctx.fill();
-
-}
-
-
-/* plantas */
-
-for(let i=0;i<3;i++){
-
-const x =
-310+i*230;
-
-ctx.strokeStyle =
-"#76e0a8";
-
-ctx.lineWidth = 12;
 
 ctx.beginPath();
 
 ctx.moveTo(
-x,
-1050
+540,
+400
 );
 
 ctx.lineTo(
 x,
-900
+y
 );
+
+ctx.strokeStyle=
+"rgba(255,255,255,.3)";
+
+ctx.lineWidth=4;
 
 ctx.stroke();
-
-
-ctx.beginPath();
-
-ctx.ellipse(
-x-35,
-900,
-45,
-22,
--.5,
-0,
-Math.PI*2
-);
-
-ctx.fillStyle =
-"#63d69b";
-
-ctx.fill();
-
-
-ctx.beginPath();
-
-ctx.ellipse(
-x+35,
-850,
-45,
-22,
-.5,
-0,
-Math.PI*2
-);
-
-ctx.fill();
 
 }
 
@@ -1923,52 +1928,69 @@ ctx.fill();
 
 
 /* =====================================================
-   CENA 5 — EVIDÊNCIAS CIENTÍFICAS
+   CENA 5 — PESQUISA
 ===================================================== */
 
-if(indice === 4){
+if(indice===4){
 
-/* artigos */
+/* cartões de artigos */
 
 for(let i=0;i<3;i++){
 
-const x =
-180 + i*250;
+const x=
+150+i*270;
 
-const y =
-520 +
+const y=
+480+
 Math.sin(
-movimento+i
-)*30;
+progresso*Math.PI*2+i
+)*25;
 
 
-/* folha */
+/* papel */
 
-ctx.fillStyle =
-"#ffffff";
+ctx.fillStyle="#ffffff";
 
 ctx.roundRect(
 x,
 y,
-210,
-300,
-18
+230,
+330,
+20
 );
 
 ctx.fill();
+
+
+/* título */
+
+ctx.fillStyle="#174b40";
+
+ctx.font=
+"bold 25px Arial";
+
+ctx.textAlign="left";
+
+ctx.fillText(
+"ARTIGO",
+x+25,
+y+50
+);
 
 
 /* linhas */
 
 for(let j=0;j<6;j++){
 
-ctx.fillStyle =
-"#79a89a";
+ctx.fillStyle=
+j===0?
+"#48b990":
+"#9bb8ae";
 
 ctx.fillRect(
-x+30,
-y+60+j*35,
-150,
+x+25,
+y+90+j*35,
+j===0?120:170,
 8
 );
 
@@ -1977,31 +1999,35 @@ y+60+j*35,
 
 /* gráfico */
 
-ctx.strokeStyle =
-"#38ad83";
+ctx.strokeStyle="#48b990";
 
-ctx.lineWidth = 7;
+ctx.lineWidth=6;
 
 ctx.beginPath();
 
 ctx.moveTo(
-x+30,
+x+25,
+y+285
+);
+
+ctx.lineTo(
+x+70,
+y+240
+);
+
+ctx.lineTo(
+x+115,
 y+255
 );
 
 ctx.lineTo(
-x+80,
-y+205
+x+165,
+y+185
 );
 
 ctx.lineTo(
-x+120,
-y+225
-);
-
-ctx.lineTo(
-x+180,
-y+145
+x+200,
+y+210
 );
 
 ctx.stroke();
@@ -2011,20 +2037,21 @@ ctx.stroke();
 
 /* lupa */
 
+ctx.textAlign="center";
+
 ctx.beginPath();
 
 ctx.arc(
 540,
-1050,
-90,
+1060,
+85,
 0,
 Math.PI*2
 );
 
-ctx.strokeStyle =
-"#8cf2cf";
+ctx.strokeStyle="#86f2cd";
 
-ctx.lineWidth = 18;
+ctx.lineWidth=18;
 
 ctx.stroke();
 
@@ -2032,12 +2059,12 @@ ctx.beginPath();
 
 ctx.moveTo(
 605,
-1115
+1125
 );
 
 ctx.lineTo(
 720,
-1230
+1240
 );
 
 ctx.stroke();
@@ -2049,26 +2076,27 @@ ctx.stroke();
    CENA 6 — CONCLUSÃO
 ===================================================== */
 
-if(indice === 5){
+if(indice===5){
 
-/* grande molécula final */
+const cx=540;
+const cy=680;
 
-const cx = W/2;
-const cy = 700;
 
-for(let i=0;i<10;i++){
+/* grande rede */
 
-const a =
-i*Math.PI*2/10 +
-movimento;
+for(let i=0;i<12;i++){
 
-const x =
+const a=
+i*Math.PI*2/12+
+progresso*Math.PI*2;
+
+const x=
 cx+
-Math.cos(a)*300;
+Math.cos(a)*310;
 
-const y =
+const y=
 cy+
-Math.sin(a)*300;
+Math.sin(a)*280;
 
 
 /* ligação */
@@ -2085,30 +2113,30 @@ x,
 y
 );
 
-ctx.strokeStyle =
-"rgba(255,255,255,.35)";
+ctx.strokeStyle=
+"rgba(255,255,255,.32)";
 
-ctx.lineWidth = 7;
+ctx.lineWidth=6;
 
 ctx.stroke();
 
 
-/* átomo */
+/* nó */
 
 ctx.beginPath();
 
 ctx.arc(
 x,
 y,
-38,
+35,
 0,
 Math.PI*2
 );
 
-ctx.fillStyle =
-i%2 === 0 ?
-"#77eac0" :
-"#dc9bd9";
+ctx.fillStyle=
+i%2===0?
+"#74e9bf":
+"#dc9bd8";
 
 ctx.fill();
 
@@ -2122,21 +2150,19 @@ ctx.beginPath();
 ctx.arc(
 cx,
 cy,
-90,
+100,
 0,
 Math.PI*2
 );
 
-ctx.fillStyle =
-"#ffffff";
+ctx.fillStyle="#ffffff";
 
 ctx.fill();
 
 
-ctx.fillStyle =
-"#14513f";
+ctx.fillStyle="#16513f";
 
-ctx.font =
+ctx.font=
 "bold 38px Arial";
 
 ctx.fillText(
@@ -2152,14 +2178,15 @@ cy+13
    LEGENDA
 ===================================================== */
 
-ctx.font =
+ctx.textAlign="center";
+
+ctx.font=
 "bold 38px Arial";
 
-ctx.fillStyle =
-"#ffffff";
+ctx.fillStyle="#ffffff";
 
 
-const linhas =
+const linhas=
 quebrarTexto(
 ctx,
 cena.legenda,
@@ -2175,7 +2202,7 @@ function(linha,i){
 ctx.fillText(
 linha,
 W/2,
-1250 + i*65
+1250+i*65
 );
 
 });
@@ -2185,14 +2212,13 @@ W/2,
    TEMA
 ===================================================== */
 
-ctx.font =
-"28px Arial";
+ctx.font="28px Arial";
 
-ctx.fillStyle =
+ctx.fillStyle=
 "rgba(255,255,255,.65)";
 
 
-const temaLinhas =
+const temaLinhas=
 quebrarTexto(
 ctx,
 tema,
@@ -2218,10 +2244,10 @@ W/2,
    MARCA
 ===================================================== */
 
-ctx.font =
+ctx.font=
 "bold 30px Arial";
 
-ctx.fillStyle =
+ctx.fillStyle=
 "rgba(255,255,255,.6)";
 
 ctx.fillText(
@@ -2235,7 +2261,7 @@ W/2,
    BARRA DE PROGRESSO
 ===================================================== */
 
-ctx.fillStyle =
+ctx.fillStyle=
 "rgba(255,255,255,.18)";
 
 ctx.fillRect(
@@ -2245,8 +2271,7 @@ ctx.fillRect(
 10
 );
 
-ctx.fillStyle =
-"#78edc0";
+ctx.fillStyle="#78edc0";
 
 ctx.fillRect(
 100,
@@ -2256,6 +2281,9 @@ ctx.fillRect(
 );
 
 }
+
+
+
 /* =========================
    GERADOR DE VÍDEO
 ========================= */
@@ -2647,4 +2675,4 @@ gerarVideoBio
 
 </body>
 </html>
-Esse é o código completo anterior ao que foi posto aos novos códigos que me deu
+
