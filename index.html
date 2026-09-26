@@ -363,9 +363,8 @@ window.speechSynthesis;
 let vozes = [];
 
 let cenasAtuais = [];
-
 let textoNarracao = "";
-
+let imagensCenas = [];
 
 /* =========================
    VOZES
@@ -1352,7 +1351,134 @@ return linhas;
 
 }
 
+/* =========================
+   BUSCAR IMAGENS REAIS
+========================= */
 
+async function buscarImagensCenas(tema){
+
+    const buscas = [
+        tema + " brain",
+        tema + " cell",
+        tema + " DNA",
+        tema + " biotechnology laboratory",
+        tema + " scientific research",
+        tema
+    ];
+
+    const imagens = [];
+
+    for(let i = 0; i < buscas.length; i++){
+
+        try{
+
+            const url =
+            "https://commons.wikimedia.org/w/api.php" +
+            "?action=query" +
+            "&generator=search" +
+            "&gsrsearch=" +
+            encodeURIComponent(buscas[i]) +
+            "&gsrnamespace=6" +
+            "&gsrlimit=3" +
+            "&prop=imageinfo" +
+            "&iiprop=url" +
+            "&iiurlwidth=900" +
+            "&format=json" +
+            "&origin=*";
+
+            const resposta =
+            await fetch(url);
+
+            const dados =
+            await resposta.json();
+
+            if(
+                dados.query &&
+                dados.query.pages
+            ){
+
+                Object.values(
+                    dados.query.pages
+                ).forEach(function(pagina){
+
+                    if(
+                        pagina.imageinfo &&
+                        pagina.imageinfo[0]
+                    ){
+
+                        const info =
+                        pagina.imageinfo[0];
+
+                        const endereco =
+                        info.thumburl ||
+                        info.url;
+
+                        if(endereco){
+
+                            imagens.push({
+                                url:endereco,
+                                titulo:pagina.title
+                            });
+
+                        }
+
+                    }
+
+                });
+
+            }
+
+        }
+        catch(erro){
+
+            console.log(
+                "Erro ao buscar imagem:",
+                erro
+            );
+
+        }
+
+    }
+
+    return imagens.slice(0,12);
+}
+
+
+/* =========================
+   CARREGAR IMAGENS
+========================= */
+
+function carregarImagem(url){
+
+    return new Promise(function(resolve){
+
+        const imagem =
+        new Image();
+
+        imagem.crossOrigin =
+        "anonymous";
+
+        imagem.onload =
+        function(){
+
+            resolve(imagem);
+
+        };
+
+        imagem.onerror =
+        function(){
+
+            resolve(null);
+
+        };
+
+        imagem.src =
+        url;
+
+    });
+
+}
+  
 /* =========================
    DESENHAR CENA
 ========================= */
@@ -1377,7 +1503,126 @@ fundo.addColorStop(1,"#061d27");
 
 ctx.fillStyle=fundo;
 ctx.fillRect(0,0,W,H);
+/* =====================================================
+   IMAGEM REAL DA CENA
+===================================================== */
 
+if(
+    imagensCenas &&
+    imagensCenas.length
+){
+
+    const indiceImagem =
+    Math.min(
+        indice,
+        imagensCenas.length - 1
+    );
+
+    const item =
+    imagensCenas[indiceImagem];
+
+    if(
+        item &&
+        item.imagem
+    ){
+
+        const img =
+        item.imagem;
+
+        const proporcao =
+        Math.max(
+            W / img.width,
+            H / img.height
+        );
+
+        const largura =
+        img.width * proporcao;
+
+        const altura =
+        img.height * proporcao;
+
+        /*
+           Movimento suave:
+           cada cena faz um pequeno
+           deslocamento/zoom
+        */
+
+        const zoom =
+        1.02 +
+        progresso * 0.08;
+
+        const larguraZoom =
+        largura * zoom;
+
+        const alturaZoom =
+        altura * zoom;
+
+        const movimentoX =
+        (W - larguraZoom) / 2 +
+        Math.sin(
+            progresso * Math.PI
+        ) * 35;
+
+        const movimentoY =
+        (H - alturaZoom) / 2 +
+        Math.cos(
+            progresso * Math.PI
+        ) * 20;
+
+        ctx.save();
+
+        ctx.globalAlpha =
+        0.90;
+
+        ctx.drawImage(
+            img,
+            movimentoX,
+            movimentoY,
+            larguraZoom,
+            alturaZoom
+        );
+
+        ctx.restore();
+
+
+        /* camada escura para o texto */
+
+        const sombra =
+        ctx.createLinearGradient(
+            0,
+            0,
+            0,
+            H
+        );
+
+        sombra.addColorStop(
+            0,
+            "rgba(0,0,0,.20)"
+        );
+
+        sombra.addColorStop(
+            0.55,
+            "rgba(0,0,0,.10)"
+        );
+
+        sombra.addColorStop(
+            1,
+            "rgba(0,0,0,.70)"
+        );
+
+        ctx.fillStyle =
+        sombra;
+
+        ctx.fillRect(
+            0,
+            0,
+            W,
+            H
+        );
+
+    }
+
+}
 
 /* =====================================================
    PARTÍCULAS
@@ -2372,7 +2617,45 @@ status.textContent =
 "🎬 Preparando vídeo de " +
 duracao +
 " minuto(s)...";
+/* =========================
+   BUSCA IMAGENS REAIS
+========================= */
 
+status.textContent =
+"🖼️ Buscando imagens científicas...";
+
+const imagensEncontradas =
+await buscarImagensCenas(tema);
+
+imagensCenas = [];
+
+for(
+    let i = 0;
+    i < imagensEncontradas.length;
+    i++
+){
+
+    const imagem =
+    await carregarImagem(
+        imagensEncontradas[i].url
+    );
+
+    if(imagem){
+
+        imagensCenas.push({
+            imagem:imagem,
+            titulo:
+            imagensEncontradas[i].titulo
+        });
+
+    }
+
+}
+
+status.textContent =
+"🖼️ " +
+imagensCenas.length +
+" imagens encontradas. Preparando vídeo...";
 
 /* CANVAS */
 
