@@ -351,7 +351,8 @@ download="BioVideoAI.webm">
 <script>
 
 "use strict";
-
+  
+const PEXELS_API_KEY = 1RtpHu7XiQlfXD0DvQBnxnudKxqTJSQ0DccaWH9Qtz3wAauJ3tYLlDgy;
 
 /* =========================
    VARIÁVEIS
@@ -1355,7 +1356,7 @@ return linhas;
    BUSCAR IMAGENS REAIS
 ========================= */
 
-async function buscarImagensCenas(tema){
+async function buscarVideosPexels(tema){
 
     const buscas = [
         tema + " brain",
