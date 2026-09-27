@@ -2533,33 +2533,59 @@ ctx.fillRect(
 /* =========================
    GERADOR DE VÍDEO
 ========================= */
+
 async function gerarVideoBio(){
 
 const status =
-document.getElementById("videoStatus");
+document
+.getElementById(
+"videoStatus"
+);
+
 
 const video =
-document.getElementById("videoPreview");
+document
+.getElementById(
+"videoPreview"
+);
+
 
 const download =
-document.getElementById("downloadVideo");
+document
+.getElementById(
+"downloadVideo"
+);
+
 
 const tema =
-document.getElementById("tema").value.trim()
-|| "Biotecnologia e o cérebro";
+document
+.getElementById(
+"tema"
+)
+.value
+.trim()
+||
+"Biotecnologia e o cérebro";
+
 
 const duracao =
 parseInt(
-document.getElementById("duracao").value,
+document
+.getElementById(
+"duracao"
+)
+.value,
 10
-) || 1;
+)
+||
+1;
 
 
-/* =========================
-   VERIFICAR ROTEIRO
-========================= */
+/* PRECISA TER ROTEIRO */
 
-if(!cenasAtuais.length){
+if(
+!cenasAtuais.length
+){
 
 alert(
 "Primeiro clique em Criar roteiro."
@@ -2570,12 +2596,13 @@ return;
 }
 
 
-/* =========================
-   VERIFICAR SUPORTE
-========================= */
+/* VERIFICA SUPORTE */
 
 if(
-!HTMLCanvasElement.prototype.captureStream ||
+!HTMLCanvasElement
+.prototype
+.captureStream
+||
 !window.MediaRecorder
 ){
 
@@ -2587,207 +2614,58 @@ return;
 }
 
 
+status.textContent =
+"🎬 Preparando vídeo de " +
+duracao +
+" minuto(s)...";
 /* =========================
-   BUSCAR VÍDEOS
+   BUSCA IMAGENS REAIS
 ========================= */
 
 status.textContent =
-"🔎 Procurando cenas cinematográficas...";
+"🖼️ Buscando imagens científicas...";
 
+const imagensEncontradas =
+await buscarImagensCenas(tema);
 
-const videosPexels =
-await buscarVideosPexels(tema);
-
-
-if(
-!videosPexels ||
-!videosPexels.length
-){
-
-status.textContent =
-"⚠️ Nenhum vídeo encontrado no Pexels.";
-
-return;
-
-}
-
-
-status.textContent =
-"🎬 Encontrados " +
-videosPexels.length +
-" vídeos. Preparando cenas...";
-
-
-/* =========================
-   PREPARAR VÍDEOS
-========================= */
-
-const clipes = [];
-
+imagensCenas = [];
 
 for(
-let i = 0;
-i < Math.min(
-videosPexels.length,
-12
-);
-i++
+    let i = 0;
+    i < imagensEncontradas.length;
+    i++
 ){
 
-const dados =
-videosPexels[i];
+    const imagem =
+    await carregarImagem(
+        imagensEncontradas[i].url
+    );
 
+    if(imagem){
 
-if(
-!dados.video_files ||
-!dados.video_files.length
-){
+        imagensCenas.push({
+            imagem:imagem,
+            titulo:
+            imagensEncontradas[i].titulo
+        });
 
-continue;
-
-}
-
-
-/*
-   Procurar primeiro um vídeo
-   vertical de boa qualidade.
-*/
-
-let arquivo =
-dados.video_files.find(
-function(item){
-
-return (
-item.width &&
-item.height &&
-item.height > item.width &&
-item.width >= 400
-);
-
-});
-
-
-/*
-   Se não encontrar vertical,
-   usar o arquivo disponível.
-*/
-
-if(!arquivo){
-
-arquivo =
-dados.video_files.find(
-function(item){
-
-return item.file_type === "video/mp4";
+    }
 
 }
-);
-
-}
-
-
-if(!arquivo){
-
-continue;
-
-}
-
-
-const elemento =
-document.createElement("video");
-
-elemento.src =
-arquivo.link;
-
-elemento.muted =
-true;
-
-elemento.playsInline =
-true;
-
-elemento.preload =
-"auto";
-
-elemento.crossOrigin =
-"anonymous";
-
-
-try{
-
-await new Promise(
-function(resolve){
-
-elemento.addEventListener(
-"loadedmetadata",
-resolve,
-{
-once:true
-}
-);
-
-elemento.addEventListener(
-"error",
-resolve,
-{
-once:true
-}
-);
-
-elemento.load();
-
-}
-);
-
-
-if(
-elemento.readyState >= 1
-){
-
-clipes.push(
-elemento
-);
-
-}
-
-}
-catch(erro){
-
-console.log(
-"Erro carregando clipe:",
-erro
-);
-
-}
-
-}
-
-
-/* =========================
-   VERIFICAR CLIPES
-========================= */
-
-if(!clipes.length){
 
 status.textContent =
-"⚠️ Os vídeos foram encontrados, mas não puderam ser carregados.";
+"🖼️ " +
+imagensCenas.length +
+" imagens encontradas. Preparando vídeo...";
 
-return;
-
-}
-
-
-status.textContent =
-"🎥 " +
-clipes.length +
-" clipes preparados. Montando vídeo...";
-
-
-/* =========================
-   CANVAS
-========================= */
+/* CANVAS */
 
 const canvas =
-document.createElement("canvas");
+document
+.createElement(
+"canvas"
+);
+
 
 canvas.width =
 1080;
@@ -2797,15 +2675,17 @@ canvas.height =
 
 
 const ctx =
-canvas.getContext("2d");
+canvas.getContext(
+"2d"
+);
 
 
-/* =========================
-   STREAM
-========================= */
+/* STREAM */
 
 const stream =
-canvas.captureStream(30);
+canvas.captureStream(
+30
+);
 
 
 let tipoVideo =
@@ -2813,7 +2693,8 @@ let tipoVideo =
 
 
 if(
-MediaRecorder.isTypeSupported(
+MediaRecorder
+.isTypeSupported(
 "video/webm;codecs=vp9"
 )
 ){
@@ -2823,7 +2704,8 @@ tipoVideo =
 
 }
 else if(
-MediaRecorder.isTypeSupported(
+MediaRecorder
+.isTypeSupported(
 "video/webm;codecs=vp8"
 )
 ){
@@ -2847,10 +2729,13 @@ tipoVideo
 );
 
 
-recorder.ondataavailable =
+recorder
+.ondataavailable =
 function(event){
 
-if(event.data.size > 0){
+if(
+event.data.size > 0
+){
 
 partes.push(
 event.data
@@ -2868,380 +2753,83 @@ function(resolve){
 recorder.onstop =
 resolve;
 
-}
+});
+
+
+/* COMEÇA GRAVAÇÃO */
+
+recorder.start(
+1000
 );
 
 
-/* =========================
-   COMEÇAR GRAVAÇÃO
-========================= */
-
-recorder.start(1000);
-
-
-/* =========================
-   TEMPO
-========================= */
+/* DURAÇÃO REAL */
 
 const inicio =
 performance.now();
 
+
 const duracaoTotal =
-duracao * 60 * 1000;
+duracao *
+60 *
+1000;
 
 
-/*
-   Cada cena ocupa uma parte
-   igual do vídeo.
-*/
+/* ANIMAÇÃO */
 
-const tempoPorCena =
-duracaoTotal /
-cenasAtuais.length;
-
-
-/* =========================
-   DESENHAR VÍDEO
-========================= */
-
-function desenharVideoNoCanvas(){
+function quadro(){
 
 const agora =
 performance.now();
 
+
 const decorrido =
-agora - inicio;
+agora -
+inicio;
 
 
-const progressoTotal =
+const progresso =
 Math.min(
-decorrido / duracaoTotal,
+decorrido /
+duracaoTotal,
 1
 );
 
 
-/* =========================
-   ESCOLHER CENA
-========================= */
-
-const indiceCena =
+const indice =
 Math.min(
 Math.floor(
-decorrido /
-tempoPorCena
+progresso *
+cenasAtuais.length
 ),
 cenasAtuais.length - 1
 );
 
 
 const cena =
-cenasAtuais[indiceCena];
+cenasAtuais[indice];
 
 
-/* =========================
-   ESCOLHER CLIPE
-========================= */
-
-const indiceClipe =
-indiceCena %
-clipes.length;
-
-
-const clipe =
-clipes[indiceClipe];
-
-
-/* =========================
-   TOCAR CLIPE
-========================= */
-
-if(
-clipe.paused
-){
-
-clipe.currentTime =
-0;
-
-clipe.play().catch(
-function(){}
-);
-
-}
-
-
-/* =========================
-   FUNDO
-========================= */
-
-ctx.fillStyle =
-"#071923";
-
-ctx.fillRect(
-0,
-0,
-1080,
-1920
-);
-
-
-/* =========================
-   VÍDEO
-========================= */
-
-if(
-clipe.readyState >= 2
-){
-
-const vw =
-clipe.videoWidth ||
-1080;
-
-const vh =
-clipe.videoHeight ||
-1920;
-
-
-/*
-   Preencher a tela vertical.
-*/
-
-const escala =
-Math.max(
-1080 / vw,
-1920 / vh
-);
-
-
-const largura =
-vw * escala;
-
-const altura =
-vh * escala;
-
-
-/*
-   Movimento cinematográfico
-   muito suave.
-*/
-
-const zoom =
-1.03 +
-progressoTotal * 0.03;
-
-
-const larguraFinal =
-largura * zoom;
-
-const alturaFinal =
-altura * zoom;
-
-
-const movimentoX =
-(1080 - larguraFinal) / 2;
-
-const movimentoY =
-(1920 - alturaFinal) / 2;
-
-
-ctx.drawImage(
-clipe,
-movimentoX,
-movimentoY,
-larguraFinal,
-alturaFinal
-);
-
-}
-
-
-/* =========================
-   CAMADA ESCURA
-========================= */
-
-const sombra =
-ctx.createLinearGradient(
-0,
-0,
-0,
-1920
-);
-
-
-sombra.addColorStop(
-0,
-"rgba(0,0,0,.15)"
-);
-
-sombra.addColorStop(
-0.55,
-"rgba(0,0,0,.12)"
-);
-
-sombra.addColorStop(
-1,
-"rgba(0,0,0,.78)"
-);
-
-
-ctx.fillStyle =
-sombra;
-
-
-ctx.fillRect(
-0,
-0,
-1080,
-1920
-);
-
-
-/* =========================
-   MARCA
-========================= */
-
-ctx.textAlign =
-"center";
-
-ctx.fillStyle =
-"rgba(255,255,255,.9)";
-
-ctx.font =
-"bold 34px Arial";
-
-
-ctx.fillText(
-"🧬 BioVideo AI",
-540,
-130
-);
-
-
-/* =========================
-   TÍTULO
-========================= */
-
-ctx.font =
-"bold 60px Arial";
-
-
-ctx.fillText(
-cena.titulo,
-540,
-330
-);
-
-
-/* =========================
-   LEGENDA
-========================= */
-
-ctx.font =
-"bold 40px Arial";
-
-
-const linhas =
-quebrarTexto(
+desenharCena(
 ctx,
-cena.legenda,
-850
+cena,
+indice,
+progresso,
+tema
 );
 
-
-linhas
-.slice(0,4)
-.forEach(
-function(linha,i){
-
-ctx.fillText(
-linha,
-540,
-1350 +
-i * 65
-);
-
-});
-
-
-/* =========================
-   TEMA
-========================= */
-
-ctx.font =
-"28px Arial";
-
-ctx.fillStyle =
-"rgba(255,255,255,.75)";
-
-
-const linhasTema =
-quebrarTexto(
-ctx,
-tema,
-780
-);
-
-
-linhasTema
-.slice(0,2)
-.forEach(
-function(linha,i){
-
-ctx.fillText(
-linha,
-540,
-1620 +
-i * 40
-);
-
-});
-
-
-/* =========================
-   BARRA
-========================= */
-
-ctx.fillStyle =
-"rgba(255,255,255,.3)";
-
-ctx.fillRect(
-100,
-1790,
-880,
-10
-);
-
-
-ctx.fillStyle =
-"#78edc0";
-
-ctx.fillRect(
-100,
-1790,
-880 *
-progressoTotal,
-10
-);
-
-
-/* =========================
-   STATUS
-========================= */
 
 status.textContent =
-"🎬 Cena " +
-(indiceCena + 1) +
+"🎥 Gerando cena " +
+(indice + 1) +
 " de " +
 cenasAtuais.length +
 " • " +
 Math.round(
-progressoTotal * 100
+progresso * 100
 ) +
 "%";
 
-
-/* =========================
-   CONTINUAR
-========================= */
 
 if(
 decorrido <
@@ -3249,19 +2837,11 @@ duracaoTotal
 ){
 
 requestAnimationFrame(
-desenharVideoNoCanvas
+quadro
 );
 
 }
 else{
-
-clipes.forEach(
-function(c){
-
-c.pause();
-
-}
-);
 
 recorder.stop();
 
@@ -3270,23 +2850,15 @@ recorder.stop();
 }
 
 
-/* =========================
-   INICIAR
-========================= */
-
-desenharVideoNoCanvas();
+quadro();
 
 
-/* =========================
-   ESPERAR TERMINAR
-========================= */
+/* ESPERA TERMINAR */
 
 await terminou;
 
 
-/* =========================
-   CRIAR ARQUIVO
-========================= */
+/* CRIA ARQUIVO */
 
 const blob =
 new Blob(
@@ -3307,6 +2879,7 @@ blob
 video.src =
 url;
 
+
 video.style.display =
 "block";
 
@@ -3314,17 +2887,20 @@ video.style.display =
 download.href =
 url;
 
+
 download.style.display =
 "block";
+
 
 download.download =
 "BioVideoAI.webm";
 
 
 status.textContent =
-"✅ Vídeo cinematográfico criado!";
+"✅ Vídeo criado com sucesso!";
 
 }
+
 
 /* =========================
    BOTÕES
@@ -3383,4 +2959,3 @@ gerarVideoBio
 
 </body>
 </html>
-
